@@ -22,15 +22,13 @@ package org.codehaus.plexus.languages.java.jpms;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
-import org.junit.internal.runners.model.EachTestNotifier;
 
 public class AsmModuleInfoParserTest
 {
@@ -39,7 +37,7 @@ public class AsmModuleInfoParserTest
     @Test
     public void testJarDescriptor() throws Exception
     {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( new File( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" ) );
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" ) );
         
         assertNotNull( descriptor);
         assertEquals( "org.objectweb.asm", descriptor.name() );
@@ -52,7 +50,7 @@ public class AsmModuleInfoParserTest
     @Test
     public void testOutputDirectoryDescriptor() throws Exception
     {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( new File( "src/test/resources/dir.descriptor/out" ) );
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.descriptor/out" ) );
         
         assertNotNull( descriptor);
         assertEquals( "org.objectweb.asm.all", descriptor.name() );

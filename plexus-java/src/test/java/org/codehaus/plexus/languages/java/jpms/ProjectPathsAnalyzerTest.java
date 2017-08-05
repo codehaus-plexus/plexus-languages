@@ -22,9 +22,11 @@ package org.codehaus.plexus.languages.java.jpms;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -72,13 +74,13 @@ public class ProjectPathsAnalyzerTest
     @Test
     public void testEmptyWithReflectRequires() throws Exception
     {
-        File abc = new File( "src/test/resources/empty/out" );
+        Path abc = Paths.get( "src/test/resources/empty/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
-        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
-        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -89,13 +91,13 @@ public class ProjectPathsAnalyzerTest
     @Test
     public void testManifestWithoutReflectRequires() throws Exception
     {
-        File abc = new File( "src/test/resources/manifest.without/out" );
+        Path abc = Paths.get( "src/test/resources/manifest.without/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
-        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -106,13 +108,13 @@ public class ProjectPathsAnalyzerTest
     @Test
     public void testManifestWithReflectRequires() throws Exception
     {
-        File abc = new File( "src/test/resources/manifest.with/out" );
+        Path abc = Paths.get( "src/test/resources/manifest.with/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
-        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );

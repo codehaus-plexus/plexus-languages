@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -41,20 +43,20 @@ public class AsmModuleInfoParser
     implements ModuleInfoParser
 {
     @Override
-    public JavaModuleDescriptor getModuleDescriptor( File modulePath )
+    public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException
     {
         JavaModuleDescriptor descriptor;
-        if ( modulePath.isDirectory() )
+        if ( Files.isDirectory( modulePath ) )
         {
-            try ( InputStream in = new FileInputStream( new File( modulePath, "module-info.class" ) ) ) 
+            try ( InputStream in = Files.newInputStream( modulePath.resolve( "module-info.class" ) ) ) 
             { 
                 descriptor = parse( in );
             }
         }
         else
         {
-            try ( JarFile jarFile = new JarFile( modulePath ) )
+            try ( JarFile jarFile = new JarFile( modulePath.toFile() ) )
             {
                 JarEntry moduleInfo = jarFile.getJarEntry( "module-info.class" );
                 

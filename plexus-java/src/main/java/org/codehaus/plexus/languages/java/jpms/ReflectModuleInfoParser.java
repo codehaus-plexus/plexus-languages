@@ -1,28 +1,9 @@
 package org.codehaus.plexus.languages.java.jpms;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Set;
 
 /**
@@ -34,7 +15,7 @@ import java.util.Set;
 public class ReflectModuleInfoParser implements ModuleInfoParser
 {
     @Override
-    public JavaModuleDescriptor getModuleDescriptor( File modulePath )
+    public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException
     {
         JavaModuleDescriptor moduleDescriptor = null;
@@ -44,10 +25,8 @@ public class ReflectModuleInfoParser implements ModuleInfoParser
             // Use Java9 code to get moduleName, don't try to do it better with own implementation
             Class moduleFinderClass = Class.forName( "java.lang.module.ModuleFinder" );
 
-            java.nio.file.Path path = modulePath.toPath();
-
             Method ofMethod = moduleFinderClass.getMethod( "of", java.nio.file.Path[].class );
-            Object moduleFinderInstance = ofMethod.invoke( null, new Object[] { new java.nio.file.Path[] { path } } );
+            Object moduleFinderInstance = ofMethod.invoke( null, new Object[] { new java.nio.file.Path[] { modulePath } } );
 
             Method findAllMethod = moduleFinderClass.getMethod( "findAll" );
             Set<Object> moduleReferences = (Set<Object>) findAllMethod.invoke( moduleFinderInstance );

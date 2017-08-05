@@ -21,10 +21,10 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeThat;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class ReflectModuleInfoParserTest
         throws Exception
     {
         JavaModuleDescriptor descriptor =
-            parser.getModuleDescriptor( new File( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+            parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         
         assertEquals( "plexus.java", descriptor.name() );
         assertEquals( true, descriptor.isAutomatic() );
@@ -55,7 +55,7 @@ public class ReflectModuleInfoParserTest
         throws Exception
     {
         JavaModuleDescriptor descriptor =
-            parser.getModuleDescriptor( new File( "src/test/resources/jar.manifest/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+            parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.manifest/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         
         assertEquals( "org.codehaus.plexus.languages.java", descriptor.name() );
         assertEquals( true, descriptor.isAutomatic() );

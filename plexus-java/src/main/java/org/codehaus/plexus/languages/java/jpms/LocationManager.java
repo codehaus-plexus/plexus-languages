@@ -76,7 +76,7 @@ public class LocationManager
         // collect all modules from path
         for ( T t : request.getPathElements() )
         {
-            Path path =  request.toPath( t );
+            Path path = request.toPath( t );
             File file = path.toFile();
             
             JavaModuleDescriptor moduleDescriptor = null;
@@ -84,11 +84,11 @@ public class LocationManager
             // either jar or outputDirectory
             if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
             {
-                moduleDescriptor = reflectParser.getModuleDescriptor( file );
+                moduleDescriptor = reflectParser.getModuleDescriptor( path );
                 
                 if ( moduleDescriptor == null )
                 {
-                    moduleDescriptor = asmParser.getModuleDescriptor( file );
+                    moduleDescriptor = asmParser.getModuleDescriptor( path );
                 }
             }
 
