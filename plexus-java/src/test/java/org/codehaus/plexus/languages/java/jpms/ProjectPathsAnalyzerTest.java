@@ -48,7 +48,7 @@ public class ProjectPathsAnalyzerTest
     @Test
     public void testNoPaths() throws Exception
     {
-        ResolvePathsResult result = analyzer.resolvePaths( new ResolvePathsRequest() );
+        ResolvePathsResult<File> result = analyzer.resolvePaths( ResolvePathsRequest.withFiles( Collections.<File>emptyList() ) );
         assertThat( result.getMainModuleDescriptor(), nullValue( JavaModuleDescriptor.class) );
         assertThat( result.getPathElements().size(), is( 0 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
@@ -59,9 +59,9 @@ public class ProjectPathsAnalyzerTest
     public void testWithUnknownRequires() throws Exception
     {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "java.base" ).requires( "jdk.net" ).build();
-        ResolvePathsRequest request = new ResolvePathsRequest().setMainModuleDescriptor( descriptor );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.<File>emptyList() ).setMainModuleDescriptor( descriptor );
         
-        ResolvePathsResult result = analyzer.resolvePaths( request );
+        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 0 ) );
@@ -74,11 +74,11 @@ public class ProjectPathsAnalyzerTest
     {
         File abc = new File( "src/test/resources/empty/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
-        ResolvePathsRequest request = new ResolvePathsRequest().setMainModuleDescriptor( descriptor ).setPathElements( Collections.singletonList( abc ) );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
-        ResolvePathsResult result = analyzer.resolvePaths( request );
+        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -91,11 +91,11 @@ public class ProjectPathsAnalyzerTest
     {
         File abc = new File( "src/test/resources/manifest.without/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
-        ResolvePathsRequest request = new ResolvePathsRequest().setMainModuleDescriptor( descriptor ).setPathElements( Collections.singletonList( abc ) );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult result = analyzer.resolvePaths( request );
+        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -108,11 +108,11 @@ public class ProjectPathsAnalyzerTest
     {
         File abc = new File( "src/test/resources/manifest.with/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
-        ResolvePathsRequest request = new ResolvePathsRequest().setMainModuleDescriptor( descriptor ).setPathElements( Collections.singletonList( abc ) );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult result = analyzer.resolvePaths( request );
+        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );

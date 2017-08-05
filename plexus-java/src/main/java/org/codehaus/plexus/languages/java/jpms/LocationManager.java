@@ -21,6 +21,8 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,12 +57,12 @@ public class LocationManager
         this.reflectParser = reflectParser;
     }
 
-    public ResolvePathsResult resolvePaths( ResolvePathsRequest request )
+    public <T> ResolvePathsResult<T> resolvePaths( ResolvePathsRequest<T> request )
         throws IOException
     {
-        ResolvePathsResult result = new ResolvePathsResult();
+        ResolvePathsResult<T> result = request.createResult();
         
-        Map<File, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
+        Map<T, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
 
         JavaModuleDescriptor mainModuleDescriptor = request.getMainModuleDescriptor();
 
@@ -72,12 +74,15 @@ public class LocationManager
         result.setMainModuleDescriptor( mainModuleDescriptor );
 
         // collect all modules from path
-        for ( File file : request.getPathElements() )
+        for ( T t : request.getPathElements() )
         {
+            Path path =  request.toPath( t );
+            File file = path.toFile();
+            
             JavaModuleDescriptor moduleDescriptor = null;
             
             // either jar or outputDirectory
-            if ( file.isFile() || new File( file, "module-info.class" ).exists() )
+            if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
             {
                 moduleDescriptor = reflectParser.getModuleDescriptor( file );
                 
@@ -129,7 +134,7 @@ public class LocationManager
                     }
                     else
                     {
-                        source = ModuleNameSource.MANIFEST;
+                        source = ModuleNameSource.FILENAME;
                     }
                 }
 
@@ -138,7 +143,7 @@ public class LocationManager
                 availableNamedModules.put( moduleDescriptor.name(), moduleDescriptor );
             }
             
-            pathElements.put( file, moduleDescriptor );
+            pathElements.put( t, moduleDescriptor );
             
         }
         result.setPathElements( pathElements );
@@ -149,7 +154,7 @@ public class LocationManager
             
             select( mainModuleDescriptor, Collections.unmodifiableMap( availableNamedModules ), requiredNamedModules );
 
-            for ( Entry<File, JavaModuleDescriptor> entry : pathElements.entrySet() )
+            for ( Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet() )
             {
                 if ( entry.getValue() != null && requiredNamedModules.contains( entry.getValue().name() ) )
                 {

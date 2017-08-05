@@ -20,7 +20,7 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
 import java.util.Collection;
 
 /**
@@ -29,56 +29,82 @@ import java.util.Collection;
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class ResolvePathsRequest
+public abstract class ResolvePathsRequest<T>
 {
     private File jdkHome;
-    
-    private JavaModuleDescriptor mainModuleDescriptor;
-    
-    private Collection<File> pathElements = new ArrayList<>();
 
+    private JavaModuleDescriptor mainModuleDescriptor;
+
+    private Collection<T> pathElements;
+    
+    public static ResolvePathsRequest<File> withFiles( Collection<File> files )
+    {
+        ResolvePathsRequest<File> request = new ResolvePathsRequest<File>()
+        {
+            @Override
+            protected Path toPath( File t )
+            {
+                return t.toPath();
+            }
+        };
+            
+        request.pathElements = files;
+        return request;
+    }
+
+    public static ResolvePathsRequest<Path> withPaths( Collection<Path> paths )
+    {
+        ResolvePathsRequest<Path> request = new ResolvePathsRequest<Path>() {
+            @Override
+            protected Path toPath( Path t )
+            {
+                return t;
+            }
+        };
+        request.pathElements = paths;
+        return request;
+    }
+    
+    protected abstract Path toPath( T t );
+
+    final ResolvePathsResult<T> createResult() {
+        return new ResolvePathsResult<>();
+    }
+    
     public JavaModuleDescriptor getMainModuleDescriptor()
     {
         return mainModuleDescriptor;
     }
 
     /**
-     * 
      * @param mainModuleDescriptor
      * @return this request
      */
-    public ResolvePathsRequest setMainModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
+    public ResolvePathsRequest<T> setMainModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
     {
         this.mainModuleDescriptor = mainModuleDescriptor;
         return this;
     }
 
-    public Collection<File> getPathElements()
+    public Collection<T> getPathElements()
     {
-        
+
         return pathElements;
     }
-    
+
     /**
-     * All required jars and outputDirectories 
+     * In case the JRE is Java 8  or before, JShell of this jdkHome is used to extract the module name.
      * 
-     * @param pathElements
-     * @return this request
+     * @param jdkHome
      */
-    public ResolvePathsRequest setPathElements( Collection<File> pathElements )
-    {
-        this.pathElements = new ArrayList<>( pathElements );
-        return this;
-    }
-    
     public void setJdkHome( File jdkHome )
     {
         this.jdkHome = jdkHome;
     }
-    
+
     public File getJdkHome()
     {
         return jdkHome;
     }
-    
+
 }

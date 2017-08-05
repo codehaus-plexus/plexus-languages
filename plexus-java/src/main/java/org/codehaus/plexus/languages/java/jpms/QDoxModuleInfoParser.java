@@ -21,6 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaModuleDescriptor;
@@ -33,6 +34,13 @@ import com.thoughtworks.qdox.model.JavaModuleDescriptor;
  */
 public class QDoxModuleInfoParser
 {
+
+    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( Path path )
+                    throws IOException
+    {
+        return fromSourcePath( path.toFile() );
+    }
+                    
     public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( File path )
         throws IOException
     {
