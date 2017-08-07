@@ -54,6 +54,30 @@ public class ReflectModuleInfoParser implements ModuleInfoParser
                     builder.requires( name );
                 }
             }
+
+            Method exportsMethod = moduleDescriptorInstance.getClass().getMethod( "exports" );
+            Set<Object> exports = (Set<Object>) exportsMethod.invoke( moduleDescriptorInstance );
+            
+            if( exports != null )
+            {
+                for ( Object exportsInstance : exports )
+                {
+                    Method sourceMethod = exportsInstance.getClass().getMethod( "source" );
+                    String source = (String) sourceMethod.invoke( exportsInstance );
+
+                    Method targetsMethod = exportsInstance.getClass().getMethod( "targets" );
+                    Set<String> targets = (Set<String>) sourceMethod.invoke( exportsInstance );
+
+                    if ( targets.isEmpty() )
+                    {
+                        builder.exports( source );
+                    }
+                    else
+                    {
+                        builder.exports( source, targets );
+                    }
+                }
+            }
             
             moduleDescriptor = builder.build();
         }

@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -93,6 +95,19 @@ public class AsmModuleInfoParser
                         public void visitRequire( String module, int access, String version )
                         {
                             wrapper.builder.requires( module );
+                        }
+                        
+                        @Override
+                        public void visitExport( String pn, int ms, String... targets )
+                        {
+                            if ( targets == null || targets.length == 0 )
+                            {
+                                wrapper.builder.exports( pn );
+                            }
+                            else
+                            {
+                                wrapper.builder.exports( pn, new HashSet<>( Arrays.asList( targets ) ) );
+                            }
                         }
                     };
                 }

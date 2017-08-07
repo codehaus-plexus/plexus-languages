@@ -57,6 +57,11 @@ public class QDoxModuleInfoParser
             {
                 builder.requires( requires.getModule().getName() );
             }
+            
+            for ( JavaModuleDescriptor.JavaExports exports : descriptor.getExports() )
+            {
+                builder.exports( exports.getSource().getName() );
+            }
         }
         else
         {

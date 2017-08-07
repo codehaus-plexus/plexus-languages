@@ -39,6 +39,8 @@ public class JavaModuleDescriptor
 
     private Set<JavaRequires> requires = new HashSet<JavaRequires>();
     
+    private Set<JavaExports> exports = new HashSet<JavaExports>();
+    
     public String name()
     {
         return name;
@@ -54,6 +56,11 @@ public class JavaModuleDescriptor
         return Collections.unmodifiableSet( requires );
     }
 
+    public Set<JavaExports> exports()
+    {
+        return Collections.unmodifiableSet( exports );
+    }
+    
     public static JavaModuleDescriptor.Builder newModule( String name )
     {
         return new Builder( name ).setAutomatic( false );
@@ -68,7 +75,7 @@ public class JavaModuleDescriptor
      * A JavaModuleDescriptor Builder
      * 
      * @author Robert Scholte
-     * @since 3.7.0
+     * @since 1.0.0
      */
     public static final class Builder
     {
@@ -93,6 +100,20 @@ public class JavaModuleDescriptor
             return this;
         }
 
+        public Builder exports( String source )
+        {
+            JavaExports exports = new JavaExports( source );
+            jModule.exports.add( exports );
+            return this;
+        }
+
+        public Builder exports( String source, Set<String> targets )
+        {
+            JavaExports exports = new JavaExports( source, targets );
+            jModule.exports.add( exports );
+            return this;
+        }
+
         public JavaModuleDescriptor build()
         {
             return jModule;
@@ -103,7 +124,7 @@ public class JavaModuleDescriptor
      * Represents Module.Requires
      * 
      * @author Robert Scholte
-     * @since 3.7.0
+     * @since 1.0.0
      */
     public static class JavaRequires
     {
@@ -117,6 +138,41 @@ public class JavaModuleDescriptor
         public String name()
         {
             return name;
+        }
+    }
+    
+    /**
+     * Represents Module.Requires
+     * 
+     * @author Robert Scholte
+     * @since 1.0.0
+     */
+    public static class JavaExports
+    {
+        private final String source;
+        
+        private final Set<String> targets;
+        
+        private JavaExports( String source )
+        {
+            this.source = source;
+            this.targets = null;
+        }
+        
+        public JavaExports( String source, Set<String> targets )
+        {
+            this.source = source;
+            this.targets = targets;
+        }
+
+        public String source()
+        {
+            return source;
+        }
+        
+        public Set<String> targets()
+        {
+            return targets;
         }
     }
 }
