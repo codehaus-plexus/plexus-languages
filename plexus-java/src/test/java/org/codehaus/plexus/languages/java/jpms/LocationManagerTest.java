@@ -29,14 +29,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSource;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith( MockitoJUnitRunner.class )
-public class ProjectPathsAnalyzerTest
+public class LocationManagerTest
 {
     @Mock
     private ModuleInfoParser asmParser;
@@ -44,13 +45,18 @@ public class ProjectPathsAnalyzerTest
     @Mock
     private ModuleInfoParser reflectParser;
     
-    @InjectMocks
-    private LocationManager analyzer;
+    private LocationManager locationManager;
+    
+    @Before
+    public void onSetup()
+    {
+        locationManager = new LocationManager( asmParser, reflectParser );
+    }
 
     @Test
     public void testNoPaths() throws Exception
     {
-        ResolvePathsResult<File> result = analyzer.resolvePaths( ResolvePathsRequest.withFiles( Collections.<File>emptyList() ) );
+        ResolvePathsResult<File> result = locationManager.resolvePaths( ResolvePathsRequest.withFiles( Collections.<File>emptyList() ) );
         assertThat( result.getMainModuleDescriptor(), nullValue( JavaModuleDescriptor.class) );
         assertThat( result.getPathElements().size(), is( 0 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
@@ -63,7 +69,7 @@ public class ProjectPathsAnalyzerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "java.base" ).requires( "jdk.net" ).build();
         ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.<File>emptyList() ).setMainModuleDescriptor( descriptor );
         
-        ResolvePathsResult<File> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<File> result = locationManager.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 0 ) );
@@ -80,7 +86,7 @@ public class ProjectPathsAnalyzerTest
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
-        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -97,7 +103,7 @@ public class ProjectPathsAnalyzerTest
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -114,11 +120,48 @@ public class ProjectPathsAnalyzerTest
         
         when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
-        ResolvePathsResult<Path> result = analyzer.resolvePaths( request );
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
         assertThat( result.getMainModuleDescriptor(), is( descriptor) );
         assertThat( result.getPathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MANIFEST ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testDirDescriptorWithReflectRequires() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/dir.descriptor/out" );
+        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "dir.descriptor" ).build();
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        
+        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "dir.descriptor" ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+
+        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+    }
+
+    @Test
+    public void testJarWithAsmRequires() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" );
+        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "org.objectweb.asm" ).build();
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        
+        when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+
+        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MODULEDESCRIPTOR ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
     }
 

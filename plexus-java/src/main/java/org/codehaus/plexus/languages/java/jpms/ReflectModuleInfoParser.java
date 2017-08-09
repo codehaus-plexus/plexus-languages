@@ -66,7 +66,7 @@ public class ReflectModuleInfoParser implements ModuleInfoParser
                     String source = (String) sourceMethod.invoke( exportsInstance );
 
                     Method targetsMethod = exportsInstance.getClass().getMethod( "targets" );
-                    Set<String> targets = (Set<String>) sourceMethod.invoke( exportsInstance );
+                    Set<String> targets = (Set<String>) targetsMethod.invoke( exportsInstance );
 
                     if ( targets.isEmpty() )
                     {

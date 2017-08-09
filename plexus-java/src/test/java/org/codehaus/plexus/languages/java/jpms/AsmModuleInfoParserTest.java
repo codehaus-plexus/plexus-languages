@@ -21,6 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -45,6 +46,15 @@ public class AsmModuleInfoParserTest
 
         assertEquals( 1, descriptor.requires().size() );
         assertEquals( "java.base", descriptor.requires().iterator().next().name() );
+    }
+    
+
+    @Test
+    public void testClassicJar() throws Exception
+    {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        
+        assertNull( descriptor);
     }
     
     @Test
