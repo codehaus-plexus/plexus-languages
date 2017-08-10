@@ -1,6 +1,3 @@
-/**
- * Using File because {@link javax.tools.StandardJavaFileManager} is File based
- */
 package org.codehaus.plexus.languages.java.jpms;
 
 /*
