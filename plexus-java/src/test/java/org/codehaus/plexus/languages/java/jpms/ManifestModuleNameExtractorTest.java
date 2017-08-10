@@ -38,7 +38,7 @@ public class ManifestModuleNameExtractorTest
     @Test
     public void testManifestInJar() throws Exception
     {
-        assertEquals( "org.codehaus.plexus.languages.java", extractor.extract( new File( "src/test/resources/jar.manifest/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
+        assertEquals( "org.codehaus.plexus.languages.java", extractor.extract( new File( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
     }
 
     @Test
@@ -56,6 +56,6 @@ public class ManifestModuleNameExtractorTest
     @Test
     public void testManifestInDir() throws Exception
     {
-        assertEquals( "auto.by.manifest", extractor.extract( new File( "src/test/resources/manifest.with/out" ) ) );
+        assertEquals( "auto.by.manifest", extractor.extract( new File( "src/test/resources/dir.manifest.with/out" ) ) );
     }
 }

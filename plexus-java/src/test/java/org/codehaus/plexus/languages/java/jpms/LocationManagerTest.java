@@ -114,7 +114,7 @@ public class LocationManagerTest
     @Test
     public void testManifestWithReflectRequires() throws Exception
     {
-        Path abc = Paths.get( "src/test/resources/manifest.with/out" );
+        Path abc = Paths.get( "src/test/resources/dir.manifest.with/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         

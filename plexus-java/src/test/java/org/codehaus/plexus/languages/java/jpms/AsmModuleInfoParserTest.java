@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -52,7 +53,7 @@ public class AsmModuleInfoParserTest
     @Test
     public void testClassicJar() throws Exception
     {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         
         assertNull( descriptor);
     }
@@ -74,6 +75,12 @@ public class AsmModuleInfoParserTest
         }
         Set<String> expectedNames = new HashSet<>( Arrays.asList( "java.base", "java.xml" ) );
         assertEquals( expectedNames, actualNames );
+    }
+
+    @Test( expected = NoSuchFileException.class )
+    public void testClassicOutputDirectory() throws Exception
+    {
+        parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.empty/out" ) );
     }
 
 }

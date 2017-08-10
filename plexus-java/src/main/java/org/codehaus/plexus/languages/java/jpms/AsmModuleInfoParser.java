@@ -77,40 +77,37 @@ public class AsmModuleInfoParser
     {
         final JavaModuleDescriptorWrapper wrapper = new JavaModuleDescriptorWrapper();
         
-        if ( in != null )
+        ClassReader reader = new ClassReader( in );
+        reader.accept( new ClassVisitor( Opcodes.ASM6 )
         {
-            ClassReader reader = new ClassReader( in );
-            reader.accept( new ClassVisitor( Opcodes.ASM6 )
+            @Override
+            public ModuleVisitor visitModule( String name, int arg1, String arg2 )
             {
-                @Override
-                public ModuleVisitor visitModule( String name, int arg1, String arg2 )
-                {
-                    wrapper.builder = JavaModuleDescriptor.newModule( name );
+                wrapper.builder = JavaModuleDescriptor.newModule( name );
 
-                    return new ModuleVisitor( Opcodes.ASM6 )
+                return new ModuleVisitor( Opcodes.ASM6 )
+                {
+                    @Override
+                    public void visitRequire( String module, int access, String version )
                     {
-                        @Override
-                        public void visitRequire( String module, int access, String version )
+                        wrapper.builder.requires( module );
+                    }
+                    
+                    @Override
+                    public void visitExport( String pn, int ms, String... targets )
+                    {
+                        if ( targets == null || targets.length == 0 )
                         {
-                            wrapper.builder.requires( module );
+                            wrapper.builder.exports( pn );
                         }
-                        
-                        @Override
-                        public void visitExport( String pn, int ms, String... targets )
+                        else
                         {
-                            if ( targets == null || targets.length == 0 )
-                            {
-                                wrapper.builder.exports( pn );
-                            }
-                            else
-                            {
-                                wrapper.builder.exports( pn, new HashSet<>( Arrays.asList( targets ) ) );
-                            }
+                            wrapper.builder.exports( pn, new HashSet<>( Arrays.asList( targets ) ) );
                         }
-                    };
-                }
-            }, 0 );
-        }
+                    }
+                };
+            }
+        }, 0 );
         return wrapper.builder.build();
     }
     

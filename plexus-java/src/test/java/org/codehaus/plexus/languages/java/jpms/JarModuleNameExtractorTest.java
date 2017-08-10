@@ -42,14 +42,14 @@ public class JarModuleNameExtractorTest
     @Test
     public void testJarWithoutManifest() throws Exception
     {
-        String name = extractor.extract( new File( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        String name = extractor.extract( new File( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         assertEquals( "plexus.java", name );
     }
 
     @Test
     public void testJarWithManifest() throws Exception
     {
-        String name = extractor.extract( new File( "src/test/resources/jar.manifest/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        String name = extractor.extract( new File( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         assertEquals( "org.codehaus.plexus.languages.java", name );
     }
 
