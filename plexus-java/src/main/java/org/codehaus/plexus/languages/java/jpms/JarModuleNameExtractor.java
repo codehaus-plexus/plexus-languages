@@ -49,8 +49,7 @@ public class JarModuleNameExtractor
         try
         {
             File jsh = File.createTempFile( "modulename_", ".jsh" );
-            System.out.println( jsh.getAbsolutePath() );
-//            jsh.deleteOnExit();
+            jsh.deleteOnExit();
 
             List<String> lines = new ArrayList<>();
             lines.add( "System.out.println(java.lang.module.ModuleFinder.of(java.nio.file.Paths.get(\""
@@ -64,10 +63,9 @@ public class JarModuleNameExtractor
                 new ProcessBuilder( new File( jdkHome, "bin/jshell" ).getAbsolutePath(), jsh.getAbsolutePath() );
             Process p = builder.start();
 
-            try (BufferedReader reader = new BufferedReader( new InputStreamReader( p.getInputStream() ) ))
+            try ( BufferedReader reader = new BufferedReader( new InputStreamReader( p.getInputStream() ) ) )
             {
-                String modulename = reader.readLine();
-                return modulename;
+                return reader.readLine();
             }
         }
         catch ( IOException e )
@@ -75,5 +73,4 @@ public class JarModuleNameExtractor
         }
         return null;
     }
-
 }
