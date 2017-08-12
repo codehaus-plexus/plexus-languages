@@ -39,7 +39,7 @@ public class JavaVersion implements Comparable<JavaVersion>
      * @param s the version string
      * @return the version wrapped in a JavadocVersion
      */
-    static JavaVersion parse( String s ) 
+    public static JavaVersion parse( String s ) 
     {
         return new JavaVersion( s );
     }

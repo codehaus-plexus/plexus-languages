@@ -27,33 +27,9 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-<!--       <plugin> -->
-<!--         <groupId>org.codehaus.plexus</groupId> -->
-<!--         <artifactId>plexus-component-metadata</artifactId> -->
-<!--       </plugin> -->
-<!--       <plugin> -->
-<!--         <groupId>org.eclipse.sisu</groupId> -->
-<!--         <artifactId>sisu-maven-plugin</artifactId> -->
-<!--         <version>0.3.3</version> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <goals> -->
-<!--               <goal>main-index</goal> -->
-<!--             </goals> -->
-<!--           </execution> -->
-<!--         </executions> -->
-<!--       </plugin> -->
-    </plugins>
   </build>
 
   <dependencies>
-<!--     <dependency> -->
-<!--       <groupId>javax.inject</groupId> -->
-<!--       <artifactId>javax.inject</artifactId> -->
-<!--       <version>1</version> -->
-<!--     </dependency> -->
-
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
