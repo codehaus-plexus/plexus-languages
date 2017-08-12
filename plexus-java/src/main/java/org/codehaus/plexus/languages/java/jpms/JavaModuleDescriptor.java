@@ -20,7 +20,7 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -37,9 +37,9 @@ public class JavaModuleDescriptor
     
     private boolean automatic;
 
-    private Set<JavaRequires> requires = new HashSet<JavaRequires>();
+    private Set<JavaRequires> requires = new LinkedHashSet<JavaRequires>();
     
-    private Set<JavaExports> exports = new HashSet<JavaExports>();
+    private Set<JavaExports> exports = new LinkedHashSet<JavaExports>();
     
     public String name()
     {

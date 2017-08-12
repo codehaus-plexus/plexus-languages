@@ -22,8 +22,11 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.JavaModule;
 import com.thoughtworks.qdox.model.JavaModuleDescriptor;
 
 /**
@@ -60,7 +63,19 @@ public class QDoxModuleInfoParser
             
             for ( JavaModuleDescriptor.JavaExports exports : descriptor.getExports() )
             {
-                builder.exports( exports.getSource().getName() );
+                if ( exports.getTargets().isEmpty()  )
+                {
+                    builder.exports( exports.getSource().getName() );
+                }
+                else
+                {
+                    Set<String> targets = new LinkedHashSet<>();
+                    for ( JavaModule module : exports.getTargets() )
+                    {
+                        targets.add( module.getName() );
+                    }
+                    builder.exports( exports.getSource().getName(), targets );
+                }
             }
         }
         else
