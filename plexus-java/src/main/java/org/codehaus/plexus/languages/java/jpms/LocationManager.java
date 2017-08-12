@@ -152,6 +152,8 @@ public class LocationManager
         {
             Set<String> requiredNamedModules = new HashSet<>();
             
+            requiredNamedModules.add( mainModuleDescriptor.name() );
+            
             select( mainModuleDescriptor, Collections.unmodifiableMap( availableNamedModules ), requiredNamedModules );
 
             for ( Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet() )

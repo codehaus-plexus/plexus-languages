@@ -21,6 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 /**
@@ -36,6 +37,10 @@ public abstract class ResolvePathsRequest<T>
     private JavaModuleDescriptor mainModuleDescriptor;
 
     private Collection<T> pathElements;
+    
+    private ResolvePathsRequest()
+    {
+    }
     
     public static ResolvePathsRequest<File> withFiles( Collection<File> files )
     {
@@ -62,6 +67,19 @@ public abstract class ResolvePathsRequest<T>
             }
         };
         request.pathElements = paths;
+        return request;
+    }
+    
+    public static ResolvePathsRequest<String> withStrings( Collection<String> strings )
+    {
+        ResolvePathsRequest<String> request = new ResolvePathsRequest<String>() {
+            @Override
+            protected Path toPath( String t )
+            {
+                return Paths.get( t );
+            }
+        };
+        request.pathElements = strings;
         return request;
     }
     
