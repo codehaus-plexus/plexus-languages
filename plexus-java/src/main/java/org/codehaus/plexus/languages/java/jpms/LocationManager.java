@@ -43,18 +43,14 @@ public class LocationManager
 {
     private ModuleInfoParser asmParser;
 
-    private ModuleInfoParser reflectParser;
-    
     public LocationManager()
     {
         this.asmParser = new AsmModuleInfoParser();
-        this.reflectParser = new ReflectModuleInfoParser();
     }
     
-    LocationManager( ModuleInfoParser asmParser, ModuleInfoParser reflectParser )
+    LocationManager( ModuleInfoParser asmParser )
     {
         this.asmParser = asmParser;
-        this.reflectParser = reflectParser;
     }
 
     public <T> ResolvePathsResult<T> resolvePaths( ResolvePathsRequest<T> request )
@@ -80,20 +76,19 @@ public class LocationManager
             File file = path.toFile();
             
             JavaModuleDescriptor moduleDescriptor = null;
+            ModuleNameSource source = null;
             
             // either jar or outputDirectory
             if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
             {
-                moduleDescriptor = reflectParser.getModuleDescriptor( path );
-                
-                if ( moduleDescriptor == null )
-                {
-                    moduleDescriptor = asmParser.getModuleDescriptor( path );
-                }
+                moduleDescriptor = asmParser.getModuleDescriptor( path );
             }
 
-            ModuleNameSource source = null;
-            if ( moduleDescriptor == null )
+            if ( moduleDescriptor != null ) 
+            {
+                source = ModuleNameSource.MODULEDESCRIPTOR;
+            }
+            else
             {
                 String moduleName = new ManifestModuleNameExtractor().extract( file );
 
@@ -107,7 +102,7 @@ public class LocationManager
                     
                     if ( moduleName != null )
                     {
-                        source = ModuleNameSource.MANIFEST;
+                        source = ModuleNameSource.FILENAME;
                     }
                 }
 
@@ -116,28 +111,9 @@ public class LocationManager
                     moduleDescriptor = JavaModuleDescriptor.newAutomaticModule( moduleName ).build();
                 }
             }
-            else if ( !moduleDescriptor.isAutomatic() )
-            {
-                source = ModuleNameSource.MODULEDESCRIPTOR;
-            }
             
             if ( moduleDescriptor != null )
             {
-                if ( source == null )
-                {
-                    // name retrieved from java.lang.module.ModuleFinder, source unknown
-                    String moduleName = new ManifestModuleNameExtractor().extract( file );
-
-                    if ( moduleName != null )
-                    {
-                        source = ModuleNameSource.MANIFEST;
-                    }
-                    else
-                    {
-                        source = ModuleNameSource.FILENAME;
-                    }
-                }
-
                 moduleNameSources.put( moduleDescriptor.name(), source );
                 
                 availableNamedModules.put( moduleDescriptor.name(), moduleDescriptor );

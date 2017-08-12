@@ -42,15 +42,12 @@ public class LocationManagerTest
     @Mock
     private ModuleInfoParser asmParser;
 
-    @Mock
-    private ModuleInfoParser reflectParser;
-    
     private LocationManager locationManager;
     
     @Before
     public void onSetup()
     {
-        locationManager = new LocationManager( asmParser, reflectParser );
+        locationManager = new LocationManager( asmParser );
     }
 
     @Test
@@ -84,7 +81,7 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
-        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
+        when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
@@ -101,7 +98,7 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
-        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
+//        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
@@ -118,7 +115,7 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
-        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
+//        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
@@ -136,7 +133,7 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "dir.descriptor" ).build();
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
         
-        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "dir.descriptor" ).build() );
+        when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "dir.descriptor" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
