@@ -43,7 +43,13 @@ public class QDoxModuleInfoParser
     {
         return fromSourcePath( path.toFile() );
     }
-                    
+
+    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( String path )
+                    throws IOException
+    {
+        return fromSourcePath( new File( path ) );
+    }
+    
     public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( File path )
         throws IOException
     {
