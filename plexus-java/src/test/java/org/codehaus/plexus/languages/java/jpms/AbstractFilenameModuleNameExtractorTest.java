@@ -19,36 +19,37 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeThat;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 
-import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class QDoxModuleInfoParserTest
+public abstract class AbstractFilenameModuleNameExtractorTest
 {
-    private QDoxModuleInfoParser parser = new QDoxModuleInfoParser();
+    protected abstract ModuleNameExtractor getExtractor();
 
-    @Test
-    public void test() throws Exception
+    @BeforeClass
+    public static void assume()
     {
-        JavaModuleDescriptor moduleDescriptor = parser.fromSourcePath( new File( "src/test/resources/src.dir" ) );
-        assertEquals( "a.b.c", moduleDescriptor.name() ); 
-        assertEquals( "d.e", moduleDescriptor.requires().iterator().next().name() );
-        
-        Iterator<JavaExports> exportsIter = moduleDescriptor.exports().iterator();
-        
-        JavaExports exports = exportsIter.next(); 
-        assertEquals( "f.g", exports.source() );
-        
-        exports = exportsIter.next(); 
-        assertEquals( "f.g.h", exports.source() );
-        assertEquals( new HashSet<>( Arrays.asList( "i.j", "k.l.m" ) ), exports.targets() );
-        
+        assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
+    }
+    
+    @Test
+    public void testJarWithoutManifest() throws Exception
+    {
+        String name = getExtractor().extract( new File( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        assertEquals( "plexus.java", name );
     }
 
+    @Test
+    public void testJarWithManifest() throws Exception
+    {
+        String name = getExtractor().extract( new File( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        assertEquals( "org.codehaus.plexus.languages.java", name );
+    }
 }

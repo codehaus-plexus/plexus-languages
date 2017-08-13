@@ -96,9 +96,18 @@ public class LocationManager
                 {
                     source = ModuleNameSource.MANIFEST;
                 }
-                else
+                else if ( request.getJdkHome() != null )
                 {
                     moduleName = new JarModuleNameExtractor( request.getJdkHome() ).extract( file );
+                    
+                    if ( moduleName != null )
+                    {
+                        source = ModuleNameSource.FILENAME;
+                    }
+                }
+                else 
+                {
+                    moduleName = new ReflectModuleNameExtractor().extract( file );
                     
                     if ( moduleName != null )
                     {

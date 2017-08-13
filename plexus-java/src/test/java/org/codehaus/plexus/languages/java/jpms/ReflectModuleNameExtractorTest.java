@@ -19,14 +19,11 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
-
-public class JarModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest
+public class ReflectModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest
 {
     @Override
     protected ModuleNameExtractor getExtractor()
     {
-        return new JarModuleNameExtractor( new File( System.getProperty( "java.home" ) ) );
+        return new ReflectModuleNameExtractor();
     }
-
 }
