@@ -26,7 +26,7 @@ public class JarModuleNameExtractorTest extends AbstractFilenameModuleNameExtrac
     @Override
     protected ModuleNameExtractor getExtractor()
     {
-        return new JarModuleNameExtractor( new File( System.getProperty( "java.home" ) ) );
+        return new JShellModuleNameExtractor( new File( System.getProperty( "java.home" ) ) );
     }
 
 }

@@ -33,12 +33,12 @@ import java.util.List;
  *  
  * @author Robert Scholte
  */
-public class JarModuleNameExtractor
+public class JShellModuleNameExtractor
     implements ModuleNameExtractor
 {
     private final File jdkHome;
 
-    public JarModuleNameExtractor( File jdkHome )
+    public JShellModuleNameExtractor( File jdkHome )
     {
         this.jdkHome = jdkHome;
     }

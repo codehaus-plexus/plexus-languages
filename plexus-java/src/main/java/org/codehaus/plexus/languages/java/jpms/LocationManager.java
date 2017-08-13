@@ -98,7 +98,7 @@ public class LocationManager
                 }
                 else if ( request.getJdkHome() != null )
                 {
-                    moduleName = new JarModuleNameExtractor( request.getJdkHome() ).extract( file );
+                    moduleName = new JShellModuleNameExtractor( request.getJdkHome() ).extract( file );
                     
                     if ( moduleName != null )
                     {
