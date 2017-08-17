@@ -73,8 +73,6 @@ public class LocationManager
         
         ManifestModuleNameExtractor manifestModuleNameExtractor = new ManifestModuleNameExtractor();
 
-        ModuleNameExtractor reflectExtractor = new ReflectModuleNameExtractor();
-
         // collect all modules from path
         for ( T t : request.getPathElements() )
         {
@@ -110,7 +108,7 @@ public class LocationManager
                 }
                 else 
                 {
-                    moduleName = reflectExtractor.extract( file );
+                    moduleName = MainClassModuleNameExtractor.getModuleName( path );
                     
                     if ( moduleName != null )
                     {
