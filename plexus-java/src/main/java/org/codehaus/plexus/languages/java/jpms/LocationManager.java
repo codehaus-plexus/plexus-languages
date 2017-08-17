@@ -68,6 +68,12 @@ public class LocationManager
         
         // start from root
         result.setMainModuleDescriptor( mainModuleDescriptor );
+        
+        Map<T, Path> filenameAutoModules = new HashMap<>();
+        
+        ManifestModuleNameExtractor manifestModuleNameExtractor = new ManifestModuleNameExtractor();
+
+        ModuleNameExtractor reflectExtractor = new ReflectModuleNameExtractor();
 
         // collect all modules from path
         for ( T t : request.getPathElements() )
@@ -90,7 +96,7 @@ public class LocationManager
             }
             else
             {
-                String moduleName = new ManifestModuleNameExtractor().extract( file );
+                String moduleName = manifestModuleNameExtractor.extract( file );
 
                 if ( moduleName != null )
                 {
@@ -98,16 +104,13 @@ public class LocationManager
                 }
                 else if ( request.getJdkHome() != null )
                 {
-                    moduleName = new JShellModuleNameExtractor( request.getJdkHome() ).extract( file );
-                    
-                    if ( moduleName != null )
-                    {
-                        source = ModuleNameSource.FILENAME;
-                    }
+                    // Will require external JVM, which is considered slow(er)
+                    // Collect first, next resolve all at once
+                    filenameAutoModules.put( t, path );
                 }
                 else 
                 {
-                    moduleName = new ReflectModuleNameExtractor().extract( file );
+                    moduleName = reflectExtractor.extract( file );
                     
                     if ( moduleName != null )
                     {
@@ -133,6 +136,29 @@ public class LocationManager
         }
         result.setPathElements( pathElements );
         
+        if ( !filenameAutoModules.isEmpty() ) 
+        {
+            MainClassModuleNameExtractor extractor = new MainClassModuleNameExtractor( request.getJdkHome() );
+            
+            Map<T, String> automodules = extractor.extract( filenameAutoModules );
+            
+            for ( Map.Entry<T, String> entry : automodules.entrySet() )
+            {
+                String moduleName = entry.getValue();
+                
+                if ( moduleName != null )
+                {
+                    JavaModuleDescriptor moduleDescriptor = JavaModuleDescriptor.newAutomaticModule( moduleName ).build();
+                    
+                    moduleNameSources.put( moduleDescriptor.name(), ModuleNameSource.FILENAME );
+                    
+                    availableNamedModules.put( moduleDescriptor.name(), moduleDescriptor );
+                    
+                    pathElements.put( entry.getKey(), moduleDescriptor );
+                }
+            }
+        }
+        
         if ( mainModuleDescriptor != null )
         {
             Set<String> requiredNamedModules = new HashSet<>();
@@ -156,8 +182,6 @@ public class LocationManager
 
         return result;
     }
-
-    
 
     private void select( JavaModuleDescriptor module, Map<String, JavaModuleDescriptor> availableModules,
                          Set<String> namedModules )

@@ -25,11 +25,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Uses a jshell script to extract the module name of  
+ * Uses a JShell script to extract the module name.
  *  
  * @author Robert Scholte
  */
@@ -60,7 +64,7 @@ public class JShellModuleNameExtractor
             Files.write( jsh.toPath(), lines, Charset.defaultCharset() );
 
             ProcessBuilder builder =
-                new ProcessBuilder( new File( jdkHome, "bin/jshell" ).getAbsolutePath(), jsh.getAbsolutePath() );
+                new ProcessBuilder( new File( jdkHome, "bin/jshell" ).getAbsolutePath(), "--execution", "local",  jsh.getAbsolutePath() );
             Process p = builder.start();
 
             try ( BufferedReader reader = new BufferedReader( new InputStreamReader( p.getInputStream() ) ) )
@@ -72,5 +76,15 @@ public class JShellModuleNameExtractor
         {
         }
         return null;
+    }
+    
+    public Map<Path,String> extract( Collection<Path> files )
+    {
+        Map<Path,String> moduleNames = new HashMap<>();
+        
+        
+        
+        
+        return moduleNames; 
     }
 }
