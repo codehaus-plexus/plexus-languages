@@ -19,7 +19,6 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,7 +97,6 @@ public class LocationManager
         for ( T t : request.getPathElements() )
         {
             Path path = request.toPath( t );
-            File file = path.toFile();
             
             JavaModuleDescriptor moduleDescriptor = null;
             ModuleNameSource source = null;
@@ -115,7 +113,7 @@ public class LocationManager
             }
             else
             {
-                String moduleName = manifestModuleNameExtractor.extract( file );
+                String moduleName = manifestModuleNameExtractor.extract( path );
 
                 if ( moduleName != null )
                 {

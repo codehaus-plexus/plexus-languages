@@ -18,10 +18,10 @@ package org.codehaus.plexus.languages.java.jpms;
  * specific language governing permissions and limitations
  * under the License.
  */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -32,30 +32,30 @@ public class ManifestModuleNameExtractorTest
     @Test
     public void testNoManifestInJar() throws Exception
     {
-        assertNull( extractor.extract( new File( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
+        assertNull( extractor.extract( Paths.get( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
     }
 
     @Test
     public void testManifestInJar() throws Exception
     {
-        assertEquals( "org.codehaus.plexus.languages.java", extractor.extract( new File( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
+        assertEquals( "org.codehaus.plexus.languages.java", extractor.extract( Paths.get( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
     }
 
     @Test
     public void testNoManifestInDir() throws Exception
     {
-        assertNull( extractor.extract( new File( "src/test/resources/empty/out" ) ) );
+        assertNull( extractor.extract( Paths.get( "src/test/resources/empty/out" ) ) );
     }
 
     @Test
     public void testEmptyManifestInDir() throws Exception
     {
-        assertNull( extractor.extract( new File( "src/test/resources/manifest.without/out" ) ) );
+        assertNull( extractor.extract( Paths.get( "src/test/resources/manifest.without/out" ) ) );
     }
 
     @Test
     public void testManifestInDir() throws Exception
     {
-        assertEquals( "auto.by.manifest", extractor.extract( new File( "src/test/resources/dir.manifest.with/out" ) ) );
+        assertEquals( "auto.by.manifest", extractor.extract( Paths.get( "src/test/resources/dir.manifest.with/out" ) ) );
     }
 }

@@ -19,10 +19,10 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public interface ModuleNameExtractor
 {
-    String extract( File file ) throws IOException;
+    String extract( Path path ) throws IOException;
 }

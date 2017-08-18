@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeThat;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,14 +42,14 @@ public abstract class AbstractFilenameModuleNameExtractorTest
     @Test
     public void testJarWithoutManifest() throws Exception
     {
-        String name = getExtractor().extract( new File( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        String name = getExtractor().extract( Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         assertEquals( "plexus.java", name );
     }
 
     @Test
     public void testJarWithManifest() throws Exception
     {
-        String name = getExtractor().extract( new File( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        String name = getExtractor().extract( Paths.get( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         assertEquals( "org.codehaus.plexus.languages.java", name );
     }
 }

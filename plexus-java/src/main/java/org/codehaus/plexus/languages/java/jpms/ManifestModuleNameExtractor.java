@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -35,10 +36,10 @@ import java.util.jar.Manifest;
 public class ManifestModuleNameExtractor implements ModuleNameExtractor
 {
     @Override
-    public String extract( File file )
+    public String extract( Path file )
         throws IOException
     {
-        Manifest manifest = extractManifest( file );
+        Manifest manifest = extractManifest( file.toFile() );
         
         String automaticModuleName;
         if ( manifest != null )

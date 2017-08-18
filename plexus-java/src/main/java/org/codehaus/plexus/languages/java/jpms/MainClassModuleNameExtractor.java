@@ -20,7 +20,6 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -44,9 +43,9 @@ import java.util.Set;
  */
 public class MainClassModuleNameExtractor
 {
-    private final File jdkHome;
+    private final Path jdkHome;
 
-    public MainClassModuleNameExtractor( File jdkHome )
+    public MainClassModuleNameExtractor( Path jdkHome )
     {
         this.jdkHome = jdkHome;
     }
@@ -84,7 +83,7 @@ public class MainClassModuleNameExtractor
             }
         }
 
-        ProcessBuilder builder = new ProcessBuilder( new File( jdkHome, "bin/java" ).getAbsolutePath(),
+        ProcessBuilder builder = new ProcessBuilder( jdkHome.resolve( "bin/java" ).toAbsolutePath().toString(),
                                                      "@args" ).directory( workDir.toFile() );
 
         Process p = builder.start();

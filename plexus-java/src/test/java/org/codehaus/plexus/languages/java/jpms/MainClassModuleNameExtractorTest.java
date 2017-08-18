@@ -19,8 +19,9 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest
@@ -30,13 +31,13 @@ public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleName
     {
         return new ModuleNameExtractor()
         {
-            MainClassModuleNameExtractor extractor = new MainClassModuleNameExtractor( new File( System.getProperty( "java.home" ) ) );
+            MainClassModuleNameExtractor extractor = new MainClassModuleNameExtractor( Paths.get( System.getProperty( "java.home" ) ) );
             
             @Override
-            public String extract( File file )
+            public String extract( Path file )
                 throws IOException
             {
-                return extractor.extract( Collections.singletonMap( file, file.toPath() ) ).get( file );
+                return extractor.extract( Collections.singletonMap( file, file ) ).get( file );
             }
         };
     }

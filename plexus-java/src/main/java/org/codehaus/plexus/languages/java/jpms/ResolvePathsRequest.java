@@ -32,7 +32,7 @@ import java.util.Collection;
  */
 public abstract class ResolvePathsRequest<T>
 {
-    private File jdkHome;
+    private Path jdkHome;
 
     private Path mainModuleDescriptor;
 
@@ -100,30 +100,29 @@ public abstract class ResolvePathsRequest<T>
      * @param mainModuleDescriptor
      * @return this request
      */
-    public ResolvePathsRequest<T> setMainModuleDescriptor( Path mainModuleDescriptor )
+    public ResolvePathsRequest<T> setMainModuleDescriptor( T mainModuleDescriptor )
     {
-        this.mainModuleDescriptor = mainModuleDescriptor;
+        this.mainModuleDescriptor = toPath( mainModuleDescriptor );
         return this;
     }
 
     public Collection<T> getPathElements()
     {
-
         return pathElements;
     }
 
     /**
-     * In case the JRE is Java 8  or before, JShell of this jdkHome is used to extract the module name.
+     * In case the JRE is Java 8 or before, this jdkHome is used to extract the module name.
      * 
      * @param jdkHome
      */
-    public ResolvePathsRequest<T> setJdkHome( File jdkHome )
+    public ResolvePathsRequest<T> setJdkHome( T jdkHome )
     {
-        this.jdkHome = jdkHome;
+        this.jdkHome = toPath( jdkHome );
         return this;
     }
 
-    public File getJdkHome()
+    public Path getJdkHome()
     {
         return jdkHome;
     }
