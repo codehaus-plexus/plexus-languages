@@ -21,7 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ public class QDoxModuleInfoParserTest
     @Test
     public void test() throws Exception
     {
-        JavaModuleDescriptor moduleDescriptor = parser.fromSourcePath( new File( "src/test/resources/src.dir" ) );
+        JavaModuleDescriptor moduleDescriptor = parser.fromSourcePath( Paths.get( "src/test/resources/src.dir/module-info.java" ) );
         assertEquals( "a.b.c", moduleDescriptor.name() ); 
         assertEquals( "d.e", moduleDescriptor.requires().iterator().next().name() );
         

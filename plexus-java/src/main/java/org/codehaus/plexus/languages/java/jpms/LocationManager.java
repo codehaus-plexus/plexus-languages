@@ -42,15 +42,18 @@ import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSour
 public class LocationManager
 {
     private ModuleInfoParser asmParser;
+    
+    private QDoxModuleInfoParser qdoxParser;
 
     public LocationManager()
     {
         this.asmParser = new AsmModuleInfoParser();
     }
     
-    LocationManager( ModuleInfoParser asmParser )
+    LocationManager( ModuleInfoParser asmParser, QDoxModuleInfoParser qdoxParser )
     {
         this.asmParser = asmParser;
+        this.qdoxParser = qdoxParser;
     }
 
     public <T> ResolvePathsResult<T> resolvePaths( ResolvePathsRequest<T> request )
@@ -60,7 +63,25 @@ public class LocationManager
         
         Map<T, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
 
-        JavaModuleDescriptor mainModuleDescriptor = request.getMainModuleDescriptor();
+        JavaModuleDescriptor mainModuleDescriptor;
+        
+        Path descriptorPath = request.getMainModuleDescriptor();
+        
+        if( descriptorPath != null )
+        {
+            if( descriptorPath.endsWith( "module-info.java" ) )
+            {
+                mainModuleDescriptor = qdoxParser.fromSourcePath( descriptorPath );
+            }
+            else
+            {
+                mainModuleDescriptor = asmParser.getModuleDescriptor( descriptorPath );
+            }
+        }
+        else
+        {
+            mainModuleDescriptor = null;
+        }
 
         Map<String, JavaModuleDescriptor> availableNamedModules = new HashMap<>(); 
         

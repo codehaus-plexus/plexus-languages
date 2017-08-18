@@ -34,7 +34,7 @@ public abstract class ResolvePathsRequest<T>
 {
     private File jdkHome;
 
-    private JavaModuleDescriptor mainModuleDescriptor;
+    private Path mainModuleDescriptor;
 
     private Collection<T> pathElements;
     
@@ -89,16 +89,18 @@ public abstract class ResolvePathsRequest<T>
         return new ResolvePathsResult<>();
     }
     
-    public JavaModuleDescriptor getMainModuleDescriptor()
+    public Path getMainModuleDescriptor()
     {
         return mainModuleDescriptor;
     }
 
     /**
+     * Can either be {@code module-info.java} or {@code module-info.class} 
+     * 
      * @param mainModuleDescriptor
      * @return this request
      */
-    public ResolvePathsRequest<T> setMainModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
+    public ResolvePathsRequest<T> setMainModuleDescriptor( Path mainModuleDescriptor )
     {
         this.mainModuleDescriptor = mainModuleDescriptor;
         return this;
@@ -115,9 +117,10 @@ public abstract class ResolvePathsRequest<T>
      * 
      * @param jdkHome
      */
-    public void setJdkHome( File jdkHome )
+    public ResolvePathsRequest<T> setJdkHome( File jdkHome )
     {
         this.jdkHome = jdkHome;
+        return this;
     }
 
     public File getJdkHome()

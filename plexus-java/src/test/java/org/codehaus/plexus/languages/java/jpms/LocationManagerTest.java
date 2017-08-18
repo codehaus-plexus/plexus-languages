@@ -22,6 +22,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -42,12 +43,17 @@ public class LocationManagerTest
     @Mock
     private ModuleInfoParser asmParser;
 
+    @Mock
+    private QDoxModuleInfoParser qdoxParser;
+
     private LocationManager locationManager;
+    
+    final Path mockModuleInfoJava = Paths.get( "src/test/resources/mock/module-info.java");
     
     @Before
     public void onSetup()
     {
-        locationManager = new LocationManager( asmParser );
+        locationManager = new LocationManager( asmParser, qdoxParser );
     }
 
     @Test
@@ -64,7 +70,8 @@ public class LocationManagerTest
     public void testWithUnknownRequires() throws Exception
     {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "java.base" ).requires( "jdk.net" ).build();
-        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.<File>emptyList() ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.withFiles( Collections.<File>emptyList() ).setMainModuleDescriptor( mockModuleInfoJava );
         
         ResolvePathsResult<File> result = locationManager.resolvePaths( request );
 
@@ -79,7 +86,8 @@ public class LocationManagerTest
     {
         Path abc = Paths.get( "src/test/resources/empty/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
         when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
@@ -96,7 +104,8 @@ public class LocationManagerTest
     {
         Path abc = Paths.get( "src/test/resources/manifest.without/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
 //        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
@@ -113,7 +122,8 @@ public class LocationManagerTest
     {
         Path abc = Paths.get( "src/test/resources/dir.manifest.with/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
 //        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
@@ -131,7 +141,8 @@ public class LocationManagerTest
     {
         Path abc = Paths.get( "src/test/resources/dir.descriptor/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "dir.descriptor" ).build();
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
         when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "dir.descriptor" ).build() );
         
@@ -149,7 +160,8 @@ public class LocationManagerTest
     {
         Path abc = Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "org.objectweb.asm" ).build();
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( descriptor );
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
         when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() );
         

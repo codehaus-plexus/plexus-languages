@@ -38,27 +38,15 @@ import com.thoughtworks.qdox.model.JavaModuleDescriptor;
 public class QDoxModuleInfoParser
 {
 
-    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( Path path )
+    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( Path modulePath )
                     throws IOException
     {
-        return fromSourcePath( path.toFile() );
-    }
-
-    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( String path )
-                    throws IOException
-    {
-        return fromSourcePath( new File( path ) );
-    }
-    
-    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( File path )
-        throws IOException
-    {
-        File moduleDescriptor = new File( path, "module-info.java" );
+        File moduleDescriptor = modulePath.toFile();
 
         org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder builder;
         if ( moduleDescriptor.exists() )
         {
-            JavaModuleDescriptor descriptor = new JavaProjectBuilder().addSourceFolder( path ).getDescriptor();
+            JavaModuleDescriptor descriptor = new JavaProjectBuilder().addSourceFolder( moduleDescriptor.getParentFile() ).getDescriptor();
 
             builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newModule( descriptor.getName() );
             
