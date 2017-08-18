@@ -47,6 +47,7 @@ public class LocationManager
     public LocationManager()
     {
         this.asmParser = new AsmModuleInfoParser();
+        this.qdoxParser = new QDoxModuleInfoParser();
     }
     
     LocationManager( ModuleInfoParser asmParser, QDoxModuleInfoParser qdoxParser )
