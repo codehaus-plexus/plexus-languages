@@ -1,9 +1,9 @@
 language: java
 jdk:
-  - oraclejdk7
+  - openjdk7
   - oraclejdk8
   - oraclejdk9
-dist: precise
+dist: trusty
 
 script: "mvn --show-version --errors --batch-mode -Prun-its clean verify"
 
