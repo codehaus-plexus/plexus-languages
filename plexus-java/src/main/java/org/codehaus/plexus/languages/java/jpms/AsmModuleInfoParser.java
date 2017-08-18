@@ -1,7 +1,5 @@
 package org.codehaus.plexus.languages.java.jpms;
 
-import java.io.File;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
@@ -45,18 +42,6 @@ import org.objectweb.asm.Opcodes;
 public class AsmModuleInfoParser
     implements ModuleInfoParser
 {
-    public JavaModuleDescriptor getModuleDescriptor( File modulePath )
-                    throws IOException
-    {
-        return getModuleDescriptor( modulePath.toPath() );
-    }   
-
-    public JavaModuleDescriptor getModuleDescriptor( String modulePath )
-                    throws IOException
-    {
-        return getModuleDescriptor( Paths.get( modulePath ) );
-    }   
-
     @Override
     public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException

@@ -1,5 +1,8 @@
 package org.codehaus.plexus.languages.java.version;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,12 +23,16 @@ package org.codehaus.plexus.languages.java.version;
  */
 
 /**
- * 
  * @author Robert Scholte
  * @since 1.0.0
+ * 
+ * @see <a href="http://www.oracle.com/technetwork/java/javase/namechange-140185.html">http://www.oracle.com/technetwork/java/javase/namechange-140185.html</a>
+ * @see <a href="http://openjdk.java.net/jeps/223">http://openjdk.java.net/jeps/223</a>
  */
 public class JavaVersion implements Comparable<JavaVersion>
 {
+    private final Pattern startingDigits = Pattern.compile( "(\\d+)(.*)" );
+    
     private String rawVersion;
 
     private JavaVersion( String rawVersion )
@@ -54,10 +61,41 @@ public class JavaVersion implements Comparable<JavaVersion>
         
         for ( int index = 0; index < minSegments; index++ )
         {
-            int thisValue = Integer.parseInt( thisSegments[index] );
-            int otherValue = Integer.parseInt( otherSegments[index] );
+            Matcher thisMatcher = startingDigits.matcher( thisSegments[index] );
+            
+            int thisValue;
+            
+            if( thisMatcher.find() )
+            {
+                thisValue = Integer.parseInt( thisMatcher.group( 1 ) );
+            }
+            else
+            {
+                thisValue = -1;
+            }
+            
+            Matcher otherMatcher = startingDigits.matcher( otherSegments[index] );
+            
+            int otherValue;
+            
+            if( otherMatcher.find() )
+            {
+                otherValue = Integer.parseInt( otherMatcher.group( 1 ) );
+            }
+            else
+            {
+                otherValue = -1;
+            }
             
             int compareValue = Integer.compare( thisValue, otherValue );
+            
+            if ( compareValue != 0 )
+            {
+                return compareValue;
+            }
+            
+            // works for now, but needs improvement
+            compareValue = thisMatcher.group( 2 ).compareTo( otherMatcher.group( 2 ) );
             
             if ( compareValue != 0 )
             {

@@ -95,7 +95,7 @@ public abstract class ResolvePathsRequest<T>
     }
 
     /**
-     * Can either be {@code module-info.java} or {@code module-info.class} 
+     * Must be either {@code module-info.java} or {@code module-info.class} 
      * 
      * @param mainModuleDescriptor
      * @return this request
