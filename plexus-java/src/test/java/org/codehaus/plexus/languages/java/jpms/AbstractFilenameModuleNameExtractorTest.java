@@ -52,4 +52,12 @@ public abstract class AbstractFilenameModuleNameExtractorTest
         String name = getExtractor().extract( Paths.get( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) );
         assertEquals( "org.codehaus.plexus.languages.java", name );
     }
+    
+    @Test
+    public void testJarUnsupported() throws Exception
+    {
+        String name = getExtractor().extract( Paths.get( "src/test/resources/jar.unsupported/jdom-1.0.jar" ) );
+        assertEquals( null, name );
+    }
+
 }
