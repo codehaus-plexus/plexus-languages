@@ -48,7 +48,8 @@ public class JavaVersionTest
     }
     
     @Test
-    public void testVersionNamingExamples() {
+    public void testVersionNamingExamples()
+    {
         // All GA (FCS) versions are ordered based on the standard dot-notation. For example: 1.3.0 < 1.3.0_01 < 1.3.1 < 1.3.1_01.
         // Source: http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html
         
@@ -57,6 +58,17 @@ public class JavaVersionTest
         assertTrue( JavaVersion.parse( "1.3.1" ).compareTo( JavaVersion.parse( "1.3.1_01" ) ) < 0 );
         
         assertTrue( JavaVersion.parse( "1.3.0" ).compareTo( JavaVersion.parse( "1.3.0-b24" ) ) < 0 );
-        
+    }
+
+    @Test
+    public void testJEP223Short() {
+        // http://openjdk.java.net/jeps/223
+        assertTrue( JavaVersion.parse( "9-ea" ).compareTo( JavaVersion.parse( "9" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9" ).compareTo( JavaVersion.parse( "9.0.1" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9.0.1" ).compareTo( JavaVersion.parse( "9.0.2" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9.0.2" ).compareTo( JavaVersion.parse( "9.1.2" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9.1.2" ).compareTo( JavaVersion.parse( "9.1.3" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9.1.3" ).compareTo( JavaVersion.parse( "9.1.4" ) ) < 0 );
+        assertTrue( JavaVersion.parse( "9.1.4" ).compareTo( JavaVersion.parse( "9.2.4" ) ) < 0 );
     }
 }

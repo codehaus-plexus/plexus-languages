@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class JavaVersion implements Comparable<JavaVersion>
 {
-    private final Pattern startingDigits = Pattern.compile( "(\\d+)(.*)" );
+    private static final Pattern startingDigits = Pattern.compile( "(\\d+)(.*)" );
     
     private String rawVersion;
 
@@ -93,6 +93,12 @@ public class JavaVersion implements Comparable<JavaVersion>
             {
                 return compareValue;
             }
+
+            compareValue = suffixRate( thisMatcher.group( 2 ) ) - suffixRate( otherMatcher.group( 2 ) );
+            if ( compareValue != 0 )
+            {
+                return compareValue;
+            }
             
             // works for now, but needs improvement
             compareValue = thisMatcher.group( 2 ).compareTo( otherMatcher.group( 2 ) );
@@ -104,6 +110,21 @@ public class JavaVersion implements Comparable<JavaVersion>
         }
         
         return ( thisSegments.length - otherSegments.length );
+    }
+    
+    private int suffixRate( String suffix ) {
+        if ( "-ea".equals( suffix ) )
+        {
+            return -100;
+        }
+        else if ( "".equals( suffix ) )
+        {
+            return 0;
+        }
+        else 
+        {
+            return 10;
+        }
     }
 
     @Override
