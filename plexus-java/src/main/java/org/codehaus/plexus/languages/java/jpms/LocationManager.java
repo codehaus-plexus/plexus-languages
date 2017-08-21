@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSource;
 
 /**
@@ -38,6 +41,8 @@ import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSour
  * @author Robert Scholte
  * @since 1.0.0
  */
+@Singleton
+@Component( role = LocationManager.class )
 public class LocationManager
 {
     private ModuleInfoParser asmParser;
