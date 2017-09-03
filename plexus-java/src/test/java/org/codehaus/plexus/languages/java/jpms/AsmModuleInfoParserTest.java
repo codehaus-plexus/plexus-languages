@@ -47,6 +47,11 @@ public class AsmModuleInfoParserTest
 
         assertEquals( 1, descriptor.requires().size() );
         assertEquals( "java.base", descriptor.requires().iterator().next().name() );
+
+        // Actually the source returns "org/objectweb/asm" instead "org.objectweb.asm" ?
+        // Need to dive into this later.
+//        assertEquals( 2, descriptor.exports().size() );
+//        assertEquals( "org.objectweb.asm", descriptor.exports().iterator().next().source() );
     }
     
 
@@ -81,6 +86,24 @@ public class AsmModuleInfoParserTest
     public void testClassicOutputDirectory() throws Exception
     {
         parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.empty/out" ) );
+    }
+
+    @Test
+    public void testJModDescriptor() throws Exception
+    {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod" ) );
+        
+        assertNotNull( descriptor);
+        assertEquals( "com.corporate.project", descriptor.name() );
+        assertEquals( false, descriptor.isAutomatic() );
+
+        assertEquals( 1, descriptor.requires().size() );
+        assertEquals( "java.base", descriptor.requires().iterator().next().name() );
+
+        // Currently we get back from source() "com/corporate/project"? I don't an idea
+        // why? Bug ?
+//        assertEquals ( 1, descriptor.exports().size() );
+//        assertEquals ( "com.corporate.project",  descriptor.exports().iterator().next().source() );
     }
 
 }

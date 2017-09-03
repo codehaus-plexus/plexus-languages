@@ -49,8 +49,8 @@ public class AsmModuleInfoParser
         JavaModuleDescriptor descriptor;
         if ( Files.isDirectory( modulePath ) )
         {
-            try ( InputStream in = Files.newInputStream( modulePath.resolve( "module-info.class" ) ) ) 
-            { 
+            try ( InputStream in = Files.newInputStream( modulePath.resolve( "module-info.class" ) ) )
+            {
                 descriptor = parse( in );
             }
         }
@@ -58,8 +58,16 @@ public class AsmModuleInfoParser
         {
             try ( JarFile jarFile = new JarFile( modulePath.toFile() ) )
             {
-                JarEntry moduleInfo = jarFile.getJarEntry( "module-info.class" );
-                
+                JarEntry moduleInfo;
+                if ( modulePath.toString().toLowerCase().endsWith( ".jmod" ) )
+                {
+                    moduleInfo = jarFile.getJarEntry( "classes/module-info.class" );
+                }
+                else
+                {
+                    moduleInfo = jarFile.getJarEntry( "module-info.class" );
+                }
+
                 if ( moduleInfo != null )
                 {
                     descriptor = parse( jarFile.getInputStream( moduleInfo ) );
@@ -72,11 +80,12 @@ public class AsmModuleInfoParser
         }
         return descriptor;
     }
-    
-    private JavaModuleDescriptor parse( InputStream in ) throws IOException
+
+    private JavaModuleDescriptor parse( InputStream in )
+        throws IOException
     {
         final JavaModuleDescriptorWrapper wrapper = new JavaModuleDescriptorWrapper();
-        
+
         ClassReader reader = new ClassReader( in );
         reader.accept( new ClassVisitor( Opcodes.ASM6 )
         {
@@ -92,7 +101,7 @@ public class AsmModuleInfoParser
                     {
                         wrapper.builder.requires( module );
                     }
-                    
+
                     @Override
                     public void visitExport( String pn, int ms, String... targets )
                     {
@@ -110,8 +119,8 @@ public class AsmModuleInfoParser
         }, 0 );
         return wrapper.builder.build();
     }
-    
-    private static class JavaModuleDescriptorWrapper 
+
+    private static class JavaModuleDescriptorWrapper
     {
         private JavaModuleDescriptor.Builder builder;
     }
