@@ -72,15 +72,19 @@ public class LocationManager
         
         Path descriptorPath = request.getMainModuleDescriptor();
         
-        if( descriptorPath != null )
+        if ( descriptorPath != null )
         {
-            if( descriptorPath.endsWith( "module-info.java" ) )
+            if ( descriptorPath.endsWith( "module-info.java" ) )
             {
                 mainModuleDescriptor = qdoxParser.fromSourcePath( descriptorPath );
             }
+            else if ( descriptorPath.endsWith( "module-info.class" ) )
+            {
+                mainModuleDescriptor = asmParser.getModuleDescriptor( descriptorPath.getParent() );
+            }
             else
             {
-                mainModuleDescriptor = asmParser.getModuleDescriptor( descriptorPath );
+                throw new IOException( "Invalid path to module descriptor: " + descriptorPath );
             }
         }
         else
