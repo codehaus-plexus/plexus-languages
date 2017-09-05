@@ -1,5 +1,8 @@
 /.project
+/.classpath
 /.settings
+/target
 /plexus-java/.classpath
 /plexus-java/.project
 /plexus-java/.settings
+/plexus-java/target
