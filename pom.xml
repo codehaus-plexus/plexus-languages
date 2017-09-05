@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>plexus-languages</artifactId>
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.3</version>
   <packaging>pom</packaging>
 
   <name>Plexus Languages</name>
@@ -25,6 +25,7 @@
     <connection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</connection>
     <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</developerConnection>
     <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
+    <tag>plexus-languages-0.9.3</tag>
   </scm>
   <issueManagement>
     <system>github</system>
