@@ -28,7 +28,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
- * Extracts the name of the module by reading the Automatic-Module-Name attrivute of the manifest file
+ * Extracts the name of the module by reading the Automatic-Module-Name attribute of the manifest file
  * 
  * @author Robert Scholte
  * @since 1.0.0
