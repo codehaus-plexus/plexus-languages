@@ -24,9 +24,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -42,6 +44,8 @@ import org.objectweb.asm.Opcodes;
 public class AsmModuleInfoParser
     implements ModuleInfoParser
 {
+    private static final Pattern MRJAR_DESCRIPTOR = Pattern.compile( "META-INF/versions/[^/]+/module-info.class" );
+
     @Override
     public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException
@@ -66,6 +70,21 @@ public class AsmModuleInfoParser
                 else
                 {
                     moduleInfo = jarFile.getJarEntry( "module-info.class" );
+
+                    if ( moduleInfo == null )
+                    {
+                        // look for multirelease descriptor
+                        Enumeration<JarEntry> entryIter = jarFile.entries();
+                        while ( entryIter.hasMoreElements() )
+                        {
+                            JarEntry entry = entryIter.nextElement();
+                            if ( MRJAR_DESCRIPTOR.matcher( entry.getName() ).matches() )
+                            {
+                                moduleInfo = entry;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if ( moduleInfo != null )

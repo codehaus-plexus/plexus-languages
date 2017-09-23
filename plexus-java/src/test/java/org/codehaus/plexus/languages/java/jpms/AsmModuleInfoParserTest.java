@@ -53,7 +53,16 @@ public class AsmModuleInfoParserTest
 //        assertEquals( 2, descriptor.exports().size() );
 //        assertEquals( "org.objectweb.asm", descriptor.exports().iterator().next().source() );
     }
-    
+
+    @Test
+    public void testMultiReleaseJarDescriptor() throws Exception
+    {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar" ) );
+        
+        assertNotNull( descriptor);
+        assertEquals( "de.adito.jloadr", descriptor.name() );
+        assertEquals( false, descriptor.isAutomatic() );
+    }
 
     @Test
     public void testClassicJar() throws Exception
