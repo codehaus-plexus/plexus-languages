@@ -126,11 +126,11 @@ public class AsmModuleInfoParser
                     {
                         if ( targets == null || targets.length == 0 )
                         {
-                            wrapper.builder.exports( pn );
+                            wrapper.builder.exports( pn.replace( '/', '.' ) );
                         }
                         else
                         {
-                            wrapper.builder.exports( pn, new HashSet<>( Arrays.asList( targets ) ) );
+                            wrapper.builder.exports( pn.replace( '/', '.' ), new HashSet<>( Arrays.asList( targets ) ) );
                         }
                     }
                 };

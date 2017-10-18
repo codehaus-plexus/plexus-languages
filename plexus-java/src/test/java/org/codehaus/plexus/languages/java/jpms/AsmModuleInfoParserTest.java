@@ -109,10 +109,8 @@ public class AsmModuleInfoParserTest
         assertEquals( 1, descriptor.requires().size() );
         assertEquals( "java.base", descriptor.requires().iterator().next().name() );
 
-        // Currently we get back from source() "com/corporate/project"? I don't an idea
-        // why? Bug ?
-//        assertEquals ( 1, descriptor.exports().size() );
-//        assertEquals ( "com.corporate.project",  descriptor.exports().iterator().next().source() );
+        assertEquals ( 1, descriptor.exports().size() );
+        assertEquals ( "com.corporate.project",  descriptor.exports().iterator().next().source() );
     }
 
 }
