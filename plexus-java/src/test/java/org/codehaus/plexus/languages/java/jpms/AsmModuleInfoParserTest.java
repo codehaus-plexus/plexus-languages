@@ -65,6 +65,15 @@ public class AsmModuleInfoParserTest
     }
 
     @Test
+    public void testIncompleteMultiReleaseJarDescriptor() throws Exception
+    {
+        // this jar is missing the Multi-Release: true entry in the Manifest
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar" ) );
+        
+        assertNull( descriptor);
+    }
+
+    @Test
     public void testClassicJar() throws Exception
     {
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );

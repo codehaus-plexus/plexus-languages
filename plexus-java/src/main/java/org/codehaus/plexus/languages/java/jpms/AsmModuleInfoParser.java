@@ -28,6 +28,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
 import org.objectweb.asm.ClassReader;
@@ -73,15 +74,20 @@ public class AsmModuleInfoParser
 
                     if ( moduleInfo == null )
                     {
-                        // look for multirelease descriptor
-                        Enumeration<JarEntry> entryIter = jarFile.entries();
-                        while ( entryIter.hasMoreElements() )
+                        Manifest manifest =  jarFile.getManifest();
+
+                        if ( manifest != null && "true".equalsIgnoreCase( manifest.getMainAttributes().getValue( "Multi-Release" ) ) ) 
                         {
-                            JarEntry entry = entryIter.nextElement();
-                            if ( MRJAR_DESCRIPTOR.matcher( entry.getName() ).matches() )
+                            // look for multirelease descriptor
+                            Enumeration<JarEntry> entryIter = jarFile.entries();
+                            while ( entryIter.hasMoreElements() )
                             {
-                                moduleInfo = entry;
-                                break;
+                                JarEntry entry = entryIter.nextElement();
+                                if ( MRJAR_DESCRIPTOR.matcher( entry.getName() ).matches() )
+                                {
+                                    moduleInfo = entry;
+                                    break;
+                                }
                             }
                         }
                     }
