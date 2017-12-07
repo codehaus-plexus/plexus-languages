@@ -31,6 +31,16 @@ import java.util.regex.Pattern;
  */
 public class JavaVersion implements Comparable<JavaVersion>
 {
+    /**
+     * Represents the System property {@code java.specification.version}
+     */
+    public static final JavaVersion JAVA_SPECIFICATION_VERSION = parse( System.getProperty( "java.specification.version" ) );
+
+    /**
+     * Represents the System property {@code java.version}
+     */
+    public static final JavaVersion JAVA_VERSION = parse( System.getProperty( "java.version" ) );
+    
     private static final Pattern startingDigits = Pattern.compile( "(\\d+)(.*)" );
     
     private String rawVersion;
