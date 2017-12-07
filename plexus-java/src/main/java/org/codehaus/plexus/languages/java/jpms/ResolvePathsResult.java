@@ -21,7 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +47,7 @@ public class ResolvePathsResult<T>
      */
     private Map<T, JavaModuleDescriptor> pathElements;
     
-    private Map<T, ModuleNameSource> modulepathElements = new HashMap<>();
+    private Map<T, ModuleNameSource> modulepathElements = new LinkedHashMap<>();
     
     private Collection<T> classpathElements = new ArrayList<>();
     

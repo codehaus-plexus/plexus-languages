@@ -194,11 +194,18 @@ public class LocationManager
             
             select( mainModuleDescriptor, Collections.unmodifiableMap( availableNamedModules ), requiredNamedModules );
 
+            // in case of identical module names, first one wins
+            Set<String> collectedModules = new HashSet<>( requiredNamedModules.size() );
+
             for ( Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet() )
             {
                 if ( entry.getValue() != null && requiredNamedModules.contains( entry.getValue().name() ) )
                 {
-                    result.getModulepathElements().put( entry.getKey(), moduleNameSources.get( entry.getValue().name() ) );
+                    if ( collectedModules.add( entry.getValue().name() ) )
+                    {
+                        result.getModulepathElements().put( entry.getKey(),
+                                                            moduleNameSources.get( entry.getValue().name() ) );
+                    }
                 }
                 else
                 {

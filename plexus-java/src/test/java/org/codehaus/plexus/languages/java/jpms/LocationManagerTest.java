@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSource;
@@ -171,6 +172,28 @@ public class LocationManagerTest
         assertThat( result.getPathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testIdenticalModuleNames() throws Exception
+    {
+        Path pj1 = Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" );
+        Path pj2 = Paths.get( "src/test/resources/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar" );
+        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "plexus.java" ).build();
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Arrays.asList( pj1, pj2 ) ).setMainModuleDescriptor( mockModuleInfoJava );
+
+        when( asmParser.getModuleDescriptor( pj1 ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "plexus.java" ).build() );
+        when( asmParser.getModuleDescriptor( pj2 ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "plexus.java" ).build() );
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+
+        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().containsKey( pj1 ), is( true ) );
+        assertThat( result.getModulepathElements().containsKey( pj2 ), is( false ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
     }
 
