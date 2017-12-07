@@ -127,6 +127,26 @@ public class JavaVersion implements Comparable<JavaVersion>
         }
     }
 
+    public boolean isBefore( JavaVersion other )
+    {
+        return this.compareTo( other ) < 0;
+    }
+
+    public boolean isBefore( String other )
+    {
+        return this.compareTo( parse( other ) ) < 0;
+    }
+
+    public boolean isAtLeast( JavaVersion other )
+    {
+        return this.compareTo( other ) >= 0;
+    }
+
+    public boolean isAtLeast( String other )
+    {
+        return this.compareTo( parse( other ) ) >= 0;
+    }
+
     @Override
     public String toString()
     {

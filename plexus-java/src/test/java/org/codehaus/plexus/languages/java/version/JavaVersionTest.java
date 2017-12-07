@@ -20,6 +20,7 @@ package org.codehaus.plexus.languages.java.version;
  */
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
@@ -71,4 +72,21 @@ public class JavaVersionTest
         assertTrue( JavaVersion.parse( "9.1.3" ).compareTo( JavaVersion.parse( "9.1.4" ) ) < 0 );
         assertTrue( JavaVersion.parse( "9.1.4" ).compareTo( JavaVersion.parse( "9.2.4" ) ) < 0 );
     }
+    
+    @Test
+    public void testIsAtLeast() {
+        JavaVersion base = JavaVersion.parse( "7" );
+        assertTrue( base.isAtLeast( "6" ) );
+        assertTrue( base.isAtLeast( "7" ) );
+        assertFalse( base.isAtLeast( "8" ) );
+    }
+    
+    @Test
+    public void testIsBefore() {
+        JavaVersion base = JavaVersion.parse( "7" );
+        assertFalse( base.isBefore( "6" ) );
+        assertFalse( base.isBefore( "7" ) );
+        assertTrue( base.isBefore( "8" ) );
+    }
+
 }
