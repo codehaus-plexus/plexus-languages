@@ -60,4 +60,11 @@ public abstract class AbstractFilenameModuleNameExtractorTest
         assertEquals( null, name );
     }
 
+    @Test
+    public void testJarWithSpacesInPath() throws Exception
+    {
+        String name = getExtractor().extract( Paths.get( "src/test/resources/jar with spaces in path/plexus-java-1.0.0-SNAPSHOT.jar" ) );
+        assertEquals( "org.codehaus.plexus.languages.java", name );
+    }
+
 }

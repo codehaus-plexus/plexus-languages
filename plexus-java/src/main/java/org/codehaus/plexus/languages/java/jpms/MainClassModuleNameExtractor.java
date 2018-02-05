@@ -78,7 +78,11 @@ public class MainClassModuleNameExtractor
 
             for ( Path p : files.values() )
             {
-                argsWriter.append( p.toAbsolutePath().toString() );
+                // make sure the path is surrounded with quotes in case there is space
+                argsWriter.append( '"' );
+                // make sure to escape Windows paths
+                argsWriter.append( p.toAbsolutePath().toString().replace( "\\", "\\\\" ) );
+                argsWriter.append( '"' );
                 argsWriter.newLine();
             }
         }
