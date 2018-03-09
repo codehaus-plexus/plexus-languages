@@ -74,19 +74,33 @@ public class JavaVersionTest
     }
     
     @Test
-    public void testIsAtLeast() {
+    public void testIsAtLeastString() {
         JavaVersion base = JavaVersion.parse( "7" );
-        assertTrue( base.isAtLeast( "6" ) );
         assertTrue( base.isAtLeast( "7" ) );
         assertFalse( base.isAtLeast( "8" ) );
     }
-    
+
     @Test
-    public void testIsBefore() {
+    public void testIsAtLeastVersion() {
+        // e.g. can I use the module-path, which is supported since java 9
+        JavaVersion j9 = JavaVersion.parse( "9" );
+        assertFalse( JavaVersion.parse( "8" ).isAtLeast( j9 ) );
+        assertTrue( JavaVersion.parse( "9" ).isAtLeast( j9 ) );
+    }
+
+    @Test
+    public void testIsBeforeString() {
         JavaVersion base = JavaVersion.parse( "7" );
-        assertFalse( base.isBefore( "6" ) );
         assertFalse( base.isBefore( "7" ) );
         assertTrue( base.isBefore( "8" ) );
+    }
+
+    @Test
+    public void testIsBeforeStringVersion() {
+        // e.g. can I use -XX:MaxPermSize, which has been removed in Java 9
+        JavaVersion j9 = JavaVersion.parse( "9" );
+        assertTrue( JavaVersion.parse( "8" ).isBefore( j9 ) );
+        assertFalse( JavaVersion.parse( "9" ).isBefore( j9 ) );
     }
 
 }

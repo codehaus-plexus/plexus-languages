@@ -53,12 +53,18 @@ public class ResolvePathsResult<T>
     private Collection<T> classpathElements = new ArrayList<>();
     
     private Map<T, Exception> pathExceptions = new HashMap<>();
-    
+
     void setMainModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
     {
         this.mainModuleDescriptor = mainModuleDescriptor;
     }
 
+    /**
+     * The resolved main module descriptor  
+     * 
+     * @return the resolved descriptor 
+     * @see ResolvePathsRequest#setMainModuleDescriptor(Object)
+     */
     public JavaModuleDescriptor getMainModuleDescriptor()
     {
         return mainModuleDescriptor;
@@ -82,6 +88,12 @@ public class ResolvePathsResult<T>
         this.classpathElements = classpathElements;
     }
     
+    /**
+     * All T that belong to the classpath based on the module descriptor
+     * 
+     * @return the classpath elements, never {@code null}
+     * @see #getPathElements()
+     */
     public Collection<T> getClasspathElements()
     {
         return classpathElements;
@@ -92,6 +104,13 @@ public class ResolvePathsResult<T>
         this.modulepathElements = modulepathElements;
     }
     
+    /**
+     * All T that belong to the modulepath, based on the module descriptor.
+     * For every T the source for the module name is added. 
+     * 
+     * @return all modulepath elements, never {@code null} 
+     * @see #getPathElements()
+     */
     public Map<T, ModuleNameSource> getModulepathElements()
     {
         return modulepathElements;
@@ -102,6 +121,11 @@ public class ResolvePathsResult<T>
         this.pathExceptions = pathExceptions;
     }
 
+    /**
+     * Map containing exceptions for every T which modulename resolution failed
+     * 
+     * @return the exceptions for every T, never {@code null}
+     */
     public Map<T, Exception> getPathExceptions()
     {
         return pathExceptions;
