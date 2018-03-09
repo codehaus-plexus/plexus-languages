@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.junit.Test;
+
 public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest
 {
     @Override
@@ -40,5 +42,12 @@ public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleName
                 return extractor.extract( Collections.singletonMap( file, file ) ).get( file );
             }
         };
+    }
+    
+    @Test( expected = Exception.class )
+    public void testClassicJarNameStartsWithNumber()
+        throws Exception
+    {
+        MainClassModuleNameExtractor.getModuleName( Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" ) );
     }
 }

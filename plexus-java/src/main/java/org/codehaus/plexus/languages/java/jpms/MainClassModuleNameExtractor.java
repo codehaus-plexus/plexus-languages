@@ -22,6 +22,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
@@ -139,10 +140,17 @@ public class MainClassModuleNameExtractor
 
         for ( String path : args )
         {
-            String moduleName = getModuleName( Paths.get( path ) );
-            if ( moduleName != null )
+            try
             {
-                properties.setProperty( path, moduleName );
+                String moduleName = getModuleName( Paths.get( path ) );
+                if ( moduleName != null )
+                {
+                    properties.setProperty( path, moduleName );
+                }
+            }
+            catch ( Exception e )
+            {
+                System.err.append( e.getMessage() );
             }
         }
 
@@ -156,7 +164,7 @@ public class MainClassModuleNameExtractor
         }
     }
 
-    public static String getModuleName( Path modulePath )
+    public static String getModuleName( Path modulePath ) throws Exception
     {
         String name = null;
         try
@@ -184,6 +192,13 @@ public class MainClassModuleNameExtractor
 
             Method nameMethod = moduleDescriptorInstance.getClass().getMethod( "name" );
             name = (String) nameMethod.invoke( moduleDescriptorInstance );
+        }
+        catch ( InvocationTargetException e )
+        {
+            if ( e.getCause() instanceof Exception )
+            {
+                throw (Exception) e.getCause();
+            }
         }
         catch ( ReflectiveOperationException e )
         {

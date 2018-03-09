@@ -65,6 +65,7 @@ public class LocationManagerTest
         assertThat( result.getPathElements().size(), is( 0 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 
     @Test
@@ -80,6 +81,7 @@ public class LocationManagerTest
         assertThat( result.getPathElements().size(), is( 0 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 
     @Test
@@ -98,6 +100,7 @@ public class LocationManagerTest
         assertThat( result.getPathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
     
     @Test
@@ -116,6 +119,7 @@ public class LocationManagerTest
         assertThat( result.getPathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
     
     @Test
@@ -135,6 +139,7 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MANIFEST ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
     
     @Test
@@ -154,6 +159,7 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MODULEDESCRIPTOR ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 
     @Test
@@ -173,6 +179,7 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getModulepathElements().get( abc), is( ModuleNameSource.MODULEDESCRIPTOR ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
     
     @Test
@@ -195,6 +202,18 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().containsKey( pj1 ), is( true ) );
         assertThat( result.getModulepathElements().containsKey( pj2 ), is( false ) );
         assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+
+    @Test
+    public void testClassicJarNameStartsWithNumber() throws Exception
+    {
+        Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        
+        assertThat( result.getPathExceptions().size(), is( 1 ) );
     }
 
 }

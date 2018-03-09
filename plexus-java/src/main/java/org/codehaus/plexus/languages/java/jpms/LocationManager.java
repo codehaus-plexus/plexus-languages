@@ -137,7 +137,15 @@ public class LocationManager
                 }
                 else 
                 {
-                    moduleName = MainClassModuleNameExtractor.getModuleName( path );
+                    try
+                    {
+                        moduleName = MainClassModuleNameExtractor.getModuleName( path );
+                    }
+                    catch ( Exception e )
+                    {
+                        result.getPathExceptions().put( t, e );
+                        continue;
+                    }
                     
                     if ( moduleName != null )
                     {
