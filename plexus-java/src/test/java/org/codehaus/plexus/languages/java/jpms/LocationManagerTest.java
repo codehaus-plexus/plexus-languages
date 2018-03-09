@@ -20,8 +20,11 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -208,6 +211,8 @@ public class LocationManagerTest
     @Test
     public void testClassicJarNameStartsWithNumber() throws Exception
     {
+        assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
+        
         Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" );
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
