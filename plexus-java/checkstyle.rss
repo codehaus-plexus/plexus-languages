@@ -23,11 +23,11 @@ under the License.
     <link>http://codehaus-plexus.github.io/plexus-languages/plexus-java/</link>
     <description>Plexus Languages :: Java - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2001 - 2017 Codehaus Plexus</copyright>
+    <copyright>&#169;2001 - 2018 Codehaus Plexus</copyright>
     <item>
       <title>File: 12,
-             Errors: 32,
-             Warnings: 41,
+             Errors: 33,
+             Warnings: 42,
              Infos: 3
       </title>
             <link>http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html</link>
@@ -46,16 +46,16 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.QDoxModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/QDoxModuleInfoParser.java</a>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.version.JavaVersion.java">org/codehaus/plexus/languages/java/version/JavaVersion.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  4
                 </td>
                 <td>
-                  2
+                  7
                 </td>
               </tr>
                           <tr>
@@ -74,20 +74,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.java">org/codehaus/plexus/languages/java/jpms/ResolvePathsResult.java</a>
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.AsmModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/AsmModuleInfoParser.java</a>
                 </td>
                 <td>
@@ -102,35 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/ModuleInfoParser.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.package-info.java">org/codehaus/plexus/languages/java/jpms/package-info.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ModuleNameExtractor.java">org/codehaus/plexus/languages/java/jpms/ModuleNameExtractor.java</a>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.QDoxModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/QDoxModuleInfoParser.java</a>
                 </td>
                 <td>
                   0
@@ -140,48 +98,6 @@ under the License.
                 </td>
                 <td>
                   2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.LocationManager.java">org/codehaus/plexus/languages/java/jpms/LocationManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  3
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.java">org/codehaus/plexus/languages/java/jpms/JavaModuleDescriptor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  14
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.version.JavaVersion.java">org/codehaus/plexus/languages/java/version/JavaVersion.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
                 </td>
               </tr>
                           <tr>
@@ -210,6 +126,90 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.java">org/codehaus/plexus/languages/java/jpms/ResolvePathsResult.java</a>
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/ModuleInfoParser.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ModuleNameExtractor.java">org/codehaus/plexus/languages/java/jpms/ModuleNameExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.package-info.java">org/codehaus/plexus/languages/java/jpms/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.java">org/codehaus/plexus/languages/java/jpms/JavaModuleDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.LocationManager.java">org/codehaus/plexus/languages/java/jpms/LocationManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  3
                 </td>
               </tr>
                       </tbody>

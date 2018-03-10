@@ -68,9 +68,16 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          assertEquals( <strong class="jxr_keyword">null</strong>, name );
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      }
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      @Test
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJarWithSpacesInPath() <strong class="jxr_keyword">throws</strong> Exception
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          String name = getExtractor().extract( Paths.get( <span class="jxr_string">"src/test/resources/jar with spaces in path/plexus-java-1.0.0-SNAPSHOT.jar"</span> ) );
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          assertEquals( <span class="jxr_string">"org.codehaus.plexus.languages.java"</span>, name );
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2001&#x2013;2017 <a href="http://codehaus-plexus.github.io/">Codehaus Plexus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2001&#x2013;2018 <a href="http://codehaus-plexus.github.io/">Codehaus Plexus</a>. All rights reserved.</div>
 </body>
 </html>
