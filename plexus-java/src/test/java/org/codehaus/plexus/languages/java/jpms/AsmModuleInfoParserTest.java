@@ -20,15 +20,15 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
@@ -49,10 +49,8 @@ public class AsmModuleInfoParserTest
         assertEquals( 1, descriptor.requires().size() );
         assertEquals( "java.base", descriptor.requires().iterator().next().name() );
 
-        // Actually the source returns "org/objectweb/asm" instead "org.objectweb.asm" ?
-        // Need to dive into this later.
-//        assertEquals( 2, descriptor.exports().size() );
-//        assertEquals( "org.objectweb.asm", descriptor.exports().iterator().next().source() );
+        assertEquals( 2, descriptor.exports().size() );
+        assertEquals( "org.objectweb.asm", descriptor.exports().iterator().next().source() );
     }
 
     @Test
@@ -83,22 +81,31 @@ public class AsmModuleInfoParserTest
     }
     
     @Test
-    public void testOutputDirectoryDescriptor() throws Exception
+    public void testOutputDirectoryDescriptor()
+        throws Exception
     {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.descriptor/out" ) );
-        
-        assertNotNull( descriptor);
-        assertEquals( "org.objectweb.asm.all", descriptor.name() );
+        JavaModuleDescriptor descriptor =
+            parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.descriptor/out" ) );
+
+        assertNotNull( descriptor );
+        assertEquals( "org.codehaus.plexus.languages.java.demo", descriptor.name() );
         assertEquals( false, descriptor.isAutomatic() );
-        
-        assertEquals( 2, descriptor.requires().size() );
-        Set<String> actualNames = new HashSet<>( 2 );
-        for ( JavaRequires require : descriptor.requires() )
-        {
-            actualNames.add( require.name() );
-        }
-        Set<String> expectedNames = new HashSet<>( Arrays.asList( "java.base", "java.xml" ) );
-        assertEquals( expectedNames, actualNames );
+
+        assertEquals( 3, descriptor.requires().size() );
+
+        Iterator<JavaRequires> requiresIter = descriptor.requires().iterator();
+
+        JavaRequires requires = requiresIter.next();
+        assertEquals( "java.base", requires.name() );
+        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
+
+        requires = requiresIter.next();
+        assertEquals( "java.xml", requires.name() );
+        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
+
+        requires = requiresIter.next();
+        assertEquals( "com.google.common", requires.name() );
+        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
     }
 
     @Test( expected = NoSuchFileException.class )

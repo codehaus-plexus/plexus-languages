@@ -22,6 +22,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -52,7 +53,15 @@ public class QDoxModuleInfoParser
             
             for ( JavaModuleDescriptor.JavaRequires requires : descriptor.getRequires() )
             {
-                builder.requires( requires.getModule().getName() );
+                if ( requires.isStatic() )
+                {
+                    builder.requires​( Collections.singleton( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ),
+                                      requires.getModule().getName() );
+                }
+                else
+                {
+                    builder.requires( requires.getModule().getName() );
+                }
             }
             
             for ( JavaModuleDescriptor.JavaExports exports : descriptor.getExports() )

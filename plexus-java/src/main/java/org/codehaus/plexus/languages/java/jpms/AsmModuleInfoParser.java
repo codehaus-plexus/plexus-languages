@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.jar.JarEntry;
@@ -124,7 +125,15 @@ public class AsmModuleInfoParser
                     @Override
                     public void visitRequire( String module, int access, String version )
                     {
-                        wrapper.builder.requires( module );
+                        if ( ( access & Opcodes.ACC_STATIC_PHASE ) != 0 )
+                        {
+                            wrapper.builder.requires​( Collections.singleton( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ),
+                                                       module );
+                        }
+                        else
+                        {
+                            wrapper.builder.requires( module );
+                        }
                     }
 
                     @Override

@@ -99,6 +99,13 @@ public class JavaModuleDescriptor
             jModule.requires.add( requires );
             return this;
         }
+        
+        public Builder requires​( Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
+        {
+            JavaRequires requires = new JavaRequires( modifiers, name );
+            jModule.requires.add( requires );
+            return this;
+        }
 
         public Builder exports( String source )
         {
@@ -128,16 +135,41 @@ public class JavaModuleDescriptor
      */
     public static class JavaRequires
     {
+        private final Set<JavaModifier> modifiers;
+        
         private final String name;
 
-        private JavaRequires( String name )
+        private JavaRequires( Set<JavaModifier> modifiers, String name )
         {
+            this.modifiers = modifiers;
             this.name = name;
         }
 
+        private JavaRequires( String name )
+        {
+            this.modifiers = Collections.emptySet();
+            this.name = name;
+        }
+
+        public Set<JavaModifier> modifiers​()
+        {
+            return modifiers;
+        }
+        
         public String name()
         {
             return name;
+        }
+        
+        /**
+         * Represents Module.Requires.Modifier
+         * 
+         * @author Robert Scholte
+         * @since 1.0.0
+         */
+        public static enum JavaModifier
+        {
+            STATIC
         }
     }
     

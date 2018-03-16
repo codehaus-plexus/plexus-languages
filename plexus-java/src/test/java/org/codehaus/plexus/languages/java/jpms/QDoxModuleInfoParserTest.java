@@ -20,6 +20,8 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
+import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
 public class QDoxModuleInfoParserTest
@@ -37,8 +40,17 @@ public class QDoxModuleInfoParserTest
     public void test() throws Exception
     {
         JavaModuleDescriptor moduleDescriptor = parser.fromSourcePath( Paths.get( "src/test/resources/src.dir/module-info.java" ) );
-        assertEquals( "a.b.c", moduleDescriptor.name() ); 
-        assertEquals( "d.e", moduleDescriptor.requires().iterator().next().name() );
+        assertEquals( "a.b.c", moduleDescriptor.name() );
+        
+        Iterator<JavaRequires> requiresIter = moduleDescriptor.requires().iterator();
+        
+        JavaRequires requires = requiresIter.next();
+        assertEquals( "d.e", requires.name() );
+        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
+
+        requires = requiresIter.next();
+        assertEquals( "s.d.e", requires.name() );
+        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
         
         Iterator<JavaExports> exportsIter = moduleDescriptor.exports().iterator();
         
