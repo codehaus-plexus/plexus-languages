@@ -40,9 +40,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith( org.mockito.junit.MockitoJUnitRunner.class )
 public class LocationManagerTest
 {
     @Mock
@@ -95,8 +94,6 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
-        
-        when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
