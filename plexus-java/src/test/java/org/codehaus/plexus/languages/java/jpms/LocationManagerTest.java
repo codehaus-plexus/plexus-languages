@@ -29,6 +29,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -214,6 +215,21 @@ public class LocationManagerTest
         assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
         
         Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        
+        assertThat( result.getPathExceptions().size(), is( 1 ) );
+    }
+
+    @Test
+    public void testNonJar() throws Exception
+    {
+        assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
+        
+        Path p = Paths.get( "src/test/resources/nonjar/pom.xml" );
+        when( asmParser.getModuleDescriptor( p ) ).thenThrow( new IOException() );
+        
         ResolvePathsRequest<Path> request = ResolvePathsRequest.withPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );

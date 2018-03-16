@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -120,6 +121,12 @@ public class AsmModuleInfoParserTest
 
         assertEquals ( 1, descriptor.exports().size() );
         assertEquals ( "com.corporate.project",  descriptor.exports().iterator().next().source() );
+    }
+    
+    @Test( expected = IOException.class )
+    public void testInvalidFile() throws Exception
+    {
+        parser.getModuleDescriptor( Paths.get( "src/test/resources/nonjar/pom.xml" ) );
     }
 
 }

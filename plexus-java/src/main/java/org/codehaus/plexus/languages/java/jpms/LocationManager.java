@@ -114,7 +114,15 @@ public class LocationManager
             // either jar or outputDirectory
             if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
             {
-                moduleDescriptor = asmParser.getModuleDescriptor( path );
+                try
+                {
+                    moduleDescriptor = asmParser.getModuleDescriptor( path );
+                }
+                catch( IOException e )
+                {
+                    result.getPathExceptions().put( t, e );
+                    continue;
+                }
             }
 
             if ( moduleDescriptor != null ) 
