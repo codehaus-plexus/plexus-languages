@@ -26,8 +26,9 @@ import java.util.regex.Pattern;
  * @author Robert Scholte
  * @since 1.0.0
  * 
- * @see <a href="http://www.oracle.com/technetwork/java/javase/namechange-140185.html">http://www.oracle.com/technetwork/java/javase/namechange-140185.html</a>
- * @see <a href="http://openjdk.java.net/jeps/223">http://openjdk.java.net/jeps/223</a>
+ * @see <a href="http://www.oracle.com/technetwork/java/javase/namechange-140185.html">Java SE Naming and Versions</a>
+ * @see <a href="http://openjdk.java.net/jeps/223">JEP 223: New Version-String Scheme</a>
+ * @see <a href="http://openjdk.java.net/jeps/322">JEP 322: Time-Based Release Versioning</a>
  */
 public class JavaVersion implements Comparable<JavaVersion>
 {
