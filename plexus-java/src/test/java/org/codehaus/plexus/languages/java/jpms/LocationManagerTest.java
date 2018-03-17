@@ -222,8 +222,6 @@ public class LocationManagerTest
     @Test
     public void testNonJar() throws Exception
     {
-        assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
-        
         Path p = Paths.get( "src/test/resources/nonjar/pom.xml" );
         when( asmParser.getModuleDescriptor( p ) ).thenThrow( new IOException() );
         
@@ -232,6 +230,29 @@ public class LocationManagerTest
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         
         assertThat( result.getPathExceptions().size(), is( 1 ) );
+    }
+    
+    @Test
+    public void testAdditionalModules() throws Exception
+    {
+        Path p = Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" );
+        
+        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).build();
+        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
+        ResolvePathsRequest<Path> request =
+            ResolvePathsRequest.withPaths( Arrays.asList( p ) )
+                               .setMainModuleDescriptor( mockModuleInfoJava )
+                               .setAdditionalModules( Collections.singletonList( "plexus.java" ) );
+
+        when( asmParser.getModuleDescriptor( p ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "plexus.java" ).build() );
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+
+        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 
 }

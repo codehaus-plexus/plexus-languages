@@ -23,6 +23,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Contains all information required to analyze the project
@@ -37,11 +38,13 @@ public abstract class ResolvePathsRequest<T>
     private Path mainModuleDescriptor;
 
     private Collection<T> pathElements;
-    
+
+    private Collection<String> additionalModules;
+
     private ResolvePathsRequest()
     {
     }
-    
+
     public static ResolvePathsRequest<File> withFiles( Collection<File> files )
     {
         ResolvePathsRequest<File> request = new ResolvePathsRequest<File>()
@@ -52,7 +55,7 @@ public abstract class ResolvePathsRequest<T>
                 return t.toPath();
             }
         };
-            
+
         request.pathElements = files;
         return request;
     }
@@ -69,7 +72,7 @@ public abstract class ResolvePathsRequest<T>
         request.pathElements = paths;
         return request;
     }
-    
+
     public static ResolvePathsRequest<String> withStrings( Collection<String> strings )
     {
         ResolvePathsRequest<String> request = new ResolvePathsRequest<String>() {
@@ -82,13 +85,13 @@ public abstract class ResolvePathsRequest<T>
         request.pathElements = strings;
         return request;
     }
-    
+
     protected abstract Path toPath( T t );
 
     final ResolvePathsResult<T> createResult() {
         return new ResolvePathsResult<>();
     }
-    
+
     public Path getMainModuleDescriptor()
     {
         return mainModuleDescriptor;
@@ -127,4 +130,18 @@ public abstract class ResolvePathsRequest<T>
         return jdkHome;
     }
 
+    public ResolvePathsRequest<T> setAdditionalModules( Collection<String> additionalModules )
+    {
+        this.additionalModules = additionalModules;
+        return this;
+    }
+
+    public Collection<String> getAdditionalModules()
+    {
+        if ( additionalModules == null )
+        {
+            additionalModules = Collections.emptyList();
+        }
+        return additionalModules;
+    }
 }

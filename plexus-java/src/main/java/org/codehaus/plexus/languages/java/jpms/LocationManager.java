@@ -208,6 +208,8 @@ public class LocationManager
             
             requiredNamedModules.add( mainModuleDescriptor.name() );
             
+            requiredNamedModules.addAll( request.getAdditionalModules() );
+            
             select( mainModuleDescriptor, Collections.unmodifiableMap( availableNamedModules ), requiredNamedModules );
 
             // in case of identical module names, first one wins
