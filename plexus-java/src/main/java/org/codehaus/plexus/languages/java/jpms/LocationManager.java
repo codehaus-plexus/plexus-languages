@@ -61,6 +61,14 @@ public class LocationManager
         this.qdoxParser = qdoxParser;
     }
 
+    /**
+     * Decide for every {@code request.getPathElements()} if it belongs to the modulePath or classPath, based on the
+     * {@code request.getMainModuleDescriptor()}.
+     * 
+     * @param request the paths to resolve
+     * @return the result of the resolution
+     * @throws IOException if a critical IOException occurs
+     */
     public <T> ResolvePathsResult<T> resolvePaths( ResolvePathsRequest<T> request )
         throws IOException
     {
