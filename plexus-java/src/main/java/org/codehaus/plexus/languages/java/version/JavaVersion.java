@@ -143,7 +143,7 @@ public class JavaVersion implements Comparable<JavaVersion>
      * Verify if this version is before some other version
      * 
      * @param other the version to compare with
-     * @return {@true} is this is less than {@code other}, otherwise {@code false}
+     * @return {@code true} is this is less than {@code other}, otherwise {@code false}
      */
     public boolean isBefore( JavaVersion other )
     {
@@ -154,7 +154,7 @@ public class JavaVersion implements Comparable<JavaVersion>
      * Verify if this version is before some other version
      * 
      * @param other the version to compare with
-     * @return {@true} is this is less than {@code other}, otherwise {@code false}
+     * @return {@code true}  is this is less than {@code other}, otherwise {@code false}
      */
     public boolean isBefore( String other )
     {
@@ -165,7 +165,7 @@ public class JavaVersion implements Comparable<JavaVersion>
      * Verify if this version is at least some other version
      * 
      * @param other the version to compare with
-     * @return  {@true} is this is greater than or equal to {@code other}, otherwise {@code false}
+     * @return  {@code true}  is this is greater than or equal to {@code other}, otherwise {@code false}
      */
     public boolean isAtLeast( JavaVersion other )
     {
@@ -176,7 +176,7 @@ public class JavaVersion implements Comparable<JavaVersion>
      * Verify if this version is at least some other version
      * 
      * @param other the version to compare with
-     * @return  {@true} is this is greater than or equal to {@code other}, otherwise {@code false}
+     * @return  {@code true} is this is greater than or equal to {@code other}, otherwise {@code false}
      */
     public boolean isAtLeast( String other )
     {
