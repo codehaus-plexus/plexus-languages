@@ -32,9 +32,9 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
-public class QDoxModuleInfoParserTest
+public class SourceModuleInfoParserTest
 {
-    private QDoxModuleInfoParser parser = new QDoxModuleInfoParser();
+    private SourceModuleInfoParser parser = new SourceModuleInfoParser();
 
     @Test
     public void test() throws Exception

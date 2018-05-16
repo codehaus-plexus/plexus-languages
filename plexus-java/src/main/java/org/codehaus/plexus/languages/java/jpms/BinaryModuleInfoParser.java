@@ -40,11 +40,11 @@ import org.objectweb.asm.Opcodes;
 /**
  * Extract information from module with ASM
  * 
+ * 
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class AsmModuleInfoParser
-    implements ModuleInfoParser
+class BinaryModuleInfoParser implements ModuleInfoParser
 {
     private static final Pattern MRJAR_DESCRIPTOR = Pattern.compile( "META-INF/versions/[^/]+/module-info.class" );
 

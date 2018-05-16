@@ -45,20 +45,20 @@ import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSour
 @Component( role = LocationManager.class )
 public class LocationManager
 {
-    private ModuleInfoParser asmParser;
+    private ModuleInfoParser binaryParser;
     
-    private QDoxModuleInfoParser qdoxParser;
+    private SourceModuleInfoParser sourceParser;
 
     public LocationManager()
     {
-        this.asmParser = new AsmModuleInfoParser();
-        this.qdoxParser = new QDoxModuleInfoParser();
+        this.binaryParser = new BinaryModuleInfoParser();
+        this.sourceParser = new SourceModuleInfoParser();
     }
     
-    LocationManager( ModuleInfoParser asmParser, QDoxModuleInfoParser qdoxParser )
+    LocationManager( ModuleInfoParser binaryParser, SourceModuleInfoParser sourceParser )
     {
-        this.asmParser = asmParser;
-        this.qdoxParser = qdoxParser;
+        this.binaryParser = binaryParser;
+        this.sourceParser = sourceParser;
     }
 
     /**
@@ -84,11 +84,11 @@ public class LocationManager
         {
             if ( descriptorPath.endsWith( "module-info.java" ) )
             {
-                mainModuleDescriptor = qdoxParser.fromSourcePath( descriptorPath );
+                mainModuleDescriptor = sourceParser.fromSourcePath( descriptorPath );
             }
             else if ( descriptorPath.endsWith( "module-info.class" ) )
             {
-                mainModuleDescriptor = asmParser.getModuleDescriptor( descriptorPath.getParent() );
+                mainModuleDescriptor = binaryParser.getModuleDescriptor( descriptorPath.getParent() );
             }
             else
             {
@@ -124,7 +124,7 @@ public class LocationManager
             {
                 try
                 {
-                    moduleDescriptor = asmParser.getModuleDescriptor( path );
+                    moduleDescriptor = binaryParser.getModuleDescriptor( path );
                 }
                 catch( IOException e )
                 {

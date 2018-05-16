@@ -30,8 +30,6 @@ import java.nio.file.Path;
  */
 public interface ModuleInfoParser
 {
-    
-    
     /**
      * Extracts the name from the module-info file
      * 

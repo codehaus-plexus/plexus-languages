@@ -33,9 +33,9 @@ import java.util.Iterator;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
-public class AsmModuleInfoParserTest
+public class BinaryModuleInfoParserTest
 {
-    private ModuleInfoParser parser = new AsmModuleInfoParser();
+    private BinaryModuleInfoParser parser = new BinaryModuleInfoParser();
 
     @Test
     public void testJarDescriptor() throws Exception
