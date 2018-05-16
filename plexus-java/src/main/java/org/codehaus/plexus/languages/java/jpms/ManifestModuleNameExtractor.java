@@ -33,7 +33,7 @@ import java.util.jar.Manifest;
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class ManifestModuleNameExtractor implements ModuleNameExtractor
+class ManifestModuleNameExtractor implements ModuleNameExtractor
 {
     @Override
     public String extract( Path file )
