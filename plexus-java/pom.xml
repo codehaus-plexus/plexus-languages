@@ -37,6 +37,25 @@
           </extractors>
         </configuration>
       </plugin>
+      <!-- Rerun unittests with the multirelease jar, cannot be done with exploded directory of classes  -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.21.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includes>
+              <include>**/*Test.java</include>
+          </includes>      
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -74,7 +93,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.15.0</version>
+      <version>2.18.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -105,11 +124,11 @@
                     <goal>compile</goal>
                   </goals>
                   <configuration>
-                     <release>9</release>
-                     <compileSourceRoots>
-                          <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-                      </compileSourceRoots>
-                      <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
+                    <release>9</release>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                    </compileSourceRoots>
+                    <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
                   </configuration>
                 </execution>
               </executions>
@@ -126,24 +145,6 @@
                         <Multi-Release>true</Multi-Release>
                       </manifestEntries>
                     </archive>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-            <!-- Reuse unittest configuration, now run it as true Multi Release jar -->
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>jdk9</id>
-                  <phase>integration-test</phase>
-                  <goals>
-                    <goal>test</goal>
-                  </goals>
-                  <configuration>
-                    <!-- force new configuration, otherwise surefire won't run a second time -->
-                    <failIfNoTests>true</failIfNoTests>
                   </configuration>
                 </execution>
               </executions>

@@ -28,8 +28,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
+import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
@@ -49,8 +54,12 @@ public class BinaryModuleInfoParserTest
         assertEquals( 1, descriptor.requires().size() );
         assertEquals( "java.base", descriptor.requires().iterator().next().name() );
 
-        assertEquals( 2, descriptor.exports().size() );
-        assertEquals( "org.objectweb.asm", descriptor.exports().iterator().next().source() );
+        Set<JavaExports> expectedExports = JavaModuleDescriptor.newAutomaticModule( "_" )
+                .exports( "org.objectweb.asm" )
+                .exports( "org.objectweb.asm.signature" )
+                .build()
+                .exports();
+        assertEquals( expectedExports, descriptor.exports() );
     }
 
     @Test
@@ -93,19 +102,14 @@ public class BinaryModuleInfoParserTest
 
         assertEquals( 3, descriptor.requires().size() );
 
-        Iterator<JavaRequires> requiresIter = descriptor.requires().iterator();
+        Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
+            .requires​( "java.base" )
+            .requires( "java.xml" )
+            .requires​( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "com.google.common" )
+            .build()
+            .requires();
 
-        JavaRequires requires = requiresIter.next();
-        assertEquals( "java.base", requires.name() );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-
-        requires = requiresIter.next();
-        assertEquals( "java.xml", requires.name() );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-
-        requires = requiresIter.next();
-        assertEquals( "com.google.common", requires.name() );
-        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
+        assertEquals( expectedRequires, descriptor.requires() );
     }
 
     @Test( expected = NoSuchFileException.class )

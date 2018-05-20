@@ -21,6 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -171,6 +172,40 @@ public class JavaModuleDescriptor
         {
             STATIC
         }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash( modifiers, name );
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj )
+            {
+                return true;
+            }
+            if ( obj == null )
+            {
+                return false;
+            }
+            if ( getClass() != obj.getClass() )
+            {
+                return false;
+            }
+
+            JavaRequires other = (JavaRequires) obj;
+            if ( !Objects.equals( modifiers, other.modifiers ) )
+            {
+                return false;
+            }
+            if ( !Objects.equals( name, other.name ) )
+            {
+                return false;
+            }
+            return true;
+        }
     }
     
     /**
@@ -206,5 +241,41 @@ public class JavaModuleDescriptor
         {
             return targets;
         }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash( source, targets );
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( this == obj )
+            {
+                return true;
+            }
+            if ( obj == null )
+            {
+                return false;
+            }
+            if ( getClass() != obj.getClass() )
+            {
+                return false;
+            }
+            
+            JavaExports other = (JavaExports) obj;
+            if ( !Objects.equals( source, other.source ) )
+            {
+                    return false;
+            }
+            if ( !Objects.equals( targets, other.targets ) )
+            {
+                    return false;
+            }
+            return true;
+        }
+        
+        
     }
 }

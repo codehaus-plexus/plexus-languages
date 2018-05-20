@@ -19,22 +19,20 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.lang.module.ModuleDescriptor;
-import java.lang.module.ModuleFinder;
-import java.lang.module.ModuleReference;
-import java.nio.file.Path;
 import java.util.Collections;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder;
 
-class BinaryModuleInfoParser implements ModuleInfoParser
+class BinaryModuleInfoParser extends BaseBinaryModuleInfoParser
 {
     @Override
-    public JavaModuleDescriptor getModuleDescriptor( Path modulePath ) 
+    JavaModuleDescriptor parse( InputStream in ) throws IOException
     {
-        ModuleReference moduleReference = ModuleFinder.of( modulePath ).findAll().iterator().next();
-        
-        ModuleDescriptor descriptor = moduleReference.descriptor();
+        ModuleDescriptor descriptor = ModuleDescriptor.read( in );
         
         Builder builder = JavaModuleDescriptor.newModule( descriptor.name() );
         
@@ -48,6 +46,18 @@ class BinaryModuleInfoParser implements ModuleInfoParser
             else
             {
                 builder.requires( requires.name() );
+            }
+        }
+        
+        for ( ModuleDescriptor.Exports exports : descriptor.exports() )
+        {
+            if ( exports.targets().isEmpty() )
+            {
+                builder.exports( exports.source() );
+            }
+            else
+            {
+                builder.exports( exports.source(), exports.targets() );
             }
         }
         
