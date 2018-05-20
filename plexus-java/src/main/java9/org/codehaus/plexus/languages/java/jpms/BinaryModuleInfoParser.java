@@ -27,7 +27,7 @@ import java.util.Collections;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder;
 
-class BinaryModuleInfoParser extends BaseBinaryModuleInfoParser
+class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
 {
     @Override
     JavaModuleDescriptor parse( InputStream in ) throws IOException
