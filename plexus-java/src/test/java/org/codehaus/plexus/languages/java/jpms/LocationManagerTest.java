@@ -45,10 +45,10 @@ import org.mockito.Mock;
 public class LocationManagerTest
 {
     @Mock
-    private ModuleInfoParser asmParser;
+    private BinaryModuleInfoParser asmParser;
 
     @Mock
-    private QDoxModuleInfoParser qdoxParser;
+    private SourceModuleInfoParser qdoxParser;
 
     private LocationManager locationManager;
     

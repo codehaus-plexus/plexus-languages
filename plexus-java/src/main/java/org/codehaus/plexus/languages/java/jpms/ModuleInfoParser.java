@@ -28,10 +28,8 @@ import java.nio.file.Path;
  * @author Robert Scholte
  * @since 1.0.0
  */
-public interface ModuleInfoParser
+interface ModuleInfoParser
 {
-    
-    
     /**
      * Extracts the name from the module-info file
      * 

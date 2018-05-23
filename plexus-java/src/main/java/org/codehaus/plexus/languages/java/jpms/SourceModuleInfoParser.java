@@ -36,7 +36,7 @@ import com.thoughtworks.qdox.model.JavaModuleDescriptor;
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class QDoxModuleInfoParser
+class SourceModuleInfoParser
 {
 
     public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( Path modulePath )
