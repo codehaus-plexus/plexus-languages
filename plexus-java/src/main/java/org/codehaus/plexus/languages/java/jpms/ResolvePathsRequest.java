@@ -45,7 +45,16 @@ public abstract class ResolvePathsRequest<T>
     {
     }
 
+    /**
+     * @deprecated use {@link #ofFiles(Collection)} instead
+     */
+    @Deprecated
     public static ResolvePathsRequest<File> withFiles( Collection<File> files )
+    {
+        return ofFiles( files );
+    }
+    
+    public static ResolvePathsRequest<File> ofFiles( Collection<File> files )
     {
         ResolvePathsRequest<File> request = new ResolvePathsRequest<File>()
         {
@@ -60,7 +69,16 @@ public abstract class ResolvePathsRequest<T>
         return request;
     }
 
+    /**
+     * @deprecated use {@link #ofPaths(Collection)} instead
+     */
+    @Deprecated
     public static ResolvePathsRequest<Path> withPaths( Collection<Path> paths )
+    {
+        return ofPaths( paths );
+    }
+    
+    public static ResolvePathsRequest<Path> ofPaths( Collection<Path> paths )
     {
         ResolvePathsRequest<Path> request = new ResolvePathsRequest<Path>() {
             @Override
@@ -73,7 +91,16 @@ public abstract class ResolvePathsRequest<T>
         return request;
     }
 
+    /**
+     * @deprecated use {@link #ofStrings(Collection)} instead
+     */
+    @Deprecated
     public static ResolvePathsRequest<String> withStrings( Collection<String> strings )
+    {
+        return ofStrings( strings );
+    }
+    
+    public static ResolvePathsRequest<String> ofStrings( Collection<String> strings )
     {
         ResolvePathsRequest<String> request = new ResolvePathsRequest<String>() {
             @Override
@@ -118,6 +145,7 @@ public abstract class ResolvePathsRequest<T>
      * In case the JRE is Java 8 or before, this jdkHome is used to extract the module name.
      * 
      * @param jdkHome
+     * @return this request
      */
     public ResolvePathsRequest<T> setJdkHome( T jdkHome )
     {
@@ -130,6 +158,12 @@ public abstract class ResolvePathsRequest<T>
         return jdkHome;
     }
 
+    /**
+     * The module names that are usually passed with {@code --add-modules}
+     * 
+     * @param additionalModules
+     * @return this request
+     */
     public ResolvePathsRequest<T> setAdditionalModules( Collection<String> additionalModules )
     {
         this.additionalModules = additionalModules;
