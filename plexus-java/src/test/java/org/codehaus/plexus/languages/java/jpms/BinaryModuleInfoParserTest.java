@@ -20,18 +20,13 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
@@ -103,7 +98,7 @@ public class BinaryModuleInfoParserTest
         assertEquals( 3, descriptor.requires().size() );
 
         Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
-            .requires​( "java.base" )
+            .requires( "java.base" )
             .requires( "java.xml" )
             .requires​( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "com.google.common" )
             .build()

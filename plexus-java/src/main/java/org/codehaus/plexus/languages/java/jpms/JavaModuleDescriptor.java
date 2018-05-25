@@ -94,13 +94,13 @@ public class JavaModuleDescriptor
             return this;
         }
 
-        public Builder requires( String name )
-        {
-            JavaRequires requires = new JavaRequires( name );
-            jModule.requires.add( requires );
-            return this;
-        }
-        
+        /**
+         * Adds a dependence on a module with the given (and possibly empty) set of modifiers.
+         * 
+         * @param modifiers The set of modifiers
+         * @param name The module name
+         * @return This builder
+         */
         public Builder requires​( Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
         {
             JavaRequires requires = new JavaRequires( modifiers, name );
@@ -108,6 +108,25 @@ public class JavaModuleDescriptor
             return this;
         }
 
+        /**
+         * Adds a dependence on a module with an empty set of modifiers.
+         * 
+         * @param name The module name
+         * @return This builder
+         */
+        public Builder requires( String name )
+        {
+            JavaRequires requires = new JavaRequires( name );
+            jModule.requires.add( requires );
+            return this;
+        }
+
+        /**
+         * Adds an exported package. The package is exported to all modules.
+         * 
+         * @param source The package name
+         * @return This builder
+         */
         public Builder exports( String source )
         {
             JavaExports exports = new JavaExports( source );
@@ -115,6 +134,13 @@ public class JavaModuleDescriptor
             return this;
         }
 
+        /**
+         * Adds an exported package. The package is exported to a set of target modules.
+         * 
+         * @param source The package name
+         * @param targets  The set of target modules names
+         * @return This builder
+         */
         public Builder exports( String source, Set<String> targets )
         {
             JavaExports exports = new JavaExports( source, targets );
@@ -122,6 +148,11 @@ public class JavaModuleDescriptor
             return this;
         }
 
+        /**
+         * Builds and returns a ModuleDescriptor from its components.
+         * 
+         * @return The module descriptor
+         */
         public JavaModuleDescriptor build()
         {
             return jModule;

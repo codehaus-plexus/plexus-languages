@@ -20,17 +20,16 @@ package org.codehaus.plexus.languages.java.version;
  */
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
+/*
+ * Parsing is lazy, only triggered when comparing
+ */
 public class JavaVersionTest
 {
-    /**
-     * Parsing is lazy, only triggered when comparing
-     * 
-     * @throws Exception
-     */
     @Test
     public void testParse()
         throws Exception
@@ -103,4 +102,11 @@ public class JavaVersionTest
         assertFalse( JavaVersion.parse( "9" ).isBefore( j9 ) );
     }
 
+    @Test
+    public void testEquals() {
+        JavaVersion seven = JavaVersion.parse( "7" );
+        JavaVersion other = JavaVersion.parse( "7" );
+        
+        assertEquals( seven, other );
+    }
 }

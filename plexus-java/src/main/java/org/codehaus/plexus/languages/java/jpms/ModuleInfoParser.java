@@ -33,9 +33,9 @@ interface ModuleInfoParser
     /**
      * Extracts the name from the module-info file
      * 
-     * @param modulePath
-     * @return
-     * @throws IOException
+     * @param modulePath the path to the {@code module-info.class}
+     * @return the module descriptor
+     * @throws IOException when the file could not be parsed
      */
     JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException;

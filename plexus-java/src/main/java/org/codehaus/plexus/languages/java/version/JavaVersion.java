@@ -1,5 +1,6 @@
 package org.codehaus.plexus.languages.java.version;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -187,5 +188,35 @@ public class JavaVersion implements Comparable<JavaVersion>
     public String toString()
     {
         return rawVersion;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hashCode( rawVersion );
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
+        {
+            return true;
+        }
+        if ( obj == null )
+        {
+            return false;
+        }
+        if ( getClass() != obj.getClass() )
+        {
+            return false;
+        }
+        
+        JavaVersion other = (JavaVersion) obj;
+        if ( !Objects.equals( rawVersion, other.rawVersion ) )
+        {
+                return false;
+        }
+        return true;
     }
 }
