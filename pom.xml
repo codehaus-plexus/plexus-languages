@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>plexus-languages</artifactId>
-  <version>0.9.9-SNAPSHOT</version>
+  <version>0.9.9</version>
   <packaging>pom</packaging>
 
   <name>Plexus Languages</name>
@@ -25,7 +25,7 @@
     <connection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</connection>
     <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</developerConnection>
     <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
-    <tag>HEAD</tag>
+    <tag>plexus-languages-0.9.9</tag>
   </scm>
   <issueManagement>
     <system>github</system>
@@ -74,7 +74,7 @@
         <version>3.7.1</version>
         <configuration>
           <topSiteURL>${scm.url}</topSiteURL>
-          <reportPlugins/>
+          <reportPlugins />
         </configuration>
       </plugin>
     </plugins>
@@ -87,14 +87,14 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
         <reportSets>
-          <reportSet/>
+          <reportSet />
         </reportSets>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <reportSets>
-          <reportSet/>
+          <reportSet />
         </reportSets>
       </plugin>
     </plugins>
