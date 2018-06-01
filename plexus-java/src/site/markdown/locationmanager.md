@@ -18,6 +18,8 @@ There are 3 ways to create a `ResolvePathsRequest`:
 
 - `ResolvePathsRequest.ofStrings(Collection<String>)`
 
+As argument you pass all the archives and/or outputDirectories specified to build the project. 
+
 Additional methods are:
 
 - `setAdditionalModules`, in case the consumer wants to use `--add-modules`
