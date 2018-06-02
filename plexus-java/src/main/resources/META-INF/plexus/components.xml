@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.languages.java.jpms.LocationManager</role>
+      <role-hint>default</role-hint>
+      <implementation>org.codehaus.plexus.languages.java.jpms.LocationManager</implementation>
+      <description></description>
+      <isolated-realm>false</isolated-realm>
+    </component>
+  </components>
+</component-set>

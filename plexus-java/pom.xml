@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-languages</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.9.10-SNAPSHOT</version>
   </parent>
   <artifactId>plexus-java</artifactId>
 
@@ -31,6 +31,8 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
         <version>1.7.1</version>
+        <!-- WATCH OUT duplicate compiler blocks confuses this plugin -->
+        <!-- Generated components.xml copied to src/main/resources -->
         <configuration>
           <extractors>
             <extractor>source</extractor>
