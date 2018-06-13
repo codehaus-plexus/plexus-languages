@@ -33,7 +33,6 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSource;
 
 /**
  * Maps artifacts to modules and analyzes the type of required modules
@@ -49,18 +48,46 @@ public class LocationManager
     
     private SourceModuleInfoParser sourceParser;
 
+    private ManifestModuleNameExtractor manifestModuleNameExtractor;
+    
     public LocationManager()
     {
         this.binaryParser = new BinaryModuleInfoParser();
         this.sourceParser = new SourceModuleInfoParser();
+        this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
     
     LocationManager( ModuleInfoParser binaryParser, SourceModuleInfoParser sourceParser )
     {
         this.binaryParser = binaryParser;
         this.sourceParser = sourceParser;
+        this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
 
+    public <T> ResolvePathResult resolvePath( final ResolvePathRequest<T> request  ) throws Exception
+    {
+        ModuleNameExtractor filenameExtractor = new ModuleNameExtractor()
+        {
+            MainClassModuleNameExtractor extractor = new MainClassModuleNameExtractor( request.getJdkHome() );
+            
+            @Override
+            public String extract( Path file )
+                throws IOException
+            {
+                if ( request.getJdkHome() != null )
+                {
+                    return extractor.extract( Collections.singletonMap( file, file ) ).get( file );
+                }
+                else
+                {
+                    return CmdModuleNameExtractor.getModuleName( file );
+                }
+            }
+        };
+        
+        return resolvePath( request.toPath( request.getPathElement() ), filenameExtractor );
+    }
+    
     /**
      * Decide for every {@code request.getPathElements()} if it belongs to the modulePath or classPath, based on the
      * {@code request.getMainModuleDescriptor()}.
@@ -69,10 +96,10 @@ public class LocationManager
      * @return the result of the resolution
      * @throws IOException if a critical IOException occurs
      */
-    public <T> ResolvePathsResult<T> resolvePaths( ResolvePathsRequest<T> request )
+    public <T> ResolvePathsResult<T> resolvePaths( final ResolvePathsRequest<T> request )
         throws IOException
     {
-        ResolvePathsResult<T> result = request.createResult();
+        final ResolvePathsResult<T> result = request.createResult();
         
         Map<T, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
 
@@ -107,72 +134,44 @@ public class LocationManager
         // start from root
         result.setMainModuleDescriptor( mainModuleDescriptor );
         
-        Map<T, Path> filenameAutoModules = new HashMap<>();
+        final Map<T, Path> filenameAutoModules = new HashMap<>();
         
-        ManifestModuleNameExtractor manifestModuleNameExtractor = new ManifestModuleNameExtractor();
-
         // collect all modules from path
-        for ( T t : request.getPathElements() )
+        for ( final T t : request.getPathElements() )
         {
-            Path path = request.toPath( t );
+            JavaModuleDescriptor moduleDescriptor;
+            ModuleNameSource source;
             
-            JavaModuleDescriptor moduleDescriptor = null;
-            ModuleNameSource source = null;
-            
-            // either jar or outputDirectory
-            if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
+            ModuleNameExtractor nameExtractor = new ModuleNameExtractor()
             {
-                try
+                @Override
+                public String extract( Path path )
+                    throws IOException
                 {
-                    moduleDescriptor = binaryParser.getModuleDescriptor( path );
+                    if ( request.getJdkHome() != null )
+                    {
+                        filenameAutoModules.put( t, path );
+                    }
+                    else
+                    {
+                        return CmdModuleNameExtractor.getModuleName( path );
+                    }
+                    return null;
                 }
-                catch( IOException e )
-                {
-                    result.getPathExceptions().put( t, e );
-                    continue;
-                }
+            };
+           
+            try
+            {
+                ResolvePathResult resolvedPath = resolvePath( request.toPath( t ), nameExtractor );
+                
+                moduleDescriptor = resolvedPath.getModuleDescriptor();
+
+                source = resolvedPath.getModuleNameSource();
             }
-
-            if ( moduleDescriptor != null ) 
+            catch ( Exception e )
             {
-                source = ModuleNameSource.MODULEDESCRIPTOR;
-            }
-            else
-            {
-                String moduleName = manifestModuleNameExtractor.extract( path );
-
-                if ( moduleName != null )
-                {
-                    source = ModuleNameSource.MANIFEST;
-                }
-                else if ( request.getJdkHome() != null )
-                {
-                    // Will require external JVM, which is considered slow(er)
-                    // Collect first, next resolve all at once
-                    filenameAutoModules.put( t, path );
-                }
-                else 
-                {
-                    try
-                    {
-                        moduleName = MainClassModuleNameExtractor.getModuleName( path );
-                    }
-                    catch ( Exception e )
-                    {
-                        result.getPathExceptions().put( t, e );
-                        continue;
-                    }
-                    
-                    if ( moduleName != null )
-                    {
-                        source = ModuleNameSource.FILENAME;
-                    }
-                }
-
-                if ( moduleName != null )
-                {
-                    moduleDescriptor = JavaModuleDescriptor.newAutomaticModule( moduleName ).build();
-                }
+                result.getPathExceptions().put( t, e );
+                continue;
             }
             
             if ( moduleDescriptor != null )
@@ -243,6 +242,49 @@ public class LocationManager
         return result;
     }
 
+    private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor ) throws Exception
+    {
+        ResolvePathResult result = new ResolvePathResult();
+        JavaModuleDescriptor moduleDescriptor = null;
+        
+        // either jar or outputDirectory
+        if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
+        {
+            moduleDescriptor = binaryParser.getModuleDescriptor( path );
+        }
+
+        if ( moduleDescriptor != null ) 
+        {
+            result.setModuleNameSource( ModuleNameSource.MODULEDESCRIPTOR );
+        }
+        else
+        {
+            String moduleName = manifestModuleNameExtractor.extract( path );
+
+            if ( moduleName != null )
+            {
+                result.setModuleNameSource( ModuleNameSource.MANIFEST );
+            }
+            else 
+            {
+                moduleName = fileModulenameExtractor.extract( path );
+                
+                if ( moduleName != null )
+                {
+                    result.setModuleNameSource( ModuleNameSource.FILENAME );
+                }
+            }
+
+            if ( moduleName != null )
+            {
+                moduleDescriptor = JavaModuleDescriptor.newAutomaticModule( moduleName ).build();
+            }
+        }
+        
+        result.setModuleDescriptor( moduleDescriptor );
+        return result;
+    }
+    
     private void select( JavaModuleDescriptor module, Map<String, JavaModuleDescriptor> availableModules,
                          Set<String> namedModules )
     {

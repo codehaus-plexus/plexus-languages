@@ -19,26 +19,41 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-
-public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest
+/**
+ * Holds the results of the location manager
+ * 
+ * @author Robert Scholte
+ * @since 1.0.0
+ */
+public class ResolvePathResult
 {
-    @Override
-    protected ModuleNameExtractor getExtractor()
+    private JavaModuleDescriptor moduleDescriptor;
+    
+    private ModuleNameSource moduleNameSource;
+    
+    ResolvePathResult()
     {
-        return new ModuleNameExtractor()
-        {
-            MainClassModuleNameExtractor extractor = new MainClassModuleNameExtractor( Paths.get( System.getProperty( "java.home" ) ) );
-            
-            @Override
-            public String extract( Path file )
-                throws IOException
-            {
-                return extractor.extract( Collections.singletonMap( file, file ) ).get( file );
-            }
-        };
+    }
+
+    ResolvePathResult setModuleDescriptor( JavaModuleDescriptor moduleDescriptor )
+    {
+        this.moduleDescriptor = moduleDescriptor;
+        return this;
+    }
+    
+    public JavaModuleDescriptor getModuleDescriptor()
+    {
+        return moduleDescriptor;
+    }
+    
+    ResolvePathResult setModuleNameSource( ModuleNameSource moduleNameSource )
+    {
+        this.moduleNameSource = moduleNameSource;
+        return this;
+    }
+    
+    public ModuleNameSource getModuleNameSource()
+    {
+        return moduleNameSource;
     }
 }

@@ -81,7 +81,6 @@
   </build>
   
   <reporting>
-    <outputDirectory>E:\java-workspace\codehaus-plexus\plexus-languages\target\site</outputDirectory>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

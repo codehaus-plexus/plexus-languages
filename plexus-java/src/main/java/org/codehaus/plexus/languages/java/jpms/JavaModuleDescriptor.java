@@ -72,6 +72,48 @@ public class JavaModuleDescriptor
         return new Builder( name ).setAutomatic( true );
     }  
 
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( name, automatic, requires, exports );
+    }
+    
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
+        {
+            return true;
+        }
+        if ( obj == null )
+        {
+            return false;
+        }
+        if ( getClass() != obj.getClass() )
+        {
+            return false;
+        }
+
+        JavaModuleDescriptor other = (JavaModuleDescriptor) obj;
+        if ( automatic != other.automatic )
+        {
+            return false;
+        }
+        if ( !Objects.equals( name, other.name ) )
+        {
+            return false;
+        }
+        if ( !Objects.equals( requires, other.requires ) )
+        {
+            return false;
+        }
+        if ( !Objects.equals( exports, other.exports ) )
+        {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * A JavaModuleDescriptor Builder
      * 
@@ -306,7 +348,5 @@ public class JavaModuleDescriptor
             }
             return true;
         }
-        
-        
     }
 }

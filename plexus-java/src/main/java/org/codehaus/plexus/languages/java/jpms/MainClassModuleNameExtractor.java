@@ -22,8 +22,6 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -34,7 +32,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Extract the module name by calling the main method with an external JVM
@@ -55,15 +52,17 @@ public class MainClassModuleNameExtractor
         throws IOException
     {
         Path workDir = Files.createTempDirectory( "plexus-java_jpms-" );
+        
+        String classResourcePath = CmdModuleNameExtractor.class.getName().replace( '.', '/' ) + ".class";
 
         try (InputStream is =
-            MainClassModuleNameExtractor.class.getResourceAsStream( this.getClass().getSimpleName() + ".class" ))
+            MainClassModuleNameExtractor.class.getResourceAsStream( "/META-INF/versions/9/" + classResourcePath ))
         {
-            Path pckg = workDir.resolve( this.getClass().getPackage().getName().replace( '.', '/' ) );
+            Path target = workDir.resolve( classResourcePath );
 
-            Files.createDirectories( pckg );
+            Files.createDirectories( target.getParent() );
 
-            Files.copy( is, pckg.resolve( this.getClass().getSimpleName() + ".class" ) );
+            Files.copy( is, target );
         }
 
         try (BufferedWriter argsWriter = Files.newBufferedWriter( workDir.resolve( "args" ), Charset.defaultCharset() ))
@@ -74,7 +73,7 @@ public class MainClassModuleNameExtractor
             argsWriter.append( "." );
             argsWriter.newLine();
 
-            argsWriter.append( this.getClass().getName() );
+            argsWriter.append( CmdModuleNameExtractor.class.getName() );
             argsWriter.newLine();
 
             for ( Path p : files.values() )
@@ -132,86 +131,5 @@ public class MainClassModuleNameExtractor
         }
 
         return moduleNames;
-    }
-
-    public static void main( String[] args )
-    {
-        Properties properties = new Properties();
-
-        for ( String path : args )
-        {
-            try
-            {
-                String moduleName = getModuleName( Paths.get( path ) );
-                if ( moduleName != null )
-                {
-                    properties.setProperty( path, moduleName );
-                }
-            }
-            catch ( Exception e )
-            {
-                System.err.append( e.getMessage() );
-            }
-        }
-
-        try
-        {
-            properties.store( System.out, "" );
-        }
-        catch ( IOException e )
-        {
-            System.exit( 1 );
-        }
-    }
-
-    public static String getModuleName( Path modulePath ) throws Exception
-    {
-        String name = null;
-        try
-        {
-            // Use Java9 code to get moduleName, don't try to do it better with own implementation
-            Class<?> moduleFinderClass = Class.forName( "java.lang.module.ModuleFinder" );
-
-            Method ofMethod = moduleFinderClass.getMethod( "of", java.nio.file.Path[].class );
-            Object moduleFinderInstance =
-                ofMethod.invoke( null, new Object[] { new java.nio.file.Path[] { modulePath } } );
-
-            Method findAllMethod = moduleFinderClass.getMethod( "findAll" );
-
-            @SuppressWarnings( "unchecked" )
-            Set<Object> moduleReferences = (Set<Object>) findAllMethod.invoke( moduleFinderInstance );
-
-            if ( moduleReferences.isEmpty() )
-            {
-                return null;
-            }
-
-            Object moduleReference = moduleReferences.iterator().next();
-            Method descriptorMethod = moduleReference.getClass().getMethod( "descriptor" );
-            Object moduleDescriptorInstance = descriptorMethod.invoke( moduleReference );
-
-            Method nameMethod = moduleDescriptorInstance.getClass().getMethod( "name" );
-            name = (String) nameMethod.invoke( moduleDescriptorInstance );
-        }
-        catch ( InvocationTargetException e )
-        {
-            if ( e.getCause() instanceof Exception )
-            {
-                throw (Exception) e.getCause();
-            }
-        }
-        catch ( ReflectiveOperationException e )
-        {
-            // noop
-        }
-        catch ( SecurityException e )
-        {
-            // noop
-        }
-        catch ( IllegalArgumentException e )
-        {
-            // noop
-        }
-        return name;
     }
 }

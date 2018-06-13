@@ -35,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.ModuleNameSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,42 +85,6 @@ public class LocationManagerTest
         assertThat( result.getClasspathElements().size(), is( 0 ) );
         assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
-
-    @Test
-    public void testEmptyWithReflectRequires() throws Exception
-    {
-        Path abc = Paths.get( "src/test/resources/empty/out" );
-        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
-        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
-        
-        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
-
-        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
-        assertThat( result.getPathElements().size(), is( 1 ) );
-        assertThat( result.getModulepathElements().size(), is( 0 ) );
-        assertThat( result.getClasspathElements().size(), is( 1 ) );
-        assertThat( result.getPathExceptions().size(), is( 0 ) );
-    }
-    
-    @Test
-    public void testManifestWithoutReflectRequires() throws Exception
-    {
-        Path abc = Paths.get( "src/test/resources/manifest.without/out" );
-        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
-        when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
-        
-//        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
-        
-        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
-
-        assertThat( result.getMainModuleDescriptor(), is( descriptor) );
-        assertThat( result.getPathElements().size(), is( 1 ) );
-        assertThat( result.getModulepathElements().size(), is( 0 ) );
-        assertThat( result.getClasspathElements().size(), is( 1 ) );
-        assertThat( result.getPathExceptions().size(), is( 0 ) );
-    }
     
     @Test
     public void testManifestWithReflectRequires() throws Exception
@@ -130,8 +93,6 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "auto.by.manifest" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
-        
-//        when( reflectParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newAutomaticModule( "auto.by.manifest" ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
 
@@ -254,5 +215,18 @@ public class LocationManagerTest
         assertThat( result.getClasspathElements().size(), is( 0 ) );
         assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
+    
+    @Test
+    public void testResolvePath() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" );
+        ResolvePathRequest<Path> request = ResolvePathRequest.ofPath( abc );
+        
+        when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() );
+        
+        ResolvePathResult result = locationManager.resolvePath( request );
 
+        assertThat( result.getModuleDescriptor(), is( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() ) );
+        assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+    }
 }

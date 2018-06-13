@@ -33,14 +33,6 @@ import java.util.Map;
  */
 public class ResolvePathsResult<T>
 {
-    /**
-     * Source of the modulename 
-     */
-    public enum ModuleNameSource
-    {
-        FILENAME, MANIFEST, MODULEDESCRIPTOR
-    }
-    
     private JavaModuleDescriptor mainModuleDescriptor;
     
     /**
