@@ -168,19 +168,6 @@ public class LocationManagerTest
     }
 
     @Test
-    public void testClassicJarNameStartsWithNumber() throws Exception
-    {
-        assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
-        
-        Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" );
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
-        
-        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
-        
-        assertThat( result.getPathExceptions().size(), is( 1 ) );
-    }
-
-    @Test
     public void testNonJar() throws Exception
     {
         Path p = Paths.get( "src/test/resources/nonjar/pom.xml" );

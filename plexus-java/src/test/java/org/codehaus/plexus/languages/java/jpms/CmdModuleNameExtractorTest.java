@@ -19,7 +19,22 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-public enum ModuleNameSource
+import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Path;
+
+import org.junit.Test;
+
+public class CmdModuleNameExtractorTest
 {
-    FILENAME, MANIFEST, MODULEDESCRIPTOR
+    @Test
+    public void testMethodCount() throws Exception
+    {
+        // ensure that both implementations are in sync
+        assertEquals( 2, CmdModuleNameExtractor.class.getDeclaredMethods().length );
+        
+        // if these don't exist, a NoSuchMethodException is thrown
+        CmdModuleNameExtractor.class.getDeclaredMethod( "main", String[].class );
+        CmdModuleNameExtractor.class.getDeclaredMethod( "getModuleName", Path.class );
+    }
 }

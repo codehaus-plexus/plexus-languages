@@ -29,6 +29,13 @@ import java.nio.file.Path;
  */
 public class CmdModuleNameExtractor
 {
+    public static void main( String[] args )
+    {
+        System.err.println( "Use at least Java 9 to execute this class" );
+        
+        System.exit( -1 );
+    }
+
     /**
      * 
      * @param modulePath

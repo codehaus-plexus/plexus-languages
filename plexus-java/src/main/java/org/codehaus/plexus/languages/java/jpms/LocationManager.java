@@ -64,7 +64,14 @@ public class LocationManager
         this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
 
-    public <T> ResolvePathResult resolvePath( final ResolvePathRequest<T> request  ) throws Exception
+    /**
+     * Resolve a single jar
+     * 
+     * @param request the request
+     * @return the {@link ResolvePathResult}, containing the name and optional module descriptor
+     * @throws IOException if any occurs
+     */
+    public <T> ResolvePathResult resolvePath( final ResolvePathRequest<T> request ) throws IOException
     {
         ModuleNameExtractor filenameExtractor = new ModuleNameExtractor()
         {
@@ -103,36 +110,13 @@ public class LocationManager
         
         Map<T, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
 
-        JavaModuleDescriptor mainModuleDescriptor;
-        
-        Path descriptorPath = request.getMainModuleDescriptor();
-        
-        if ( descriptorPath != null )
-        {
-            if ( descriptorPath.endsWith( "module-info.java" ) )
-            {
-                mainModuleDescriptor = sourceParser.fromSourcePath( descriptorPath );
-            }
-            else if ( descriptorPath.endsWith( "module-info.class" ) )
-            {
-                mainModuleDescriptor = binaryParser.getModuleDescriptor( descriptorPath.getParent() );
-            }
-            else
-            {
-                throw new IOException( "Invalid path to module descriptor: " + descriptorPath );
-            }
-        }
-        else
-        {
-            mainModuleDescriptor = null;
-        }
+        JavaModuleDescriptor mainModuleDescriptor = getMainModuleDescriptor( request );
+
+        result.setMainModuleDescriptor( mainModuleDescriptor );
 
         Map<String, JavaModuleDescriptor> availableNamedModules = new HashMap<>(); 
         
         Map<String, ModuleNameSource> moduleNameSources = new HashMap<>();
-        
-        // start from root
-        result.setMainModuleDescriptor( mainModuleDescriptor );
         
         final Map<T, Path> filenameAutoModules = new HashMap<>();
         
@@ -242,7 +226,36 @@ public class LocationManager
         return result;
     }
 
-    private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor ) throws Exception
+    private <T> JavaModuleDescriptor getMainModuleDescriptor( final ResolvePathsRequest<T> request )
+        throws IOException
+    {
+        JavaModuleDescriptor mainModuleDescriptor;
+        
+        Path descriptorPath = request.getMainModuleDescriptor();
+        
+        if ( descriptorPath != null )
+        {
+            if ( descriptorPath.endsWith( "module-info.java" ) )
+            {
+                mainModuleDescriptor = sourceParser.fromSourcePath( descriptorPath );
+            }
+            else if ( descriptorPath.endsWith( "module-info.class" ) )
+            {
+                mainModuleDescriptor = binaryParser.getModuleDescriptor( descriptorPath.getParent() );
+            }
+            else
+            {
+                throw new IOException( "Invalid path to module descriptor: " + descriptorPath );
+            }
+        }
+        else
+        {
+            mainModuleDescriptor = null;
+        }
+        return mainModuleDescriptor;
+    }
+
+    private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor ) throws IOException
     {
         ResolvePathResult result = new ResolvePathResult();
         JavaModuleDescriptor moduleDescriptor = null;
