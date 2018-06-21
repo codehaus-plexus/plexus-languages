@@ -22,6 +22,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -40,6 +41,8 @@ public abstract class ResolvePathsRequest<T>
     private Collection<T> pathElements;
 
     private Collection<String> additionalModules;
+    
+    private boolean includeAllProviders;
 
     private ResolvePathsRequest()
     {
@@ -52,6 +55,11 @@ public abstract class ResolvePathsRequest<T>
     public static ResolvePathsRequest<File> withFiles( Collection<File> files )
     {
         return ofFiles( files );
+    }
+    
+    public static ResolvePathsRequest<File> ofFiles( File... files )
+    {
+        return ofFiles( Arrays.asList( files ) );
     }
     
     public static ResolvePathsRequest<File> ofFiles( Collection<File> files )
@@ -78,6 +86,11 @@ public abstract class ResolvePathsRequest<T>
         return ofPaths( paths );
     }
     
+    public static ResolvePathsRequest<Path> ofPaths( Path... paths )
+    {
+        return ofPaths( Arrays.asList( paths ) );
+    }
+    
     public static ResolvePathsRequest<Path> ofPaths( Collection<Path> paths )
     {
         ResolvePathsRequest<Path> request = new ResolvePathsRequest<Path>() {
@@ -98,6 +111,11 @@ public abstract class ResolvePathsRequest<T>
     public static ResolvePathsRequest<String> withStrings( Collection<String> strings )
     {
         return ofStrings( strings );
+    }
+    
+    public static ResolvePathsRequest<String> ofStrings( String... strings )
+    {
+        return ofStrings( Arrays.asList( strings ) );
     }
     
     public static ResolvePathsRequest<String> ofStrings( Collection<String> strings )
@@ -177,5 +195,22 @@ public abstract class ResolvePathsRequest<T>
             additionalModules = Collections.emptyList();
         }
         return additionalModules;
+    }
+    
+    /**
+     * Will also include all modules that contain providers for used services, should only be used at runtime (not during compile nor test)
+     * 
+     * @param includeAllProviders
+     * @return this request
+     */
+    public ResolvePathsRequest<T> setIncludeAllProviders( boolean includeAllProviders )
+    {
+        this.includeAllProviders = includeAllProviders;
+        return this;
+    }
+    
+    public boolean isIncludeAllProviders()
+    {
+        return includeAllProviders;
     }
 }

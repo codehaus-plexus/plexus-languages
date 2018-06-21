@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 
 /**
  * Maps artifacts to modules and analyzes the type of required modules
@@ -114,7 +115,15 @@ public class LocationManager
 
         result.setMainModuleDescriptor( mainModuleDescriptor );
 
-        Map<String, JavaModuleDescriptor> availableNamedModules = new HashMap<>(); 
+        // key = service, value = names of modules that provide this service
+        Map<String, Set<String>> availableProviders = new HashMap<>();
+
+        if( mainModuleDescriptor != null && request.isIncludeAllProviders() )
+        {
+            collectProviders( mainModuleDescriptor, availableProviders );
+        }
+
+        Map<String, JavaModuleDescriptor> availableNamedModules = new HashMap<>();
         
         Map<String, ModuleNameSource> moduleNameSources = new HashMap<>();
         
@@ -163,6 +172,11 @@ public class LocationManager
                 moduleNameSources.put( moduleDescriptor.name(), source );
                 
                 availableNamedModules.put( moduleDescriptor.name(), moduleDescriptor );
+                
+                if ( request.isIncludeAllProviders() )
+                {
+                    collectProviders( moduleDescriptor, availableProviders );
+                }
             }
             
             pathElements.put( t, moduleDescriptor );
@@ -196,12 +210,21 @@ public class LocationManager
         if ( mainModuleDescriptor != null )
         {
             Set<String> requiredNamedModules = new HashSet<>();
-            
+
             requiredNamedModules.add( mainModuleDescriptor.name() );
             
-            requiredNamedModules.addAll( request.getAdditionalModules() );
+            selectRequires( mainModuleDescriptor, 
+                            Collections.unmodifiableMap( availableNamedModules ),
+                            Collections.unmodifiableMap( availableProviders ), 
+                            requiredNamedModules );
             
-            select( mainModuleDescriptor, Collections.unmodifiableMap( availableNamedModules ), requiredNamedModules );
+            for ( String additionalModule : request.getAdditionalModules() )
+            {
+                selectModule( additionalModule, 
+                              Collections.unmodifiableMap( availableNamedModules ), 
+                              Collections.unmodifiableMap( availableProviders ), 
+                              requiredNamedModules );
+            }
 
             // in case of identical module names, first one wins
             Set<String> collectedModules = new HashSet<>( requiredNamedModules.size() );
@@ -258,8 +281,9 @@ public class LocationManager
     private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor ) throws IOException
     {
         ResolvePathResult result = new ResolvePathResult();
+
         JavaModuleDescriptor moduleDescriptor = null;
-        
+
         // either jar or outputDirectory
         if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
         {
@@ -293,23 +317,62 @@ public class LocationManager
                 moduleDescriptor = JavaModuleDescriptor.newAutomaticModule( moduleName ).build();
             }
         }
-        
         result.setModuleDescriptor( moduleDescriptor );
+
         return result;
     }
     
-    private void select( JavaModuleDescriptor module, Map<String, JavaModuleDescriptor> availableModules,
-                         Set<String> namedModules )
+    private void selectRequires( JavaModuleDescriptor module, 
+                                 Map<String, JavaModuleDescriptor> availableModules,
+                                 Map<String, Set<String>> availableProviders,
+                                 Set<String> namedModules )
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
-            String requiresName = requires.name();
-            JavaModuleDescriptor requiredModule = availableModules.get( requiresName );
-
-            if ( requiredModule != null && namedModules.add( requiresName ) )
+            selectModule( requires.name(), availableModules, availableProviders, namedModules );
+        }
+        
+        for ( String uses : module.uses() )
+        {
+            if ( availableProviders.containsKey( uses ) )
             {
-                select( requiredModule, availableModules, namedModules );
+                for ( String providerModule : availableProviders.get( uses ) )
+                {
+                    JavaModuleDescriptor requiredModule = availableModules.get( providerModule );
+                    
+                    if ( requiredModule != null && namedModules.add( providerModule ) )
+                    {
+                        selectRequires( requiredModule, availableModules, availableProviders, namedModules );
+                    }
+                }
             }
+        }        
+    }
+
+    private void selectModule( String module, Map<String, JavaModuleDescriptor> availableModules, Map<String, Set<String>> availableProviders,
+                               Set<String> namedModules )
+    {
+        JavaModuleDescriptor requiredModule = availableModules.get( module );
+
+        if ( requiredModule != null && namedModules.add( module ) )
+        {
+            selectRequires( requiredModule, availableModules, availableProviders, namedModules );
+        }
+    }
+    
+    private void collectProviders( JavaModuleDescriptor moduleDescriptor, Map<String, Set<String>> availableProviders )
+    {
+        for ( JavaProvides provides : moduleDescriptor.provides() )
+        {
+            Set<String> providingModules = availableProviders.get( provides.service() );
+            
+            if ( providingModules == null )
+            {
+                providingModules = new HashSet<>();
+
+                availableProviders.put( provides.service(), providingModules );
+            }
+            providingModules.add( moduleDescriptor.name() );
         }
     }
 }

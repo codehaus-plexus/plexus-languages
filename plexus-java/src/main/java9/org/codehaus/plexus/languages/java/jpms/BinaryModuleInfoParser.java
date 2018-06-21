@@ -61,6 +61,8 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
             }
         }
         
+        
+        
         return builder.build();
     }
 }

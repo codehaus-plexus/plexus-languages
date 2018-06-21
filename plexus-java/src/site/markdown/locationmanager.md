@@ -24,6 +24,8 @@ Additional methods are:
 
 - `setAdditionalModules`, in case the consumer wants to use `--add-modules`
 
+- `setIncludeAllProviders`, in general would only be used at runtime, not during compile or test. In case `uses` is used, all modules with matching `provides` are added as well.   
+
 - `setJdkHome`, should point to Java 9 or above in case the runtime of this library is Java 7 or 8
 
 - `setMainModuleDescriptor`, which can either be a `module-info.java` or `module-info.class`
