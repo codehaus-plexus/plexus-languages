@@ -20,11 +20,8 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -183,7 +180,7 @@ public class LocationManagerTest
     @Test
     public void testAdditionalModules() throws Exception
     {
-        Path p = Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" );
+        Path p = Paths.get( "src/test/resources/mock/jar0" );
         
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
@@ -206,7 +203,7 @@ public class LocationManagerTest
     @Test
     public void testResolvePath() throws Exception
     {
-        Path abc = Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" );
+        Path abc = Paths.get( "src/test/resources/mock/jar0" );
         ResolvePathRequest<Path> request = ResolvePathRequest.ofPath( abc );
         
         when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() );
@@ -216,4 +213,97 @@ public class LocationManagerTest
         assertThat( result.getModuleDescriptor(), is( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() ) );
         assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
     }
+
+    @Test
+    public void testNoMatchingProviders() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
+        
+        when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "device" ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 0 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+
+    
+    @Test
+    public void testMainModuleDescriptorWithProviders() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
+        
+        when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+
+    @Test
+    public void testMainModuleDescriptorWithProvidersDontIncludeProviders() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc );
+        
+        when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().size(), is( 0 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+
+    @Test
+    public void testTransitiveProviders() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        Path ghi = Paths.get( "src/test/resources/mock/jar1" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
+        
+        when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( ghi ) ).thenReturn( JavaModuleDescriptor.newModule( "ghi" ).uses( "tool" ).build() );
+        
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 2 ) );
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testDontIncludeProviders() throws Exception
+    {
+        Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        Path ghi = Paths.get( "src/test/resources/mock/jar1" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc );
+        
+        when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( ghi ) ).thenReturn( JavaModuleDescriptor.newModule( "ghi" ).uses( "tool" ).build() );
+        
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+
 }
