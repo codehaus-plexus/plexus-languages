@@ -1,5 +1,9 @@
 package org.codehaus.plexus.languages.java.version;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,8 +24,6 @@ package org.codehaus.plexus.languages.java.version;
  */
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
@@ -107,6 +109,26 @@ public class JavaVersionTest
         JavaVersion seven = JavaVersion.parse( "7" );
         JavaVersion other = JavaVersion.parse( "7" );
         
+        assertEquals( seven, seven );
         assertEquals( seven, other );
+        assertNotEquals( seven, null );
+        assertNotEquals( seven, new Object() );
+        assertNotEquals( seven, JavaVersion.parse( "8" ) );
     }
+
+    @Test
+    public void testHascode() {
+        JavaVersion seven = JavaVersion.parse( "7" );
+        JavaVersion other = JavaVersion.parse( "7" );
+        
+        assertEquals( seven.hashCode(), other.hashCode() );
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals( "7", JavaVersion.parse( "7" ).toString() );
+        
+        assertEquals( "Raw version should not be parsed", "!@#$%^&*()", JavaVersion.parse( "!@#$%^&*()" ).toString() );
+    }
+    
 }
