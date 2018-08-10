@@ -6,7 +6,6 @@ jdk:
   - openjdk10
   - openjdk11
   - openjdk-ea
-  - oraclejdk-ea
   
 dist: trusty
 
