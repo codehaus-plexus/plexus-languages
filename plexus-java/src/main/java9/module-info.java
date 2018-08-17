@@ -23,4 +23,6 @@ module org.codehaus.plexus.languages.java
     
     exports org.codehaus.plexus.languages.java.jpms;
     exports org.codehaus.plexus.languages.java.version;
+    
+    provides org.codehaus.plexus.languages.java.jpms.LocationManager with org.codehaus.plexus.languages.java.jpms.LocationManager;
 }
