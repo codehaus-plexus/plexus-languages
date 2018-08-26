@@ -131,4 +131,11 @@ public class JavaVersionTest
         assertEquals( "Raw version should not be parsed", "!@#$%^&*()", JavaVersion.parse( "!@#$%^&*()" ).toString() );
     }
     
+    @Test
+    public void testAsMajor() {
+        assertEquals( JavaVersion.parse( "2" ), JavaVersion.parse( "1.2" ).asMajor() );
+        assertEquals( JavaVersion.parse( "5.0" ), JavaVersion.parse( "5.0" ).asMajor() );
+        // only shift one time
+        assertEquals( JavaVersion.parse( "1.1" ), JavaVersion.parse( "1.1.1" ).asMajor().asMajor() );
+    }
 }

@@ -45,23 +45,26 @@ public class JavaVersion implements Comparable<JavaVersion>
     
     private static final Pattern startingDigits = Pattern.compile( "(\\d+)(.*)" );
     
-    private String rawVersion;
+    private final String rawVersion;
+    
+    private final boolean isMajor; 
 
-    private JavaVersion( String rawVersion )
+    private JavaVersion( String rawVersion, boolean isMajor )
     {
         this.rawVersion = rawVersion;
+        this.isMajor = isMajor;
     }
 
     /**
      * Lazy parse the version-scheme.
      * Actual parsing is done when calling {@link #compareTo(JavaVersion)}  
      * 
-     * @param s the version string
+     * @param s the version string, never {@code null}
      * @return the version wrapped in a JavadocVersion
      */
     public static JavaVersion parse( String s ) 
     {
-        return new JavaVersion( s );
+        return new JavaVersion( s, !s.startsWith( "1." ) );
     }
 
     @Override
@@ -182,6 +185,23 @@ public class JavaVersion implements Comparable<JavaVersion>
     public boolean isAtLeast( String other )
     {
         return this.compareTo( parse( other ) ) >= 0;
+    }
+    
+    /**
+     * If original version starts with {@code "1."}, then remove this part from the version
+     * 
+     * @return a new JavaVersion if version has to be changed, otherwise return itself
+     */
+    public JavaVersion asMajor()
+    {
+        if ( !isMajor )
+        {
+            return new JavaVersion( rawVersion.substring( 2 ), true );
+        }
+        else
+        {
+            return this;
+        }
     }
 
     @Override
