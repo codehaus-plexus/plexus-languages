@@ -28,16 +28,17 @@
     </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-metadata</artifactId>
-        <version>1.7.1</version>
-        <!-- WATCH OUT duplicate compiler blocks confuses this plugin -->
-        <!-- Generated components.xml copied to src/main/resources -->
-        <configuration>
-          <extractors>
-            <extractor>source</extractor>
-          </extractors>
-        </configuration>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+        <version>0.3.3</version>
+        <executions>
+          <execution>
+            <id>index-project</id>
+            <goals>
+              <goal>main-index</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <!-- Rerun unittests with the multirelease jar, cannot be done with exploded directory of classes  -->
       <plugin>
@@ -73,17 +74,10 @@
       <artifactId>qdox</artifactId>
       <version>2.0-M9</version>
     </dependency>
-    
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-component-annotations</artifactId>
-      <version>1.7.1</version>
       <optional>true</optional>
     </dependency>
 

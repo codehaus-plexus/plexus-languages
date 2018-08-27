@@ -30,9 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 
 /**
@@ -41,8 +41,8 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides
  * @author Robert Scholte
  * @since 1.0.0
  */
+@Named
 @Singleton
-@Component( role = LocationManager.class )
 public class LocationManager
 {
     private ModuleInfoParser binaryParser;
