@@ -168,7 +168,6 @@ public class LocationManagerTest
     public void testNonJar() throws Exception
     {
         Path p = Paths.get( "src/test/resources/nonjar/pom.xml" );
-        when( asmParser.getModuleDescriptor( p ) ).thenThrow( new IOException() );
         
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
@@ -180,7 +179,7 @@ public class LocationManagerTest
     @Test
     public void testAdditionalModules() throws Exception
     {
-        Path p = Paths.get( "src/test/resources/mock/jar0" );
+        Path p = Paths.get( "src/test/resources/mock/jar0.jar" );
         
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
@@ -203,7 +202,7 @@ public class LocationManagerTest
     @Test
     public void testResolvePath() throws Exception
     {
-        Path abc = Paths.get( "src/test/resources/mock/jar0" );
+        Path abc = Paths.get( "src/test/resources/mock/jar0.jar" );
         ResolvePathRequest<Path> request = ResolvePathRequest.ofPath( abc );
         
         when( asmParser.getModuleDescriptor( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "org.objectweb.asm" ).build() );
@@ -218,7 +217,7 @@ public class LocationManagerTest
     public void testNoMatchingProviders() throws Exception
     {
         Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
-        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "device" ).build() );
@@ -236,7 +235,7 @@ public class LocationManagerTest
     public void testMainModuleDescriptorWithProviders() throws Exception
     {
         Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
-        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
@@ -253,7 +252,7 @@ public class LocationManagerTest
     public void testMainModuleDescriptorWithProvidersDontIncludeProviders() throws Exception
     {
         Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
-        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
@@ -270,8 +269,8 @@ public class LocationManagerTest
     public void testTransitiveProviders() throws Exception
     {
         Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
-        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
-        Path ghi = Paths.get( "src/test/resources/mock/jar1" ); // any existing file
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path ghi = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );
@@ -290,8 +289,8 @@ public class LocationManagerTest
     public void testDontIncludeProviders() throws Exception
     {
         Path abc = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
-        Path def = Paths.get( "src/test/resources/mock/jar0" ); // any existing file
-        Path ghi = Paths.get( "src/test/resources/mock/jar1" ); // any existing file
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path ghi = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );

@@ -283,8 +283,13 @@ public class LocationManager
         ResolvePathResult result = new ResolvePathResult();
 
         JavaModuleDescriptor moduleDescriptor = null;
-
+        
         // either jar or outputDirectory
+        if ( Files.isRegularFile( path ) && !path.getFileName().toString().endsWith( ".jar" ) )
+        {
+            throw new IllegalArgumentException( "Only outputDirectories and jars are accepted on the path" );
+        }
+        
         if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
         {
             moduleDescriptor = binaryParser.getModuleDescriptor( path );
