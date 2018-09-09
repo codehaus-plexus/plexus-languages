@@ -136,6 +136,13 @@ public class JavaVersionTest
         assertEquals( JavaVersion.parse( "2" ), JavaVersion.parse( "1.2" ).asMajor() );
         assertEquals( JavaVersion.parse( "5.0" ), JavaVersion.parse( "5.0" ).asMajor() );
         // only shift one time
-        assertEquals( JavaVersion.parse( "1.1" ), JavaVersion.parse( "1.1.1" ).asMajor().asMajor() );
+        assertEquals( JavaVersion.parse( "1.1.2" ).asMajor().asMajor().toString(), "1.2" );
     }
+    
+    @Test
+    public void testAsMajorEquals() {
+        JavaVersion version = JavaVersion.parse( "1.2" );
+        assertEquals( version, version.asMajor() );
+    }
+
 }

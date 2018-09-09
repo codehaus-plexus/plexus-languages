@@ -233,7 +233,27 @@ public class JavaVersion implements Comparable<JavaVersion>
         }
         
         JavaVersion other = (JavaVersion) obj;
-        if ( !Objects.equals( rawVersion, other.rawVersion ) )
+        if ( isMajor != other.isMajor )
+        {
+            final String thisOneDotVersion;
+            final String otherOneDotVersion;
+            if ( isMajor )
+            {
+                thisOneDotVersion = "1." + rawVersion;
+                otherOneDotVersion = other.rawVersion;
+            }
+            else
+            {
+                thisOneDotVersion = rawVersion;
+                otherOneDotVersion = "1." + other.rawVersion;
+            }
+            
+            if ( !Objects.equals( thisOneDotVersion, otherOneDotVersion ) )
+            {
+                    return false;
+            }
+        }
+        else if ( !Objects.equals( rawVersion, other.rawVersion ) )
         {
                 return false;
         }
