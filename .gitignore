@@ -6,3 +6,4 @@
 /plexus-java/.project
 /plexus-java/.settings
 /plexus-java/target
+*.iml
