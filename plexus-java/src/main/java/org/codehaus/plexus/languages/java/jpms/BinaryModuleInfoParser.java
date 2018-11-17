@@ -21,9 +21,11 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -74,12 +76,29 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
                     {
                         if ( targets == null || targets.length == 0 )
                         {
-                            wrapper.builder.exports( pn.replace( '/', '.' ) );
+                            wrapper.builder.exports( pn.replaceAll( "[/$]", "." ) );
                         }
                         else
                         {
-                            wrapper.builder.exports( pn.replace( '/', '.' ), new HashSet<>( Arrays.asList( targets ) ) );
+                            wrapper.builder.exports( pn.replaceAll( "[/$]", "." ), new HashSet<>( Arrays.asList( targets ) ) );
                         }
+                    }
+                    
+                    @Override
+                    public void visitUse( String service )
+                    {
+                        wrapper.builder.uses( service.replaceAll( "[/$]", "." ) );
+                    }
+                    
+                    @Override
+                    public void visitProvide( String service, String... providers )
+                    {
+                        List<String> renamedProvides = new ArrayList<>( providers.length );
+                        for ( String provider : providers )
+                        {
+                            renamedProvides.add( provider.replaceAll( "[/$]", "." ) );
+                        }
+                        wrapper.builder.provides​( service.replaceAll( "[/$]", "." ), renamedProvides );
                     }
                 };
             }

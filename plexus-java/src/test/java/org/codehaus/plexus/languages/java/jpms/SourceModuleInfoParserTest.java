@@ -19,6 +19,7 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,8 +28,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
+import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
@@ -61,6 +64,14 @@ public class SourceModuleInfoParserTest
         assertEquals( "f.g.h", exports.source() );
         assertEquals( new HashSet<>( Arrays.asList( "i.j", "k.l.m" ) ), exports.targets() );
         
+        Set<String> uses = moduleDescriptor.uses();
+        assertArrayEquals( new String[] { "com.example.foo.spi.Intf" } , uses.toArray( new String[0] ) );
+        
+        Iterator<JavaProvides> providesIter = moduleDescriptor.provides().iterator();
+        JavaProvides provides = providesIter.next();
+        
+        assertEquals( "com.example.foo.spi.Intf", provides.service() );
+        assertArrayEquals( new String[] { "com.example.foo.Impl" }, provides.providers().toArray( new String[0] ) );
     }
 
 }

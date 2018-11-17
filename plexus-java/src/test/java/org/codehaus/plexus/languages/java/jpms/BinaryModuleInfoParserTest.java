@@ -1,5 +1,7 @@
 package org.codehaus.plexus.languages.java.jpms;
 
+import static org.junit.Assert.assertArrayEquals;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,12 +26,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
+import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
@@ -133,6 +140,40 @@ public class BinaryModuleInfoParserTest
     public void testInvalidFile() throws Exception
     {
         parser.getModuleDescriptor( Paths.get( "src/test/resources/nonjar/pom.xml" ) );
+    }
+    
+    @Test
+    public void testUses() throws Exception
+    {
+        try ( InputStream is = Files.newInputStream( Paths.get( "src/test/resources/dir.descriptor.uses/out/module-info.class" ) ) )
+        {
+            JavaModuleDescriptor descriptor = parser.parse( is );
+            
+            assertNotNull( descriptor);
+            assertEquals( new HashSet<>( Arrays.asList( "org.apache.logging.log4j.spi.Provider",
+                                                        "org.apache.logging.log4j.util.PropertySource",
+                                                        "org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory" ) ),
+                          descriptor.uses() );
+        }
+    }
+    
+    @Test
+    public void testProvides() throws Exception
+    {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.service/threeten-extra-1.4.jar" ) );
+        
+        assertNotNull( descriptor );
+        assertEquals( 1, descriptor.provides().size() );
+        
+        JavaProvides provides = descriptor.provides().iterator().next();
+        assertEquals( "java.time.chrono.Chronology", provides.service() );
+        assertArrayEquals( new String[] { "org.threeten.extra.chrono.BritishCutoverChronology",
+            "org.threeten.extra.chrono.CopticChronology", "org.threeten.extra.chrono.DiscordianChronology",
+            "org.threeten.extra.chrono.EthiopicChronology", "org.threeten.extra.chrono.InternationalFixedChronology",
+            "org.threeten.extra.chrono.JulianChronology", "org.threeten.extra.chrono.PaxChronology",
+            "org.threeten.extra.chrono.Symmetry010Chronology", "org.threeten.extra.chrono.Symmetry454Chronology" },
+                           provides.providers().toArray( new String[0] ) );
+
     }
 
 }

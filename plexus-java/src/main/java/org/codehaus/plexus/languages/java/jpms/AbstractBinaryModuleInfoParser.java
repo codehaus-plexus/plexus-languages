@@ -29,7 +29,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
-public abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
+abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
 {
     private static final Pattern MRJAR_DESCRIPTOR = Pattern.compile( "META-INF/versions/[^/]+/module-info.class" );
 
