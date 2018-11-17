@@ -61,6 +61,15 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
             }
         }
         
+        for ( String uses : descriptor.uses() )
+        {
+            builder.uses( uses );
+        }
+        
+        for ( ModuleDescriptor.Provides provides : descriptor.provides() )
+        {
+            builder.provides​( provides.service(), provides.providers() );
+        }
         
         
         return builder.build();

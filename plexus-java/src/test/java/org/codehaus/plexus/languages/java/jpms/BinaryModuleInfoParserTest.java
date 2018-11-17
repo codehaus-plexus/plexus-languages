@@ -152,7 +152,7 @@ public class BinaryModuleInfoParserTest
             assertNotNull( descriptor);
             assertEquals( new HashSet<>( Arrays.asList( "org.apache.logging.log4j.spi.Provider",
                                                         "org.apache.logging.log4j.util.PropertySource",
-                                                        "org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory" ) ),
+                                                        "org.apache.logging.log4j.message.ThreadDumpMessage$ThreadInfoFactory" ) ),
                           descriptor.uses() );
         }
     }

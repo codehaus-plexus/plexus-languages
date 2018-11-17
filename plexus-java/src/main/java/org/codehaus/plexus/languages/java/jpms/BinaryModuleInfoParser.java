@@ -76,18 +76,18 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
                     {
                         if ( targets == null || targets.length == 0 )
                         {
-                            wrapper.builder.exports( pn.replaceAll( "[/$]", "." ) );
+                            wrapper.builder.exports( pn.replace( '/', '.' ) );
                         }
                         else
                         {
-                            wrapper.builder.exports( pn.replaceAll( "[/$]", "." ), new HashSet<>( Arrays.asList( targets ) ) );
+                            wrapper.builder.exports( pn.replace( '/', '.' ), new HashSet<>( Arrays.asList( targets ) ) );
                         }
                     }
                     
                     @Override
                     public void visitUse( String service )
                     {
-                        wrapper.builder.uses( service.replaceAll( "[/$]", "." ) );
+                        wrapper.builder.uses( service.replace( '/', '.' ) );
                     }
                     
                     @Override
@@ -96,9 +96,9 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
                         List<String> renamedProvides = new ArrayList<>( providers.length );
                         for ( String provider : providers )
                         {
-                            renamedProvides.add( provider.replaceAll( "[/$]", "." ) );
+                            renamedProvides.add( provider.replace( '/', '.' ) );
                         }
-                        wrapper.builder.provides​( service.replaceAll( "[/$]", "." ), renamedProvides );
+                        wrapper.builder.provides​( service.replace( '/', '.' ), renamedProvides );
                     }
                 };
             }
