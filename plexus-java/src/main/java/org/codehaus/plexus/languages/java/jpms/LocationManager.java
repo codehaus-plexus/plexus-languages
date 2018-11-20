@@ -369,13 +369,16 @@ public class LocationManager
     {
         for ( JavaProvides provides : moduleDescriptor.provides() )
         {
-            Set<String> providingModules = availableProviders.get( provides.service() );
+            // module-info.class uses FQN, i.e. $-separator for subclasses 
+            final String serviceClassName = provides.service().replace( '$', '.' );
+            
+            Set<String> providingModules = availableProviders.get( serviceClassName );
             
             if ( providingModules == null )
             {
                 providingModules = new HashSet<>();
 
-                availableProviders.put( provides.service(), providingModules );
+                availableProviders.put( serviceClassName, providingModules );
             }
             providingModules.add( moduleDescriptor.name() );
         }
