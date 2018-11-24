@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2001 - 2018 Codehaus Plexus</copyright>
     <item>
-      <title>File: 13,
-             Errors: 39,
-             Warnings: 38,
+      <title>File: 17,
+             Errors: 46,
+             Warnings: 63,
              Infos: 4
       </title>
             <link>http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html</link>
@@ -46,6 +46,20 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.CmdModuleNameExtractor.java">org/codehaus/plexus/languages/java/jpms/CmdModuleNameExtractor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.AbstractBinaryModuleInfoParser.java">org/codehaus/plexus/languages/java/jpms/AbstractBinaryModuleInfoParser.java</a>
                 </td>
                 <td>
@@ -55,7 +69,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ResolvePathRequest.java">org/codehaus/plexus/languages/java/jpms/ResolvePathRequest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  2
                 </td>
               </tr>
                           <tr>
@@ -80,10 +108,10 @@ under the License.
                   0
                 </td>
                 <td>
-                  20
+                  26
                 </td>
                 <td>
-                  3
+                  4
                 </td>
               </tr>
                           <tr>
@@ -94,7 +122,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  2
                 </td>
                 <td>
                   7
@@ -164,10 +192,38 @@ under the License.
                   1
                 </td>
                 <td>
-                  11
+                  16
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ModuleNameSource.java">org/codehaus/plexus/languages/java/jpms/ModuleNameSource.java</a>
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ResolvePathResult.java">org/codehaus/plexus/languages/java/jpms/ResolvePathResult.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  1
                 </td>
               </tr>
                           <tr>
@@ -189,7 +245,7 @@ under the License.
                   <a href="http://codehaus-plexus.github.io/plexus-languages/plexus-java//checkstyle.html#org.codehaus.plexus.languages.java.jpms.ResolvePathsResult.java">org/codehaus/plexus/languages/java/jpms/ResolvePathsResult.java</a>
                 </td>
                 <td>
-                  3
+                  0
                 </td>
                 <td>
                   1
@@ -220,7 +276,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   4
