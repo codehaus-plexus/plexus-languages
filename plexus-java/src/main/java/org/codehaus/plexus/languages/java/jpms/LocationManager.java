@@ -207,42 +207,42 @@ public class LocationManager
             }
         }
         
+        Set<String> requiredNamedModules = new HashSet<>();
+
         if ( mainModuleDescriptor != null )
         {
-            Set<String> requiredNamedModules = new HashSet<>();
-
             requiredNamedModules.add( mainModuleDescriptor.name() );
             
             selectRequires( mainModuleDescriptor, 
                             Collections.unmodifiableMap( availableNamedModules ),
                             Collections.unmodifiableMap( availableProviders ), 
                             requiredNamedModules );
-            
-            for ( String additionalModule : request.getAdditionalModules() )
+        }
+        
+        for ( String additionalModule : request.getAdditionalModules() )
+        {
+            selectModule( additionalModule, 
+                          Collections.unmodifiableMap( availableNamedModules ), 
+                          Collections.unmodifiableMap( availableProviders ), 
+                          requiredNamedModules );
+        }
+
+        // in case of identical module names, first one wins
+        Set<String> collectedModules = new HashSet<>( requiredNamedModules.size() );
+
+        for ( Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet() )
+        {
+            if ( entry.getValue() != null && requiredNamedModules.contains( entry.getValue().name() ) )
             {
-                selectModule( additionalModule, 
-                              Collections.unmodifiableMap( availableNamedModules ), 
-                              Collections.unmodifiableMap( availableProviders ), 
-                              requiredNamedModules );
+                if ( collectedModules.add( entry.getValue().name() ) )
+                {
+                    result.getModulepathElements().put( entry.getKey(),
+                                                        moduleNameSources.get( entry.getValue().name() ) );
+                }
             }
-
-            // in case of identical module names, first one wins
-            Set<String> collectedModules = new HashSet<>( requiredNamedModules.size() );
-
-            for ( Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet() )
+            else
             {
-                if ( entry.getValue() != null && requiredNamedModules.contains( entry.getValue().name() ) )
-                {
-                    if ( collectedModules.add( entry.getValue().name() ) )
-                    {
-                        result.getModulepathElements().put( entry.getKey(),
-                                                            moduleNameSources.get( entry.getValue().name() ) );
-                    }
-                }
-                else
-                {
-                    result.getClasspathElements().add( entry.getKey() );
-                }
+                result.getClasspathElements().add( entry.getKey() );
             }
         }
 

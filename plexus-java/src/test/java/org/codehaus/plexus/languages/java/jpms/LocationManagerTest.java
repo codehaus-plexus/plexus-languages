@@ -26,7 +26,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -299,6 +298,24 @@ public class LocationManagerTest
         
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testAllowAdditionalModulesWithoutMainDescriptor() throws Exception 
+    {
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path ghi = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setAdditionalModules( Collections.singleton( "def" ) );
+        
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
+        when(  asmParser.getModuleDescriptor( ghi ) ).thenReturn( JavaModuleDescriptor.newModule( "ghi" ).build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        
         assertThat( result.getPathElements().size(), is( 2 ) );
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
