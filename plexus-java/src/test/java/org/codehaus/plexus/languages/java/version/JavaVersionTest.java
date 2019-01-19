@@ -1,9 +1,5 @@
 package org.codehaus.plexus.languages.java.version;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,6 +19,11 @@ import static org.junit.Assert.assertNotEquals;
  * under the License.
  */
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -144,5 +145,17 @@ public class JavaVersionTest
         JavaVersion version = JavaVersion.parse( "1.2" );
         assertEquals( version, version.asMajor() );
     }
-
+    
+    @Test
+    public void testValueWithGroups() {
+        assertThat( JavaVersion.parse( "1" ).getValue( 1 ), is( "1" ) );
+        assertThat( JavaVersion.parse( "1" ).getValue( 2 ), is( "1.0" ) );
+        assertThat( JavaVersion.parse( "1" ).getValue( 3 ), is( "1.0.0" ) );
+        assertThat( JavaVersion.parse( "2.1" ).getValue( 1 ), is( "2" ) );
+        assertThat( JavaVersion.parse( "2.1" ).getValue( 2 ), is( "2.1" ) );
+        assertThat( JavaVersion.parse( "2.1" ).getValue( 3 ), is( "2.1.0" ) );
+        assertThat( JavaVersion.parse( "3.2.1" ).getValue( 1 ), is( "3" ) );
+        assertThat( JavaVersion.parse( "3.2.1" ).getValue( 2 ), is( "3.2" ) );
+        assertThat( JavaVersion.parse( "3.2.1" ).getValue( 3 ), is( "3.2.1" ) );
+    }
 }

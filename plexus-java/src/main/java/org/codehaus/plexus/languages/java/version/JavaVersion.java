@@ -1,6 +1,7 @@
 package org.codehaus.plexus.languages.java.version;
 
 import java.util.Objects;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -202,6 +203,52 @@ public class JavaVersion implements Comparable<JavaVersion>
         {
             return this;
         }
+    }
+    
+    /**
+     * Returns the original version
+     * 
+     * @return the raw version
+     */
+    public String getValue()
+    {
+        return rawVersion;
+    }
+
+    /**
+     * Returns a value respecting the nuber of groups.<br>
+     * If the original has more groups, the end of that value will be removed.<br>
+     * If the original has less groups, the value will be extended this ".0".<br>
+     * 
+     * <pre>
+     *   JavaVersion.parse( "1" ).getValue( 1 )   is "1" 
+     *   JavaVersion.parse( "1" ).getValue( 2 )   is "1.0" 
+     *   JavaVersion.parse( "2.1" ).getValue( 1 ) is "2" 
+     *   JavaVersion.parse( "2.1" ).getValue( 2 ) is "2.1" 
+     * </pre>
+     * 
+     * @param groups number of groups to return
+     * @return the version respecting the number of groups
+     */
+    public String getValue( int groups )
+    {
+        StringBuilder value = new StringBuilder();
+        StringTokenizer tokenizer = new StringTokenizer( rawVersion, "." );
+        
+        value.append( tokenizer.nextToken() );
+        for ( int group = 1 ; group < groups ; group++ )
+        {
+            value.append( '.' );
+            if( tokenizer.hasMoreTokens() )
+            {
+                value.append( tokenizer.nextToken() );
+            }
+            else
+            {
+                value.append( "0" );
+            }
+        }
+        return value.toString();
     }
 
     @Override
