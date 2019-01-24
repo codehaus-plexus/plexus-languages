@@ -44,6 +44,8 @@ public abstract class ResolvePathsRequest<T>
     
     private boolean includeAllProviders;
 
+    private JavaModuleDescriptor resolvedMainModuleDescriptor;
+
     private ResolvePathsRequest()
     {
     }
@@ -142,6 +144,11 @@ public abstract class ResolvePathsRequest<T>
         return mainModuleDescriptor;
     }
 
+    public JavaModuleDescriptor mainModuleDescriptor()
+    {
+        return resolvedMainModuleDescriptor;
+    }
+    
     /**
      * Must be either {@code module-info.java} or {@code module-info.class} 
      * 
@@ -151,6 +158,18 @@ public abstract class ResolvePathsRequest<T>
     public ResolvePathsRequest<T> setMainModuleDescriptor( T mainModuleDescriptor )
     {
         this.mainModuleDescriptor = toPath( mainModuleDescriptor );
+        return this;
+    }
+
+    /***
+     * Provide a resolved module descriptor
+     * 
+     * @param mainModuleDescriptor
+     * @return this request
+     */
+    public ResolvePathsRequest<T> setModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
+    {
+        this.resolvedMainModuleDescriptor = mainModuleDescriptor;
         return this;
     }
 

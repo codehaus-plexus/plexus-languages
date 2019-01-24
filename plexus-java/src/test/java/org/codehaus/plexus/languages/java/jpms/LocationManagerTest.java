@@ -22,7 +22,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -320,6 +320,24 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().size(), is( 1 ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
         assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testReuseModuleDescriptor() throws Exception
+    {
+        Path def = Paths.get( "src/test/resources/mock/jar0.jar" );
+        
+        ResolvePathRequest<Path> request1 = ResolvePathRequest.ofPath( def );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).build() );
+     
+        ResolvePathResult result1 = locationManager.resolvePath( request1 );
+        
+        ResolvePathsRequest<Path> request2 = ResolvePathsRequest.ofPaths( def );
+        request2.setModuleDescriptor( result1.getModuleDescriptor() );
+        
+        ResolvePathsResult<Path> result2 = locationManager.resolvePaths( request2 );
+        
+        assertThat( result1.getModuleDescriptor(), is( result2.getMainModuleDescriptor() ) );
     }
 
 }
