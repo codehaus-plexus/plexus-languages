@@ -273,7 +273,7 @@ public class LocationManager
         }
         else
         {
-            mainModuleDescriptor = request.mainModuleDescriptor();
+            mainModuleDescriptor = request.getModuleDescriptor();
         }
         return mainModuleDescriptor;
     }

@@ -144,7 +144,7 @@ public abstract class ResolvePathsRequest<T>
         return mainModuleDescriptor;
     }
 
-    public JavaModuleDescriptor mainModuleDescriptor()
+    public JavaModuleDescriptor getModuleDescriptor()
     {
         return resolvedMainModuleDescriptor;
     }
