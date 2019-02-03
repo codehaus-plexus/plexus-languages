@@ -1,5 +1,7 @@
 package org.codehaus.plexus.languages.java.jpms;
 
+import java.io.File;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,6 +24,7 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +68,46 @@ public class LocationManager
         this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
 
+    /**
+     * @param descriptorPath never {@code null}
+     * @return the parsed module descriptor
+     * @throws IOException when descriptorPath could not be read
+     */
+    public ResolvePathResult parseModuleDescriptor( Path descriptorPath ) throws IOException
+    {
+        JavaModuleDescriptor moduleDescriptor;
+        if ( descriptorPath.endsWith( "module-info.java" ) )
+        {
+            moduleDescriptor = sourceParser.fromSourcePath( descriptorPath );
+        }
+        else
+        {
+            throw new IOException( "Invalid path to module descriptor: " + descriptorPath );
+        }
+        return new ResolvePathResult().setModuleDescriptor( moduleDescriptor)
+                                      .setModuleNameSource( ModuleNameSource.MODULEDESCRIPTOR );
+    }
+    
+    /**
+     * @param descriptorPath never {@code null}
+     * @return the parsed module descriptor
+     * @throws IOException when descriptorPath could not be read
+     */
+    public ResolvePathResult parseModuleDescriptor( File descriptorPath ) throws IOException
+    {
+        return parseModuleDescriptor( descriptorPath.toPath() );
+    }
+    
+    /**
+     * @param descriptorPath never {@code null}
+     * @return the parsed module descriptor
+     * @throws IOException when descriptorPath could not be read
+     */
+    public ResolvePathResult parseModuleDescriptor( String descriptorPath ) throws IOException
+    {
+        return parseModuleDescriptor( Paths.get( descriptorPath ) );
+    }
+    
     /**
      * Resolve a single jar
      * 
