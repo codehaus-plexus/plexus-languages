@@ -339,5 +339,24 @@ public class LocationManagerTest
         
         assertThat( result1.getModuleDescriptor(), is( result2.getMainModuleDescriptor() ) );
     }
+    
+    @Test
+    public void testParseModuleDescriptor() throws Exception
+    {
+        Path descriptorPath = Paths.get( "src/test/resources/src.dir/module-info.java" );
+        when(  qdoxParser.fromSourcePath( descriptorPath ) ).thenReturn( JavaModuleDescriptor.newModule( "a.b.c" ).build() );
+        
+        ResolvePathResult result = locationManager.parseModuleDescriptor( descriptorPath );
+        assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+        assertThat( result.getModuleDescriptor().name(), is( "a.b.c" ) );
+        
+        locationManager.parseModuleDescriptor( descriptorPath.toFile() );
+        assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+        assertThat( result.getModuleDescriptor().name(), is( "a.b.c" ) );
+        
+        locationManager.parseModuleDescriptor( descriptorPath.toString() );
+        assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
+        assertThat( result.getModuleDescriptor().name(), is( "a.b.c" ) );
+    }
 
 }
