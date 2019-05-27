@@ -259,7 +259,8 @@ public class LocationManager
             selectRequires( mainModuleDescriptor, 
                             Collections.unmodifiableMap( availableNamedModules ),
                             Collections.unmodifiableMap( availableProviders ), 
-                            requiredNamedModules );
+                            requiredNamedModules,
+                            true );
         }
         
         for ( String additionalModule : request.getAdditionalModules() )
@@ -373,11 +374,15 @@ public class LocationManager
     private void selectRequires( JavaModuleDescriptor module, 
                                  Map<String, JavaModuleDescriptor> availableModules,
                                  Map<String, Set<String>> availableProviders,
-                                 Set<String> namedModules )
+                                 Set<String> namedModules,
+                                 boolean includeStatic )
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
-            selectModule( requires.name(), availableModules, availableProviders, namedModules );
+            if ( includeStatic || !requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
+            {
+                selectModule( requires.name(), availableModules, availableProviders, namedModules );
+            }
         }
         
         for ( String uses : module.uses() )
@@ -390,7 +395,7 @@ public class LocationManager
                     
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
-                        selectRequires( requiredModule, availableModules, availableProviders, namedModules );
+                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, false );
                     }
                 }
             }
@@ -404,7 +409,7 @@ public class LocationManager
 
         if ( requiredModule != null && namedModules.add( module ) )
         {
-            selectRequires( requiredModule, availableModules, availableProviders, namedModules );
+            selectRequires( requiredModule, availableModules, availableProviders, namedModules, false );
         }
     }
     
