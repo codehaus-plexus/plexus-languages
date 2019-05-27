@@ -358,5 +358,27 @@ public class LocationManagerTest
         assertThat( result.getModuleNameSource(), is( ModuleNameSource.MODULEDESCRIPTOR ) );
         assertThat( result.getModuleDescriptor().name(), is( "a.b.c" ) );
     }
+    
+    @Test
+    public void testTransitiveStatic() throws Exception 
+    {
+        Path moduleA = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path moduleB = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path moduleC = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( moduleB, moduleC ).setMainModuleDescriptor( moduleA );
+        
+        when(  qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
+                                                                  .requires( "moduleB" ).build() );
+        when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
+                                                                      .requires​( Collections.singleton( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ), "moduleC" ).build() );
+        when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" ).build() );
+        
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
 
 }
