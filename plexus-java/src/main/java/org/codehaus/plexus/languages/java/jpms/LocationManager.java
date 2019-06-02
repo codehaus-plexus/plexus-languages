@@ -331,7 +331,7 @@ public class LocationManager
         // either jar or outputDirectory
         if ( Files.isRegularFile( path ) && !path.getFileName().toString().endsWith( ".jar" ) )
         {
-            throw new IllegalArgumentException( "Only outputDirectories and jars are accepted on the path" );
+            throw new IllegalArgumentException( path.toString() + " not allowed on the path, only outputDirectories and jars are accepted" );
         }
         
         if ( Files.isRegularFile( path ) || Files.exists( path.resolve( "module-info.class" ) ) )
