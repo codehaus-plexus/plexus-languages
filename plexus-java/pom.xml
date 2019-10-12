@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>7.0</version>
+      <version>7.2</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
