@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.module.FindException;
 import java.lang.module.ModuleFinder;
 import java.lang.module.ModuleReference;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -82,15 +83,32 @@ public class CmdModuleNameExtractor
      * Get the name of the module, using Java 9 code without reflection
      * 
      * @param modulePath the module path
-     * @return the module name
-     * @throws FindException If an error occurs finding the module
+     * @return the module name or null if a name can not be determined
      */
-    public static String getModuleName( Path modulePath ) throws FindException
+    public static String getModuleName( Path modulePath )
     {
-        Set<ModuleReference> moduleReferences = ModuleFinder.of( modulePath ).findAll();
-        
-        Optional<ModuleReference> modRef = moduleReferences.stream().findFirst();
+        try
+        {
+            Set<ModuleReference> moduleReferences = ModuleFinder.of( modulePath ).findAll();
 
-        return modRef.isPresent() ? modRef.get().descriptor().name() : null;
+            Optional<ModuleReference> modRef = moduleReferences.stream().findFirst();
+
+            return modRef.isPresent() ? modRef.get().descriptor().name() : null;
+        }
+        catch ( FindException e )
+        {
+            if ( Files.exists( modulePath ) && Files.isRegularFile( modulePath ) && modulePath.getFileName().toString().endsWith( ".jar" ) )
+            {
+                // the automatic module name cannot be determined from the file name for
+                // many file naming conventions that ModuleFinder doesn't recognize
+                // so, if it's a file that exists, just return null (no module name found)
+                return null;
+            }
+            else
+            {
+                // rethrow if it's not a .jar file
+                throw e;
+            }
+        }
     }
 }

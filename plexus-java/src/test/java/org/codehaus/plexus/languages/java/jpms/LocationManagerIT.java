@@ -72,7 +72,7 @@ public class LocationManagerIT
     @Test
     public void testManifestWithoutReflectRequires() throws Exception
     {
-        Path abc = Paths.get( "src/test/resources/manifest.without/out" );
+        Path abc = Paths.get( "src/test/resources/dir.manifest.without/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "any" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
@@ -89,7 +89,7 @@ public class LocationManagerIT
     @Test
     public void testEmptyWithReflectRequires() throws Exception
     {
-        Path abc = Paths.get( "src/test/resources/empty/out" );
+        Path abc = Paths.get( "src/test/resources/dir.empty/out" );
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "a.b.c" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( abc ) ).setMainModuleDescriptor( mockModuleInfoJava );
@@ -108,7 +108,7 @@ public class LocationManagerIT
     {
         assumeThat( "Requires at least Java 9", System.getProperty( "java.version" ), not( startsWith( "1." ) ) );
         
-        Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar" );
+        Path p = Paths.get( "src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT-notexisting.jar" );
         ResolvePathRequest<Path> request = ResolvePathRequest.ofPath( p );
         
         locationManager.resolvePath( request );
@@ -124,6 +124,7 @@ public class LocationManagerIT
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         
-        assertThat( result.getPathExceptions().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is( 1 ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 }

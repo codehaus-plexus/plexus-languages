@@ -329,7 +329,7 @@ public class LocationManager
         JavaModuleDescriptor moduleDescriptor = null;
         
         // either jar or outputDirectory
-        if ( Files.isRegularFile( path ) && !path.getFileName().toString().endsWith( ".jar" ) )
+        if ( !Files.exists( path ) || ( Files.isRegularFile( path ) && !path.getFileName().toString().endsWith( ".jar" ) ) )
         {
             throw new IllegalArgumentException( "'" +  path.toString() + "' not allowed on the path, only outputDirectories and jars are accepted" );
         }
