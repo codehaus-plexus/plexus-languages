@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -57,6 +58,10 @@ public class MainClassModuleNameExtractor
         try (InputStream is =
             MainClassModuleNameExtractor.class.getResourceAsStream( "/META-INF/versions/9/" + classResourcePath ))
         {
+            if ( is==null )
+            {
+                return Collections.emptyMap();
+            }
             Path target = workDir.resolve( classResourcePath );
 
             Files.createDirectories( target.getParent() );
