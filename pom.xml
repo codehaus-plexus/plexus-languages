@@ -50,7 +50,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>3.8.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -63,11 +63,15 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <!-- 3.1.1 means error
+          Caused by: org.apache.maven.plugin.MojoExecutionException: MavenReportException: Error while generating Javadoc:
+          Exit code: 2 - javadoc: error - No source files for package org.codehaus.plexus.languages.java.jpms
+          -->
           <version>3.0.0</version>
         </plugin>
       </plugins>
