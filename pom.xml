@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
-    <version>4.0</version>
+    <version>6.1</version>
   </parent>
 
   <artifactId>plexus-languages</artifactId>
@@ -42,6 +42,7 @@
     <scm.url>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>6</javaVersion>
+    <project.build.outputTimestamp>2020-01-20T18:52:37Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -55,15 +56,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>3.1.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -80,10 +75,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.7.1</version>
         <configuration>
           <topSiteURL>${scm.url}</topSiteURL>
-          <reportPlugins />
         </configuration>
       </plugin>
     </plugins>
@@ -107,6 +100,7 @@
       </plugin>
     </plugins>
   </reporting>
+
   <profiles>
     <profile>
       <id>plexus-release</id>
