@@ -41,7 +41,7 @@
   <properties>
     <scm.url>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <javaVersion>6</javaVersion>
+    <javaVersion>7</javaVersion>
     <project.build.outputTimestamp>2020-01-20T18:52:37Z</project.build.outputTimestamp>
   </properties>
 
