@@ -268,7 +268,8 @@ public class LocationManager
             selectModule( additionalModule, 
                           Collections.unmodifiableMap( availableNamedModules ), 
                           Collections.unmodifiableMap( availableProviders ), 
-                          requiredNamedModules );
+                          requiredNamedModules,
+                          request.isIncludeAdditionalModulesStatic() );
         }
 
         // in case of identical module names, first one wins
@@ -381,7 +382,7 @@ public class LocationManager
         {
             if ( includeStatic || !requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
             {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules );
+                selectModule( requires.name(), availableModules, availableProviders, namedModules, false );
             }
         }
         
@@ -403,13 +404,13 @@ public class LocationManager
     }
 
     private void selectModule( String module, Map<String, JavaModuleDescriptor> availableModules, Map<String, Set<String>> availableProviders,
-                               Set<String> namedModules )
+                               Set<String> namedModules, boolean includeStatic )
     {
         JavaModuleDescriptor requiredModule = availableModules.get( module );
 
         if ( requiredModule != null && namedModules.add( module ) )
         {
-            selectRequires( requiredModule, availableModules, availableProviders, namedModules, false );
+            selectRequires( requiredModule, availableModules, availableProviders, namedModules, includeStatic );
         }
     }
     
