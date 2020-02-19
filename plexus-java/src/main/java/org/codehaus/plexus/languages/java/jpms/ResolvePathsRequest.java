@@ -235,11 +235,22 @@ public abstract class ResolvePathsRequest<T>
         return includeAllProviders;
     }
 
+    /**
+     *
+     * @return <code>true</code> if the result will include all static dependencies
+     * @since 1.0.5
+     */
     public boolean isIncludeStatic()
     {
         return includeStatic;
     }
 
+    /**
+     *
+     * @param includeStatic <code>true</code> if the result must include all static dependencies
+     * @return this request
+     * @since 1.0.5
+     */
     public ResolvePathsRequest<T> setIncludeStatic( boolean includeStatic )
     {
         this.includeStatic = includeStatic;
