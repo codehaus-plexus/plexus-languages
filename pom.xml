@@ -42,7 +42,7 @@
     <scm.url>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>7</javaVersion>
-    <project.build.outputTimestamp>2020-02-19T01:26:21Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2020-01-20T18:52:37Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -79,25 +79,6 @@
           <topSiteURL>${scm.url}</topSiteURL>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>9</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   
@@ -120,4 +101,33 @@
     </plugins>
   </reporting>
 
+  <profiles>
+    <profile>
+      <id>plexus-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.0.0-M1</version>
+            <executions>
+              <execution>
+                <id>enforce-java</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>9</version>
+                    </requireJavaVersion>
+                  </rules>    
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
