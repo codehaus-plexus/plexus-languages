@@ -269,7 +269,7 @@ public class LocationManager
                           Collections.unmodifiableMap( availableNamedModules ), 
                           Collections.unmodifiableMap( availableProviders ), 
                           requiredNamedModules,
-                          request.isIncludeAdditionalModulesStatic() );
+                          request.isIncludeStatic() );
         }
 
         // in case of identical module names, first one wins
