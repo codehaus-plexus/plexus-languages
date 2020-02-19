@@ -46,6 +46,8 @@ public abstract class ResolvePathsRequest<T>
 
     private JavaModuleDescriptor resolvedMainModuleDescriptor;
 
+    private boolean includeStatic;
+
     private ResolvePathsRequest()
     {
     }
@@ -231,5 +233,16 @@ public abstract class ResolvePathsRequest<T>
     public boolean isIncludeAllProviders()
     {
         return includeAllProviders;
+    }
+
+    public boolean isIncludeStatic()
+    {
+        return includeStatic;
+    }
+
+    public ResolvePathsRequest<T> setIncludeStatic( boolean includeStatic )
+    {
+        this.includeStatic = includeStatic;
+        return this;
     }
 }
