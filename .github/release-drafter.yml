@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: plexus-languages-$NEXT_MINOR_VERSION
