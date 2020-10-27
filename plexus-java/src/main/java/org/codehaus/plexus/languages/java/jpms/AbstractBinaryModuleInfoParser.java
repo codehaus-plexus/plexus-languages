@@ -23,16 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.regex.Pattern;
+
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 
 abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
 {
-    private static final Pattern MRJAR_DESCRIPTOR = Pattern.compile( "META-INF/versions/[^/]+/module-info.class" );
-
     @Override
     public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException
@@ -64,12 +62,14 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
 
                         if ( manifest != null && "true".equalsIgnoreCase( manifest.getMainAttributes().getValue( "Multi-Release" ) ) ) 
                         {
-                            // look for multirelease descriptor
-                            Enumeration<JarEntry> entryIter = jarFile.entries();
-                            while ( entryIter.hasMoreElements() )
+                            // @todo in case of request.jdkHome the version should be extracted via commandline
+                            int javaVersion = Integer.valueOf( JavaVersion.JAVA_SPECIFICATION_VERSION.getValue( 1 ) );
+                            
+                            for ( int version = javaVersion; version >= 9; version-- )
                             {
-                                JarEntry entry = entryIter.nextElement();
-                                if ( MRJAR_DESCRIPTOR.matcher( entry.getName() ).matches() )
+                                String resource = "META-INF/versions/" + version + "/module-info.class";
+                                JarEntry entry = jarFile.getJarEntry( resource );
+                                if ( entry != null )
                                 {
                                     moduleInfo = entry;
                                     break;
