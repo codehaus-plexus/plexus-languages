@@ -35,6 +35,13 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
     public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
         throws IOException
     {
+        return getModuleDescriptor( modulePath, JavaVersion.JAVA_SPECIFICATION_VERSION );
+    }
+    
+    @Override
+    public JavaModuleDescriptor getModuleDescriptor( Path modulePath, JavaVersion jdkVersion )
+        throws IOException
+    {
         JavaModuleDescriptor descriptor;
         if ( Files.isDirectory( modulePath ) )
         {
@@ -62,8 +69,7 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
 
                         if ( manifest != null && "true".equalsIgnoreCase( manifest.getMainAttributes().getValue( "Multi-Release" ) ) ) 
                         {
-                            // @todo in case of request.jdkHome the version should be extracted via commandline
-                            int javaVersion = Integer.valueOf( JavaVersion.JAVA_SPECIFICATION_VERSION.getValue( 1 ) );
+                            int javaVersion = Integer.valueOf( jdkVersion.asMajor().getValue( 1 ) );
                             
                             for ( int version = javaVersion; version >= 9; version-- )
                             {

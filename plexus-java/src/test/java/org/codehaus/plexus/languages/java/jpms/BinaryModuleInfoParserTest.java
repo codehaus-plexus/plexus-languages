@@ -38,6 +38,7 @@ import java.util.Set;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 import org.junit.Test;
 
 public class BinaryModuleInfoParserTest
@@ -67,7 +68,7 @@ public class BinaryModuleInfoParserTest
     @Test
     public void testMultiReleaseJarDescriptor() throws Exception
     {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar" ) );
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar" ), JavaVersion.parse( "17" ) );
         
         assertNotNull( descriptor);
         assertEquals( "de.adito.jloadr", descriptor.name() );

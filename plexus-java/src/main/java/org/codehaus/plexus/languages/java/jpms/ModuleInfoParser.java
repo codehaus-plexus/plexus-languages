@@ -22,6 +22,8 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.codehaus.plexus.languages.java.version.JavaVersion;
+
 /**
  * Extract information from the module-info file
  * 
@@ -37,6 +39,16 @@ interface ModuleInfoParser
      * @return the module descriptor
      * @throws IOException when the file could not be parsed
      */
-    JavaModuleDescriptor getModuleDescriptor( Path modulePath )
+    JavaModuleDescriptor getModuleDescriptor( Path modulePath ) throws IOException;
+    
+    /**
+     * Extracts the name from the module-info file
+     * 
+     * @param modulePath the path to the {@code module-info.class}
+     * @param javaVersion the java version in case of a multirelease jar
+     * @return the module descriptor
+     * @throws IOException when the file could not be parsed
+     */
+    JavaModuleDescriptor getModuleDescriptor( Path modulePath, JavaVersion javaVersion )
         throws IOException;
 }
