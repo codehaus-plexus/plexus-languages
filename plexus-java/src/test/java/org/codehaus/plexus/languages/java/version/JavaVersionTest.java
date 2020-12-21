@@ -80,6 +80,10 @@ public class JavaVersionTest
         JavaVersion base = JavaVersion.parse( "7" );
         assertTrue( base.isAtLeast( "7" ) );
         assertFalse( base.isAtLeast( "8" ) );
+
+        JavaVersion base16 = JavaVersion.parse( "16-ea" );
+        assertTrue( base16.isAtLeast( "16" ) );
+        assertFalse( base16.isAtLeast( "17" ) );
     }
 
     @Test
