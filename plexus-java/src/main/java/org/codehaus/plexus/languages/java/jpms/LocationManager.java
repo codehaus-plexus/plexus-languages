@@ -210,10 +210,10 @@ public class LocationManager
                 continue;
             }
             
-            if ( moduleDescriptor != null )
+            // Consider strategies how to handle duplicate modules by name
+            // For now, just ignore it
+            if ( moduleDescriptor != null && moduleNameSources.putIfAbsent( moduleDescriptor.name(), source ) == null )
             {
-                moduleNameSources.put( moduleDescriptor.name(), source );
-                
                 availableNamedModules.put( moduleDescriptor.name(), moduleDescriptor );
                 
                 if ( request.isIncludeAllProviders() )

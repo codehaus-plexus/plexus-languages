@@ -21,7 +21,7 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -408,6 +408,32 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().containsKey( moduleD ), is( true ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
         assertThat( result.getClasspathElements().contains( moduleC ), is( true ) );
+        assertThat( result.getPathExceptions().size(), is( 0 ) );
+    }
+    
+    @Test
+    public void testDuplicateModule() throws Exception
+    {
+        Path moduleA = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
+        Path moduleB = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path moduleC = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
+        
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( moduleB, moduleC ).setMainModuleDescriptor( moduleA );
+        
+        when(  qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
+                                                                  .requires( "anonymous" )
+                                                                  .build() );
+        when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "anonymous" )
+                                                                      .build() );
+        when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "anonymous" )
+                                                                      .build() );
+        
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( result.getPathElements().size(), is( 2 ) );
+        assertThat( result.getModulepathElements().size(), is( 1 ) );
+        assertThat( result.getModulepathElements().containsKey( moduleB ), is( true ) );
+        // with current default the duplicate will be ignored 
+        assertThat( result.getClasspathElements().size(), is( 0 ) );
         assertThat( result.getPathExceptions().size(), is( 0 ) );
     }
 
