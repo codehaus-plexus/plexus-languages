@@ -48,22 +48,18 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides
 @Singleton
 public class LocationManager
 {
-    private ModuleInfoParser binaryParser;
-    
     private SourceModuleInfoParser sourceParser;
 
     private ManifestModuleNameExtractor manifestModuleNameExtractor;
     
     public LocationManager()
     {
-        this.binaryParser = new BinaryModuleInfoParser();
         this.sourceParser = new SourceModuleInfoParser();
         this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
     
-    LocationManager( ModuleInfoParser binaryParser, SourceModuleInfoParser sourceParser )
+    LocationManager( SourceModuleInfoParser sourceParser )
     {
-        this.binaryParser = binaryParser;
         this.sourceParser = sourceParser;
         this.manifestModuleNameExtractor = new ManifestModuleNameExtractor();
     }
@@ -136,7 +132,7 @@ public class LocationManager
             }
         };
         
-        return resolvePath( request.toPath( request.getPathElement() ), filenameExtractor );
+        return resolvePath( request.toPath( request.getPathElement() ), filenameExtractor, getBinaryModuleInfoParser( request.getJdkHome() ) );
     }
     
     /**
@@ -154,7 +150,9 @@ public class LocationManager
         
         Map<T, JavaModuleDescriptor> pathElements = new LinkedHashMap<>( request.getPathElements().size() );
 
-        JavaModuleDescriptor mainModuleDescriptor = getMainModuleDescriptor( request );
+        final ModuleInfoParser binaryParser = getBinaryModuleInfoParser( request.getJdkHome() );
+
+        JavaModuleDescriptor mainModuleDescriptor = getMainModuleDescriptor( request, binaryParser );
 
         result.setMainModuleDescriptor( mainModuleDescriptor );
 
@@ -198,7 +196,7 @@ public class LocationManager
            
             try
             {
-                ResolvePathResult resolvedPath = resolvePath( request.toPath( t ), nameExtractor );
+                ResolvePathResult resolvedPath = resolvePath( request.toPath( t ), nameExtractor, binaryParser );
                 
                 moduleDescriptor = resolvedPath.getModuleDescriptor();
 
@@ -294,7 +292,28 @@ public class LocationManager
         return result;
     }
 
-    private <T> JavaModuleDescriptor getMainModuleDescriptor( final ResolvePathsRequest<T> request )
+    /**
+     * If the jdkHome is specified, its version it considered higher than the runtime java version.
+     * In that case ASM must be used to read the module descriptor
+     *  
+     * @param jdkHome
+     * @return
+     */
+    ModuleInfoParser getBinaryModuleInfoParser( final Path jdkHome )
+    {
+        final ModuleInfoParser binaryParser;
+        if ( jdkHome == null )
+        {
+            binaryParser = new BinaryModuleInfoParser();
+        }
+        else
+        {
+            binaryParser = new AsmModuleInfoParser();
+        }
+        return binaryParser;
+    }
+
+    private <T> JavaModuleDescriptor getMainModuleDescriptor( final ResolvePathsRequest<T> request, ModuleInfoParser binaryParser )
         throws IOException
     {
         JavaModuleDescriptor mainModuleDescriptor;
@@ -323,7 +342,7 @@ public class LocationManager
         return mainModuleDescriptor;
     }
 
-    private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor ) throws IOException
+    private ResolvePathResult resolvePath( Path path, ModuleNameExtractor fileModulenameExtractor, ModuleInfoParser binaryParser ) throws IOException
     {
         ResolvePathResult result = new ResolvePathResult();
 

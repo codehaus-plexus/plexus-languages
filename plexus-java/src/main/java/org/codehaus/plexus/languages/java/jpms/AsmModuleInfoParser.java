@@ -39,7 +39,7 @@ import org.objectweb.asm.Opcodes;
  * @author Robert Scholte
  * @since 1.0.0
  */
-class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
+class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
 {
     @Override
     JavaModuleDescriptor parse( InputStream in )

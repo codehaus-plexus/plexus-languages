@@ -52,7 +52,14 @@ public class LocationManagerTest
     @Before
     public void onSetup()
     {
-        locationManager = new LocationManager( asmParser, qdoxParser );
+        locationManager = new LocationManager( qdoxParser ) 
+        {
+            @Override
+            ModuleInfoParser getBinaryModuleInfoParser( Path jdkHome )
+            {
+                return asmParser;
+            }
+        };
     }
 
     @Test
