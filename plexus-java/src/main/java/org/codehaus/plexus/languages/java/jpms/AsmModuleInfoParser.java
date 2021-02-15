@@ -48,14 +48,14 @@ class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
         final JavaModuleDescriptorWrapper wrapper = new JavaModuleDescriptorWrapper();
 
         ClassReader reader = new ClassReader( in );
-        reader.accept( new ClassVisitor( Opcodes.ASM6 )
+        reader.accept( new ClassVisitor( Opcodes.ASM9 )
         {
             @Override
             public ModuleVisitor visitModule( String name, int arg1, String arg2 )
             {
                 wrapper.builder = JavaModuleDescriptor.newModule( name );
 
-                return new ModuleVisitor( Opcodes.ASM6 )
+                return new ModuleVisitor( Opcodes.ASM9 )
                 {
                     @Override
                     public void visitRequire( String module, int access, String version )
