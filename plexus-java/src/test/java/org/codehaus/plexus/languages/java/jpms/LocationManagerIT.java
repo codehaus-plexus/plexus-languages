@@ -132,5 +132,6 @@ public class LocationManagerIT
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         
         assertThat( result.getPathExceptions().size(), is( 1 ) );
+        assertThat( result.getClasspathElements().size(), is(1) );
     }
 }

@@ -205,6 +205,9 @@ public class LocationManager
             catch ( Exception e )
             {
                 result.getPathExceptions().put( t, e );
+
+                pathElements.put( t, null );
+
                 continue;
             }
             
