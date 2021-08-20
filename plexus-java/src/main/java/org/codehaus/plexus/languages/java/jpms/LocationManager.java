@@ -261,6 +261,7 @@ public class LocationManager
                             Collections.unmodifiableMap( availableNamedModules ),
                             Collections.unmodifiableMap( availableProviders ), 
                             requiredNamedModules,
+                            true, 
                             true );
         }
         
@@ -270,7 +271,8 @@ public class LocationManager
                           Collections.unmodifiableMap( availableNamedModules ), 
                           Collections.unmodifiableMap( availableProviders ), 
                           requiredNamedModules,
-                          request.isIncludeStatic() );
+                          request.isIncludeStatic(), 
+                          true );
         }
 
         // in case of identical module names, first one wins
@@ -398,13 +400,19 @@ public class LocationManager
                                  Map<String, JavaModuleDescriptor> availableModules,
                                  Map<String, Set<String>> availableProviders,
                                  Set<String> namedModules,
-                                 boolean includeStatic )
+                                 boolean includeStatic, 
+                                 boolean includeTransitive )
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
+            // includeTransitive is one level deeper compared to includeStatic
             if ( includeStatic || !requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
             {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules, false );
+                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
+            }
+            else if ( includeTransitive && requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
+            {
+                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
             }
         }
         
@@ -418,7 +426,7 @@ public class LocationManager
                     
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
-                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, false );
+                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, false, includeStatic );
                     }
                 }
             }
@@ -426,13 +434,13 @@ public class LocationManager
     }
 
     private void selectModule( String module, Map<String, JavaModuleDescriptor> availableModules, Map<String, Set<String>> availableProviders,
-                               Set<String> namedModules, boolean includeStatic )
+                               Set<String> namedModules, boolean includeStatic, boolean includeTransitive )
     {
         JavaModuleDescriptor requiredModule = availableModules.get( module );
 
         if ( requiredModule != null && namedModules.add( module ) )
         {
-            selectRequires( requiredModule, availableModules, availableProviders, namedModules, includeStatic );
+            selectRequires( requiredModule, availableModules, availableProviders, namedModules, includeStatic, includeTransitive );
         }
     }
     

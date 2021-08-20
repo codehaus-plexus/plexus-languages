@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Simple representation of a Module containing info required by this plugin.
+ * Simple representation of a ModuleDescriptor containing info required by this plugin.
  * It will provide only methods matching Java 9 ModuleDescriptor, so once Java 9  is required, we can easily switch 
  * 
  * @author Robert Scholte
@@ -231,7 +231,7 @@ public class JavaModuleDescriptor
     }
     
     /**
-     * Represents Module.Requires
+     * Represents ModuleDescriptor.Requires
      * 
      * @author Robert Scholte
      * @since 1.0.0
@@ -265,14 +265,14 @@ public class JavaModuleDescriptor
         }
         
         /**
-         * Represents Module.Requires.Modifier
+         * Represents ModuleDescriptor.Requires.Modifier
          * 
          * @author Robert Scholte
          * @since 1.0.0
          */
         public static enum JavaModifier
         {
-            STATIC
+            STATIC, TRANSITIVE
         }
 
         @Override
@@ -311,7 +311,7 @@ public class JavaModuleDescriptor
     }
     
     /**
-     * Represents Module.Requires
+     * Represents ModuleDescriptor.Exports
      * 
      * @author Robert Scholte
      * @since 1.0.0
@@ -380,7 +380,7 @@ public class JavaModuleDescriptor
     }
     
     /**
-     * Represents Module.Provides
+     * Represents ModuleDescriptor.Provides
      * 
      * @author Robert Scholte
      * @since 1.0.0
