@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -60,10 +62,19 @@ class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
                     @Override
                     public void visitRequire( String module, int access, String version )
                     {
-                        if ( ( access & Opcodes.ACC_STATIC_PHASE ) != 0 )
+                        if ( ( access & ( Opcodes.ACC_STATIC_PHASE | Opcodes.ACC_TRANSITIVE ) ) != 0 )
                         {
-                            wrapper.builder.requires​( Collections.singleton( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ),
-                                                       module );
+                            Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers = new LinkedHashSet<>();
+                            if ( ( access & Opcodes.ACC_STATIC_PHASE ) != 0 )
+                            {
+                                modifiers.add( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+                            }
+                            if ( ( access & Opcodes.ACC_TRANSITIVE ) != 0 )
+                            {
+                                modifiers.add( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+                            }
+
+                            wrapper.builder.requires​( modifiers, module );
                         }
                         else
                         {
