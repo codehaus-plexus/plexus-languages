@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,10 +57,19 @@ class SourceModuleInfoParser
             
             for ( JavaModuleDescriptor.JavaRequires requires : descriptor.getRequires() )
             {
-                if ( requires.isStatic() )
+                if ( requires.isStatic() || requires.isTransitive() )
                 {
-                    builder.requires​( Collections.singleton( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ),
-                                      requires.getModule().getName() );
+                    Set<org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers =
+                        new LinkedHashSet<>( 2 );
+                    if ( requires.isStatic() )
+                    {
+                        modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+                    }
+                    if ( requires.isTransitive() )
+                    {
+                        modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+                    }
+                    builder.requires​( modifiers , requires.getModule().getName() );
                 }
                 else
                 {
