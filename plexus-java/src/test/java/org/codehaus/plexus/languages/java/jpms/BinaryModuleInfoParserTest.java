@@ -1,6 +1,5 @@
 package org.codehaus.plexus.languages.java.jpms;
 
-import static org.junit.Assert.assertArrayEquals;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,9 +20,12 @@ import static org.junit.Assert.assertArrayEquals;
  * under the License.
  */
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -177,4 +179,26 @@ public class BinaryModuleInfoParserTest
 
     }
 
+    @Test
+    public void testRequires() throws Exception
+    {
+        try ( InputStream is = Files.newInputStream( Paths.get( "src/test/resources/dir.descriptor.requires/out/module-info.class" ) ) )
+        {
+            JavaModuleDescriptor descriptor = parser.parse( is );
+            
+            assertNotNull( descriptor);
+            assertThat( descriptor.requires().size(), is( 5 ) );
+
+            Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
+                            .requires( "java.base" )
+                            .requires( "mod_r" )
+                            .requires​( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "mod_r_s" )
+                            .requires​( Collections.singleton( JavaRequires.JavaModifier.TRANSITIVE ), "mod_r_t" )
+                            .requires​( new HashSet<JavaRequires.JavaModifier>( Arrays.asList( JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE ) ), "mod_r_s_t" )
+                            .build()
+                            .requires();
+
+                        assertEquals( expectedRequires, descriptor.requires() );
+        }
+    }
 }

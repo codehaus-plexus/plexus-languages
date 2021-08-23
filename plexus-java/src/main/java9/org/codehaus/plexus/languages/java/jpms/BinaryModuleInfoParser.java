@@ -24,6 +24,8 @@ import java.io.InputStream;
 
 import java.lang.module.ModuleDescriptor;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder;
 
@@ -38,10 +40,19 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
         
         for ( ModuleDescriptor.Requires requires : descriptor.requires() )
         {
-            if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.STATIC ) )
+            if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.STATIC )
+                || requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.TRANSITIVE ) )
             {
-                builder.requires​( Collections.singleton( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC ),
-                                  requires.name() );
+                Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers = new LinkedHashSet<>();
+                if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.STATIC ) )
+                {
+                    modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+                }
+                if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.TRANSITIVE ) )
+                {
+                    modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+                }
+                builder.requires​( modifiers, requires.name() );
             }
             else
             {
