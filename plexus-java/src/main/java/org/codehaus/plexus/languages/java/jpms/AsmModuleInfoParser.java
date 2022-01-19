@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -74,7 +73,7 @@ class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
                                 modifiers.add( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
                             }
 
-                            wrapper.builder.requires​( modifiers, module );
+                            wrapper.builder.requires( modifiers, module );
                         }
                         else
                         {
@@ -109,7 +108,7 @@ class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
                         {
                             renamedProvides.add( provider.replace( '/', '.' ) );
                         }
-                        wrapper.builder.provides​( service.replace( '/', '.' ), renamedProvides );
+                        wrapper.builder.provides( service.replace( '/', '.' ), renamedProvides );
                     }
                 };
             }

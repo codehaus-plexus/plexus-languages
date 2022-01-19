@@ -261,7 +261,7 @@ public class LocationManager
                             Collections.unmodifiableMap( availableNamedModules ),
                             Collections.unmodifiableMap( availableProviders ), 
                             requiredNamedModules,
-                            true, 
+                            request.isIncludeStatic(),
                             true );
         }
         
@@ -406,13 +406,13 @@ public class LocationManager
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
             // includeTransitive is one level deeper compared to includeStatic
-            if ( includeStatic || !requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
+            if ( includeStatic || !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
             {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
+                selectModule( requires.name(), availableModules, availableProviders, namedModules, includeStatic, includeTransitive );
             }
-            else if ( includeTransitive && requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
+            else if ( includeTransitive && requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
             {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
+                selectModule( requires.name(), availableModules, availableProviders, namedModules, includeStatic, includeTransitive );
             }
         }
         
@@ -426,7 +426,7 @@ public class LocationManager
                     
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
-                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, false, includeStatic );
+                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, includeStatic, includeTransitive );
                     }
                 }
             }

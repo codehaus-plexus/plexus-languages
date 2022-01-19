@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +67,7 @@ class SourceModuleInfoParser
                     {
                         modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
                     }
-                    builder.requires​( modifiers , requires.getModule().getName() );
+                    builder.requires( modifiers , requires.getModule().getName() );
                 }
                 else
                 {
@@ -107,7 +105,7 @@ class SourceModuleInfoParser
                     providers.add( provider.getName() );
                 }
                 
-                builder.provides​( provides.getService().getName(), providers );
+                builder.provides( provides.getService().getName(), providers );
             }
         }
         else

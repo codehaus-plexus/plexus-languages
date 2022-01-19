@@ -110,7 +110,7 @@ public class BinaryModuleInfoParserTest
         Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
             .requires( "java.base" )
             .requires( "java.xml" )
-            .requires​( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "com.google.common" )
+            .requires( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "com.google.common" )
             .build()
             .requires();
 
@@ -192,9 +192,9 @@ public class BinaryModuleInfoParserTest
             Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
                             .requires( "java.base" )
                             .requires( "mod_r" )
-                            .requires​( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "mod_r_s" )
-                            .requires​( Collections.singleton( JavaRequires.JavaModifier.TRANSITIVE ), "mod_r_t" )
-                            .requires​( new HashSet<JavaRequires.JavaModifier>( Arrays.asList( JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE ) ), "mod_r_s_t" )
+                            .requires( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "mod_r_s" )
+                            .requires( Collections.singleton( JavaRequires.JavaModifier.TRANSITIVE ), "mod_r_t" )
+                            .requires( new HashSet<JavaRequires.JavaModifier>( Arrays.asList( JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE ) ), "mod_r_s_t" )
                             .build()
                             .requires();
 

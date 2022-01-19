@@ -49,23 +49,23 @@ public class SourceModuleInfoParserTest
         
         JavaRequires requires = requiresIter.next();
         assertEquals( "d.e", requires.name() );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
+        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
 
         requires = requiresIter.next();
         assertEquals( "s.d.e", requires.name() );
-        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
+        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
 
         requires = requiresIter.next();
         assertEquals( "t.d.e", requires.name() );
-        assertFalse( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
+        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
         
         requires = requiresIter.next();
         assertEquals( "s.t.d.e", requires.name() );
-        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertTrue( requires.modifiers​().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
+        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
         
         Iterator<JavaExports> exportsIter = moduleDescriptor.exports().iterator();
         

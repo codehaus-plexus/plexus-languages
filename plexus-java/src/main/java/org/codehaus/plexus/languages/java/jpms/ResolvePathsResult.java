@@ -122,4 +122,15 @@ public class ResolvePathsResult<T>
     {
         return pathExceptions;
     }
+
+    @Override
+    public String toString() {
+        return "ResolvePathsResult{" +
+                "mainModuleDescriptor=" + mainModuleDescriptor +
+                ", pathElements=" + pathElements +
+                ", modulepathElements=" + modulepathElements +
+                ", classpathElements=" + classpathElements +
+                ", pathExceptions=" + pathExceptions +
+                '}';
+    }
 }

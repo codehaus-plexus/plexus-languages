@@ -68,7 +68,7 @@ public class LocationManagerTest
     @Test
     public void testNoPaths() throws Exception
     {
-        ResolvePathsResult<File> result = locationManager.resolvePaths( ResolvePathsRequest.ofFiles( Collections.<File>emptyList() ) );
+        ResolvePathsResult<File> result = locationManager.resolvePaths( ResolvePathsRequest.ofFiles( Collections.emptyList() ) );
         assertThat( result.getMainModuleDescriptor(), nullValue( JavaModuleDescriptor.class) );
         assertThat( result.getPathElements().size(), is( 0 ) );
         assertThat( result.getModulepathElements().size(), is( 0 ) );
@@ -81,7 +81,7 @@ public class LocationManagerTest
     {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).requires( "java.base" ).requires( "jdk.net" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
-        ResolvePathsRequest<File> request = ResolvePathsRequest.ofFiles( Collections.<File>emptyList() ).setMainModuleDescriptor( mockModuleInfoJava.toFile() );
+        ResolvePathsRequest<File> request = ResolvePathsRequest.ofFiles( Collections.emptyList() ).setMainModuleDescriptor( mockModuleInfoJava.toFile() );
         
         ResolvePathsResult<File> result = locationManager.resolvePaths( request );
 
@@ -178,7 +178,7 @@ public class LocationManagerTest
     {
         Path p = Paths.get( "src/test/resources/nonjar/pom.xml" );
         
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Arrays.asList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( Collections.singletonList( p ) ).setMainModuleDescriptor( mockModuleInfoJava );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         
@@ -193,7 +193,7 @@ public class LocationManagerTest
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule( "base" ).build();
         when( qdoxParser.fromSourcePath( any( Path.class ) ) ).thenReturn( descriptor );
         ResolvePathsRequest<Path> request =
-            ResolvePathsRequest.ofPaths( Arrays.asList( p ) )
+            ResolvePathsRequest.ofPaths( Collections.singletonList( p ) )
                                .setMainModuleDescriptor( mockModuleInfoJava )
                                .setAdditionalModules( Collections.singletonList( "plexus.java" ) );
 
@@ -230,7 +230,7 @@ public class LocationManagerTest
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "device" ).build() );
-        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides( "tool", Arrays.asList( "java", "javac" ) ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -248,7 +248,7 @@ public class LocationManagerTest
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
-        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides( "tool", Arrays.asList( "java", "javac" ) ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -265,7 +265,7 @@ public class LocationManagerTest
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def ).setMainModuleDescriptor( abc );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).uses( "tool" ).build() );
-        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides( "tool", Arrays.asList( "java", "javac" ) ).build() );
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
         assertThat( result.getPathElements().size(), is( 1 ) );
@@ -283,7 +283,7 @@ public class LocationManagerTest
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc ).setIncludeAllProviders( true );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );
-        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides( "tool", Arrays.asList( "java", "javac" ) ).build() );
         when(  asmParser.getModuleDescriptor( ghi ) ).thenReturn( JavaModuleDescriptor.newModule( "ghi" ).uses( "tool" ).build() );
         
         
@@ -303,7 +303,7 @@ public class LocationManagerTest
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( def, ghi ).setMainModuleDescriptor( abc );
         
         when(  qdoxParser.fromSourcePath( abc ) ).thenReturn( JavaModuleDescriptor.newModule( "abc" ).requires( "ghi" ).build() );
-        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides​( "tool", Arrays.asList( "java", "javac" ) ).build() );
+        when(  asmParser.getModuleDescriptor( def ) ).thenReturn( JavaModuleDescriptor.newModule( "def" ).provides( "tool", Arrays.asList( "java", "javac" ) ).build() );
         when(  asmParser.getModuleDescriptor( ghi ) ).thenReturn( JavaModuleDescriptor.newModule( "ghi" ).uses( "tool" ).build() );
         
         
@@ -380,7 +380,7 @@ public class LocationManagerTest
         when(  qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
                                                                   .requires( "moduleB" ).build() );
         when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
-                                                                      .requires​( Collections.singleton( JavaModifier.STATIC ), "moduleC" ).build() );
+                                                                      .requires( Collections.singleton( JavaModifier.STATIC ), "moduleC" ).build() );
         when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" ).build() );
         
         
@@ -402,18 +402,19 @@ public class LocationManagerTest
         
         when(  qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
                                                                   .requires( "moduleB" )
-                                                                  .requires​( Collections.singleton( JavaModifier.STATIC ), "moduleD")
+                                                                  .requires( Collections.singleton( JavaModifier.STATIC ), "moduleD")
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
-                                                                      .requires​( Collections.singleton( JavaModifier.STATIC ), "moduleC" )
+                                                                      .requires( Collections.singleton( JavaModifier.STATIC ), "moduleC" )
                                                                       .build() );
         when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" ).build() );
         when(  asmParser.getModuleDescriptor( moduleD ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleD" ).build() );
         
         
         ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        System.out.println( "result:" + result );
         assertThat( result.getPathElements().size(), is( 3 ) );
-        assertThat( result.getModulepathElements().size(), is( 2 ) );
+        assertThat( "content: " + result.getModulepathElements(), result.getModulepathElements().size(), is( 2 ) );
         assertThat( result.getModulepathElements().containsKey( moduleB ), is( true ) );
         assertThat( result.getModulepathElements().containsKey( moduleD ), is( true ) );
         assertThat( result.getClasspathElements().size(), is( 1 ) );
@@ -460,10 +461,10 @@ public class LocationManagerTest
                                                                   .requires( "moduleB" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
-                                                                  .requires​( new HashSet<JavaModifier>( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleC" )                                                                      
+                                                                  .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleC" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" )
-                                                                  .requires​( new HashSet<JavaModifier>( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                                                                  .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleD ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleD" ).build() );
         
