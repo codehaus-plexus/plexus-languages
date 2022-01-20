@@ -398,7 +398,9 @@ public class LocationManagerTest
         Path moduleB = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
         Path moduleC = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
         Path moduleD = Paths.get( "src/test/resources/mock/jar2.jar" ); // any existing file
-        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( moduleB, moduleC, moduleD ).setMainModuleDescriptor( moduleA );
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( moduleB, moduleC, moduleD )
+                .setMainModuleDescriptor( moduleA );
+                //.setIncludeStatic( true );
         
         when(  qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
                                                                   .requires( "moduleB" )
