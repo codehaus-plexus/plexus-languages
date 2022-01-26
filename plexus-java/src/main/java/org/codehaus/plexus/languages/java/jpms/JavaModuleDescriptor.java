@@ -170,7 +170,7 @@ public class JavaModuleDescriptor
          * @param name The module name
          * @return This builder
          */
-        public Builder requires(Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
+        public Builder requires( Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
         {
             jModule.requires.add( new JavaRequires( modifiers, name ) );
             return this;
