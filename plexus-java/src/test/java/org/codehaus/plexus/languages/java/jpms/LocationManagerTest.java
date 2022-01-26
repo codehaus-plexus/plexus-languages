@@ -482,7 +482,10 @@ public class LocationManagerTest
     }
 
     @Test
-    public void includeTransitiveRequiresStatic() throws Exception
+    /**
+     * test case for https://issues.apache.org/jira/browse/MCOMPILER-481
+     */
+    public void includeDeeperRequiresStatic() throws Exception
     {
         Path moduleA = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java
         Path moduleB = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
@@ -504,6 +507,40 @@ public class LocationManagerTest
         assertThat( result.getModulepathElements().containsKey( moduleB ), is( true ) );
         assertThat( result.getModulepathElements().containsKey( moduleC ), is( true ) );
 
+    }
+
+    @Test
+    /**
+     * test case for https://issues.apache.org/jira/browse/MCOMPILER-482
+     */
+    public void includeDeeperRequiresStaticTransitive() throws Exception
+    {
+        Path moduleA = Paths.get( "src/test/resources/mock/module-info.java" ); // some file called module-info.java core
+        Path moduleB = Paths.get( "src/test/resources/mock/jar0.jar" ); // any existing file
+        Path moduleC = Paths.get( "src/test/resources/mock/jar1.jar" ); // any existing file
+        Path moduleD = Paths.get( "src/test/resources/mock/jar2.jar" ); // any existing file
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths( moduleA, moduleB, moduleC, moduleD )
+                .setMainModuleDescriptor( moduleA )
+                .setIncludeStatic( true );
+        when( qdoxParser.fromSourcePath( moduleA ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleA" )
+                .requires( "moduleB")
+                .build() );
+        when( asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
+                .requires( "moduleC" )
+                .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                .build() );
+        when( asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" )
+                .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                .build() );
+        when( asmParser.getModuleDescriptor( moduleD ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleD" )
+                .build() );
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths( request );
+        assertThat( "modulepathelements:" + result.getModulepathElements(),
+                result.getModulepathElements().size(), is( 3 ) );
+        assertThat( result.getModulepathElements().containsKey( moduleB ), is( true ) );
+        assertThat( result.getModulepathElements().containsKey( moduleC ), is( true ) );
+        assertThat( result.getModulepathElements().containsKey( moduleD ), is( true ) );
 
     }
 
