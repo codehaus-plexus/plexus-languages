@@ -263,7 +263,7 @@ public class LocationManager
                             requiredNamedModules,
                             true,
                             true,
-                            request);
+                            request.isIncludeStatic());
         }
         
         for ( String additionalModule : request.getAdditionalModules() )
@@ -272,9 +272,9 @@ public class LocationManager
                           Collections.unmodifiableMap( availableNamedModules ), 
                           Collections.unmodifiableMap( availableProviders ), 
                           requiredNamedModules,
-                          request.isIncludeStatic(), 
+                          true, 
                           true,
-                          request);
+                          request.isIncludeStatic());
         }
 
         // in case of identical module names, first one wins
@@ -403,22 +403,20 @@ public class LocationManager
                                  Map<String, Set<String>> availableProviders,
                                  Set<String> namedModules,
                                  boolean isRootModule,
-                                 boolean includeTransitive,
-                                 ResolvePathsRequest request)
+                                 boolean includeAsTransitive,
+                                 boolean includeStatic)
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
             // includeTransitive is one level deeper compared to includeStatic
-            if ( (isRootModule || request.isIncludeStatic()) ||
-                    !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
+            if ( isRootModule 
+                        || includeStatic
+                        || includeAsTransitive
+                        || !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )
+                        || requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE ) )
             {
                 selectModule( requires.name(), availableModules, availableProviders,
-                        namedModules, false, isRootModule && includeTransitive, request );
-            }
-            else if ( includeTransitive && requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
-            {
-                selectModule( requires.name(), availableModules, availableProviders,
-                        namedModules, request.isIncludeStatic(), true && isRootModule, request );
+                        namedModules, false, includeStatic, includeStatic );
             }
         }
         
@@ -433,7 +431,7 @@ public class LocationManager
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
                         selectRequires( requiredModule, availableModules, availableProviders,
-                                namedModules, false, includeTransitive, request );
+                                namedModules, false, includeAsTransitive, includeStatic );
                     }
                 }
             }
@@ -441,14 +439,14 @@ public class LocationManager
     }
 
     private void selectModule( String module, Map<String, JavaModuleDescriptor> availableModules, Map<String, Set<String>> availableProviders,
-                               Set<String> namedModules, boolean includeStatic, boolean includeTransitive, ResolvePathsRequest request )
+                               Set<String> namedModules, boolean isRootModule, boolean includeTransitive, boolean includeStatic )
     {
         JavaModuleDescriptor requiredModule = availableModules.get( module );
 
         if ( requiredModule != null && namedModules.add( module ) )
         {
             selectRequires( requiredModule, availableModules, availableProviders,
-                    namedModules, false, includeTransitive, request );
+                    namedModules, false, includeTransitive, includeStatic );
         }
     }
     

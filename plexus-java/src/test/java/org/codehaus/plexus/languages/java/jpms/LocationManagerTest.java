@@ -462,10 +462,10 @@ public class LocationManagerTest
                                                                   .requires( "moduleB" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
-                                                                  .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleC" )
+                                                                  .requires( new HashSet<>( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleC" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" )
-                                                                  .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                                                                  .requires( new HashSet<>( Arrays.asList( JavaModifier.STATIC ) ), "moduleD" )
                                                                   .build() );
         when(  asmParser.getModuleDescriptor( moduleD ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleD" ).build() );
         
@@ -527,10 +527,10 @@ public class LocationManagerTest
                 .build() );
         when( asmParser.getModuleDescriptor( moduleB ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleB" )
                 .requires( "moduleC" )
-                .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                .requires( new HashSet<>( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
                 .build() );
         when( asmParser.getModuleDescriptor( moduleC ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleC" )
-                .requires( new HashSet( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
+                .requires( new HashSet<>( Arrays.asList( JavaModifier.STATIC,JavaModifier.TRANSITIVE ) ), "moduleD" )
                 .build() );
         when( asmParser.getModuleDescriptor( moduleD ) ).thenReturn( JavaModuleDescriptor.newModule( "moduleD" )
                 .build() );
