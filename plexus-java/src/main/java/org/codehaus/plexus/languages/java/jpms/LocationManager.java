@@ -402,22 +402,23 @@ public class LocationManager
                                  Map<String, JavaModuleDescriptor> availableModules,
                                  Map<String, Set<String>> availableProviders,
                                  Set<String> namedModules,
-                                 boolean includeStatic, 
+                                 boolean isRootModule,
                                  boolean includeTransitive,
                                  ResolvePathsRequest request)
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
             // includeTransitive is one level deeper compared to includeStatic
-            if ( includeStatic || !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
+            if ( (isRootModule || request.isIncludeStatic()) ||
+                    !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
             {
                 selectModule( requires.name(), availableModules, availableProviders,
-                        namedModules, request.isIncludeStatic(), includeStatic, request );
+                        namedModules, false, isRootModule && includeTransitive, request );
             }
             else if ( includeTransitive && requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
             {
                 selectModule( requires.name(), availableModules, availableProviders,
-                        namedModules, request.isIncludeStatic(), includeStatic, request );
+                        namedModules, request.isIncludeStatic(), true && isRootModule, request );
             }
         }
         
@@ -432,7 +433,7 @@ public class LocationManager
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
                         selectRequires( requiredModule, availableModules, availableProviders,
-                                namedModules, false, includeStatic, request );
+                                namedModules, false, includeTransitive, request );
                     }
                 }
             }
@@ -447,7 +448,7 @@ public class LocationManager
         if ( requiredModule != null && namedModules.add( module ) )
         {
             selectRequires( requiredModule, availableModules, availableProviders,
-                    namedModules, includeStatic, includeTransitive, request );
+                    namedModules, false, includeTransitive, request );
         }
     }
     
