@@ -261,8 +261,9 @@ public class LocationManager
                             Collections.unmodifiableMap( availableNamedModules ),
                             Collections.unmodifiableMap( availableProviders ), 
                             requiredNamedModules,
-                            true, 
-                            true );
+                            true,
+                            true,
+                            request.isIncludeStatic());
         }
         
         for ( String additionalModule : request.getAdditionalModules() )
@@ -271,8 +272,9 @@ public class LocationManager
                           Collections.unmodifiableMap( availableNamedModules ), 
                           Collections.unmodifiableMap( availableProviders ), 
                           requiredNamedModules,
-                          request.isIncludeStatic(), 
-                          true );
+                          true, 
+                          true,
+                          request.isIncludeStatic());
         }
 
         // in case of identical module names, first one wins
@@ -400,19 +402,21 @@ public class LocationManager
                                  Map<String, JavaModuleDescriptor> availableModules,
                                  Map<String, Set<String>> availableProviders,
                                  Set<String> namedModules,
-                                 boolean includeStatic, 
-                                 boolean includeTransitive )
+                                 boolean isRootModule,
+                                 boolean includeAsTransitive,
+                                 boolean includeStatic)
     {
         for ( JavaModuleDescriptor.JavaRequires requires : module.requires() )
         {
             // includeTransitive is one level deeper compared to includeStatic
-            if ( includeStatic || !requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )  )
+            if ( isRootModule 
+                        || includeStatic
+                        || includeAsTransitive
+                        || !requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC )
+                        || requires.modifiers().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE ) )
             {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
-            }
-            else if ( includeTransitive && requires.modifiers​().contains( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE )  )
-            {
-                selectModule( requires.name(), availableModules, availableProviders, namedModules, false, includeStatic );
+                selectModule( requires.name(), availableModules, availableProviders,
+                        namedModules, false, includeStatic, includeStatic );
             }
         }
         
@@ -426,7 +430,8 @@ public class LocationManager
                     
                     if ( requiredModule != null && namedModules.add( providerModule ) )
                     {
-                        selectRequires( requiredModule, availableModules, availableProviders, namedModules, false, includeStatic );
+                        selectRequires( requiredModule, availableModules, availableProviders,
+                                namedModules, false, includeAsTransitive, includeStatic );
                     }
                 }
             }
@@ -434,13 +439,14 @@ public class LocationManager
     }
 
     private void selectModule( String module, Map<String, JavaModuleDescriptor> availableModules, Map<String, Set<String>> availableProviders,
-                               Set<String> namedModules, boolean includeStatic, boolean includeTransitive )
+                               Set<String> namedModules, boolean isRootModule, boolean includeTransitive, boolean includeStatic )
     {
         JavaModuleDescriptor requiredModule = availableModules.get( module );
 
         if ( requiredModule != null && namedModules.add( module ) )
         {
-            selectRequires( requiredModule, availableModules, availableProviders, namedModules, includeStatic, includeTransitive );
+            selectRequires( requiredModule, availableModules, availableProviders,
+                    namedModules, false, includeTransitive, includeStatic );
         }
     }
     

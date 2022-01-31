@@ -128,7 +128,19 @@ public class JavaModuleDescriptor
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "JavaModuleDescriptor{" +
+                "name='" + name + '\'' +
+                ", automatic=" + automatic +
+                ", requires=" + requires +
+                ", exports=" + exports +
+                ", uses=" + uses +
+                ", provides=" + provides +
+                '}';
+    }
+
     /**
      * A JavaModuleDescriptor Builder
      * 
@@ -158,7 +170,7 @@ public class JavaModuleDescriptor
          * @param name The module name
          * @return This builder
          */
-        public Builder requires​( Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
+        public Builder requires( Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers, String name )
         {
             jModule.requires.add( new JavaRequires( modifiers, name ) );
             return this;
@@ -213,7 +225,7 @@ public class JavaModuleDescriptor
             return this;
         }
         
-        public Builder provides​( String service, List<String> providers )
+        public Builder provides( String service, List<String> providers )
         {
             jModule.provides.add( new JavaProvides( service, providers ) );
             return this;
@@ -254,7 +266,7 @@ public class JavaModuleDescriptor
             this.name = name;
         }
 
-        public Set<JavaModifier> modifiers​()
+        public Set<JavaModifier> modifiers()
         {
             return modifiers;
         }
@@ -270,7 +282,7 @@ public class JavaModuleDescriptor
          * @author Robert Scholte
          * @since 1.0.0
          */
-        public static enum JavaModifier
+        public enum JavaModifier
         {
             STATIC, TRANSITIVE
         }
@@ -307,6 +319,14 @@ public class JavaModuleDescriptor
                 return false;
             }
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "JavaRequires{" +
+                    "modifiers=" + modifiers +
+                    ", name='" + name + '\'' +
+                    '}';
         }
     }
     
@@ -377,6 +397,14 @@ public class JavaModuleDescriptor
             }
             return true;
         }
+
+        @Override
+        public String toString() {
+            return "JavaExports{" +
+                    "source='" + source + '\'' +
+                    ", targets=" + targets +
+                    '}';
+        }
     }
     
     /**
@@ -439,6 +467,14 @@ public class JavaModuleDescriptor
                     return false;
             }
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "JavaProvides{" +
+                    "service='" + service + '\'' +
+                    ", providers=" + providers +
+                    '}';
         }
     }
 }

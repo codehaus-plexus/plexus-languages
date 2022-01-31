@@ -52,7 +52,7 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
                 {
                     modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
                 }
-                builder.requires​( modifiers, requires.name() );
+                builder.requires( modifiers, requires.name() );
             }
             else
             {
@@ -79,7 +79,7 @@ class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
         
         for ( ModuleDescriptor.Provides provides : descriptor.provides() )
         {
-            builder.provides​( provides.service(), provides.providers() );
+            builder.provides( provides.service(), provides.providers() );
         }
         
         
