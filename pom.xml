@@ -79,7 +79,7 @@
           Caused by: org.apache.maven.plugin.MojoExecutionException: MavenReportException: Error while generating Javadoc:
           Exit code: 2 - javadoc: error - No source files for package org.codehaus.plexus.languages.java.jpms
           -->
-          <version>3.3.1</version>
+          <version>3.4.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
