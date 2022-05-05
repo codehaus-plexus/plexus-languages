@@ -7,7 +7,7 @@ You start by using `ResolvePathsRequest.ofXXX`, where XXX is either Files, Paths
 
 The `ResolvePathRequest` also contains:
 
-  * mainModuleDescriptor: the path or file of the main module descriptor, can either be `mdouel-info.java` or `module-info.class`  
+  * mainModuleDescriptor: the path or file of the main module descriptor, can either be `module-info.java` or `module-info.class`  
   
   * additionalModules: the modules that will be addedusing `-add-modules`
   
