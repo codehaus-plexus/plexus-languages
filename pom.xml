@@ -22,8 +22,8 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</connection>
-    <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</developerConnection>
+    <connection>scm:git:htts://github.com/codehaus-plexus/plexus-languages.git</connection>
+    <developerConnection>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</developerConnection>
     <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
     <tag>HEAD</tag>
   </scm>
@@ -39,7 +39,7 @@
   </distributionManagement>
 
   <properties>
-    <scm.url>scm:git:git@github.com:codehaus-plexus/plexus-languages.git</scm.url>
+    <scm.url>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>8</javaVersion>
     <project.build.outputTimestamp>2022-01-31T22:27:44Z</project.build.outputTimestamp>
