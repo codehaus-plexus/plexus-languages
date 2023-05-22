@@ -23,26 +23,23 @@ import java.nio.file.Path;
 
 /**
  * This is just a placeholder class
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class CmdModuleNameExtractor
-{
-    public static void main( String[] args )
-    {
-        System.err.println( "Use at least Java 9 to execute this class" );
-        
-        System.exit( -1 );
+public class CmdModuleNameExtractor {
+    public static void main(String[] args) {
+        System.err.println("Use at least Java 9 to execute this class");
+
+        System.exit(-1);
     }
 
     /**
-     * 
+     *
      * @param modulePath
      * @return
      */
-    public static String getModuleName( Path modulePath )
-    {
+    public static String getModuleName(Path modulePath) {
         throw new UnsupportedOperationException();
     }
 }

@@ -1,6 +1,5 @@
 package org.codehaus.plexus.languages.java.jpms;
 
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,13 +19,6 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -43,162 +35,174 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires
 import org.codehaus.plexus.languages.java.version.JavaVersion;
 import org.junit.Test;
 
-public class BinaryModuleInfoParserTest
-{
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+public class BinaryModuleInfoParserTest {
     private BinaryModuleInfoParser parser = new BinaryModuleInfoParser();
 
     @Test
-    public void testJarDescriptor() throws Exception
-    {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.descriptor/asm-6.0_BETA.jar" ) );
-        
-        assertNotNull( descriptor);
-        assertEquals( "org.objectweb.asm", descriptor.name() );
-        assertEquals( false, descriptor.isAutomatic() );
+    public void testJarDescriptor() throws Exception {
+        JavaModuleDescriptor descriptor =
+                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.descriptor/asm-6.0_BETA.jar"));
 
-        assertEquals( 1, descriptor.requires().size() );
-        assertEquals( "java.base", descriptor.requires().iterator().next().name() );
+        assertNotNull(descriptor);
+        assertEquals("org.objectweb.asm", descriptor.name());
+        assertEquals(false, descriptor.isAutomatic());
 
-        Set<JavaExports> expectedExports = JavaModuleDescriptor.newAutomaticModule( "_" )
-                .exports( "org.objectweb.asm" )
-                .exports( "org.objectweb.asm.signature" )
+        assertEquals(1, descriptor.requires().size());
+        assertEquals("java.base", descriptor.requires().iterator().next().name());
+
+        Set<JavaExports> expectedExports = JavaModuleDescriptor.newAutomaticModule("_")
+                .exports("org.objectweb.asm")
+                .exports("org.objectweb.asm.signature")
                 .build()
                 .exports();
-        assertEquals( expectedExports, descriptor.exports() );
+        assertEquals(expectedExports, descriptor.exports());
     }
 
     @Test
-    public void testMultiReleaseJarDescriptor() throws Exception
-    {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar" ), JavaVersion.parse( "17" ) );
-        
-        assertNotNull( descriptor);
-        assertEquals( "de.adito.jloadr", descriptor.name() );
-        assertEquals( false, descriptor.isAutomatic() );
+    public void testMultiReleaseJarDescriptor() throws Exception {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
+                Paths.get("src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar"), JavaVersion.parse("17"));
+
+        assertNotNull(descriptor);
+        assertEquals("de.adito.jloadr", descriptor.name());
+        assertEquals(false, descriptor.isAutomatic());
     }
 
     @Test
-    public void testIncompleteMultiReleaseJarDescriptor() throws Exception
-    {
+    public void testIncompleteMultiReleaseJarDescriptor() throws Exception {
         // this jar is missing the Multi-Release: true entry in the Manifest
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar" ) );
-        
-        assertNull( descriptor);
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
+                Paths.get("src/test/resources/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar"));
+
+        assertNull(descriptor);
     }
 
     @Test
-    public void testClassicJar() throws Exception
-    {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar" ) );
-        
-        assertNull( descriptor);
-    }
-    
-    @Test
-    public void testOutputDirectoryDescriptor()
-        throws Exception
-    {
+    public void testClassicJar() throws Exception {
         JavaModuleDescriptor descriptor =
-            parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.descriptor/out" ) );
+                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"));
 
-        assertNotNull( descriptor );
-        assertEquals( "org.codehaus.plexus.languages.java.demo", descriptor.name() );
-        assertEquals( false, descriptor.isAutomatic() );
-
-        assertEquals( 3, descriptor.requires().size() );
-
-        Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
-            .requires( "java.base" )
-            .requires( "java.xml" )
-            .requires( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "com.google.common" )
-            .build()
-            .requires();
-
-        assertEquals( expectedRequires, descriptor.requires() );
-    }
-
-    @Test( expected = NoSuchFileException.class )
-    public void testClassicOutputDirectory() throws Exception
-    {
-        parser.getModuleDescriptor( Paths.get( "src/test/resources/dir.empty/out" ) );
+        assertNull(descriptor);
     }
 
     @Test
-    public void testJModDescriptor() throws Exception
-    {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod" ) );
-        
-        assertNotNull( descriptor);
-        assertEquals( "com.corporate.project", descriptor.name() );
-        assertEquals( false, descriptor.isAutomatic() );
+    public void testOutputDirectoryDescriptor() throws Exception {
+        JavaModuleDescriptor descriptor =
+                parser.getModuleDescriptor(Paths.get("src/test/resources/dir.descriptor/out"));
 
-        assertEquals( 1, descriptor.requires().size() );
-        assertEquals( "java.base", descriptor.requires().iterator().next().name() );
+        assertNotNull(descriptor);
+        assertEquals("org.codehaus.plexus.languages.java.demo", descriptor.name());
+        assertEquals(false, descriptor.isAutomatic());
 
-        assertEquals ( 1, descriptor.exports().size() );
-        assertEquals ( "com.corporate.project",  descriptor.exports().iterator().next().source() );
+        assertEquals(3, descriptor.requires().size());
+
+        Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule("_")
+                .requires("java.base")
+                .requires("java.xml")
+                .requires(Collections.singleton(JavaRequires.JavaModifier.STATIC), "com.google.common")
+                .build()
+                .requires();
+
+        assertEquals(expectedRequires, descriptor.requires());
     }
-    
-    @Test( expected = IOException.class )
-    public void testInvalidFile() throws Exception
-    {
-        parser.getModuleDescriptor( Paths.get( "src/test/resources/nonjar/pom.xml" ) );
+
+    @Test(expected = NoSuchFileException.class)
+    public void testClassicOutputDirectory() throws Exception {
+        parser.getModuleDescriptor(Paths.get("src/test/resources/dir.empty/out"));
     }
-    
+
     @Test
-    public void testUses() throws Exception
-    {
-        try ( InputStream is = Files.newInputStream( Paths.get( "src/test/resources/dir.descriptor.uses/out/module-info.class" ) ) )
-        {
-            JavaModuleDescriptor descriptor = parser.parse( is );
-            
-            assertNotNull( descriptor);
-            assertEquals( new HashSet<>( Arrays.asList( "org.apache.logging.log4j.spi.Provider",
-                                                        "org.apache.logging.log4j.util.PropertySource",
-                                                        "org.apache.logging.log4j.message.ThreadDumpMessage$ThreadInfoFactory" ) ),
-                          descriptor.uses() );
+    public void testJModDescriptor() throws Exception {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
+                Paths.get("src/test/resources/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod"));
+
+        assertNotNull(descriptor);
+        assertEquals("com.corporate.project", descriptor.name());
+        assertEquals(false, descriptor.isAutomatic());
+
+        assertEquals(1, descriptor.requires().size());
+        assertEquals("java.base", descriptor.requires().iterator().next().name());
+
+        assertEquals(1, descriptor.exports().size());
+        assertEquals(
+                "com.corporate.project", descriptor.exports().iterator().next().source());
+    }
+
+    @Test(expected = IOException.class)
+    public void testInvalidFile() throws Exception {
+        parser.getModuleDescriptor(Paths.get("src/test/resources/nonjar/pom.xml"));
+    }
+
+    @Test
+    public void testUses() throws Exception {
+        try (InputStream is =
+                Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.uses/out/module-info.class"))) {
+            JavaModuleDescriptor descriptor = parser.parse(is);
+
+            assertNotNull(descriptor);
+            assertEquals(
+                    new HashSet<>(Arrays.asList(
+                            "org.apache.logging.log4j.spi.Provider",
+                            "org.apache.logging.log4j.util.PropertySource",
+                            "org.apache.logging.log4j.message.ThreadDumpMessage$ThreadInfoFactory")),
+                    descriptor.uses());
         }
     }
-    
-    @Test
-    public void testProvides() throws Exception
-    {
-        JavaModuleDescriptor descriptor = parser.getModuleDescriptor( Paths.get( "src/test/resources/jar.service/threeten-extra-1.4.jar" ) );
-        
-        assertNotNull( descriptor );
-        assertEquals( 1, descriptor.provides().size() );
-        
-        JavaProvides provides = descriptor.provides().iterator().next();
-        assertEquals( "java.time.chrono.Chronology", provides.service() );
-        assertArrayEquals( new String[] { "org.threeten.extra.chrono.BritishCutoverChronology",
-            "org.threeten.extra.chrono.CopticChronology", "org.threeten.extra.chrono.DiscordianChronology",
-            "org.threeten.extra.chrono.EthiopicChronology", "org.threeten.extra.chrono.InternationalFixedChronology",
-            "org.threeten.extra.chrono.JulianChronology", "org.threeten.extra.chrono.PaxChronology",
-            "org.threeten.extra.chrono.Symmetry010Chronology", "org.threeten.extra.chrono.Symmetry454Chronology" },
-                           provides.providers().toArray( new String[0] ) );
 
+    @Test
+    public void testProvides() throws Exception {
+        JavaModuleDescriptor descriptor =
+                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.service/threeten-extra-1.4.jar"));
+
+        assertNotNull(descriptor);
+        assertEquals(1, descriptor.provides().size());
+
+        JavaProvides provides = descriptor.provides().iterator().next();
+        assertEquals("java.time.chrono.Chronology", provides.service());
+        assertArrayEquals(
+                new String[] {
+                    "org.threeten.extra.chrono.BritishCutoverChronology",
+                    "org.threeten.extra.chrono.CopticChronology",
+                    "org.threeten.extra.chrono.DiscordianChronology",
+                    "org.threeten.extra.chrono.EthiopicChronology",
+                    "org.threeten.extra.chrono.InternationalFixedChronology",
+                    "org.threeten.extra.chrono.JulianChronology",
+                    "org.threeten.extra.chrono.PaxChronology",
+                    "org.threeten.extra.chrono.Symmetry010Chronology",
+                    "org.threeten.extra.chrono.Symmetry454Chronology"
+                },
+                provides.providers().toArray(new String[0]));
     }
 
     @Test
-    public void testRequires() throws Exception
-    {
-        try ( InputStream is = Files.newInputStream( Paths.get( "src/test/resources/dir.descriptor.requires/out/module-info.class" ) ) )
-        {
-            JavaModuleDescriptor descriptor = parser.parse( is );
-            
-            assertNotNull( descriptor);
-            assertThat( descriptor.requires().size(), is( 5 ) );
+    public void testRequires() throws Exception {
+        try (InputStream is =
+                Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.requires/out/module-info.class"))) {
+            JavaModuleDescriptor descriptor = parser.parse(is);
 
-            Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule( "_" )
-                            .requires( "java.base" )
-                            .requires( "mod_r" )
-                            .requires( Collections.singleton( JavaRequires.JavaModifier.STATIC ), "mod_r_s" )
-                            .requires( Collections.singleton( JavaRequires.JavaModifier.TRANSITIVE ), "mod_r_t" )
-                            .requires( new HashSet<JavaRequires.JavaModifier>( Arrays.asList( JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE ) ), "mod_r_s_t" )
-                            .build()
-                            .requires();
+            assertNotNull(descriptor);
+            assertThat(descriptor.requires().size(), is(5));
 
-                        assertEquals( expectedRequires, descriptor.requires() );
+            Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule("_")
+                    .requires("java.base")
+                    .requires("mod_r")
+                    .requires(Collections.singleton(JavaRequires.JavaModifier.STATIC), "mod_r_s")
+                    .requires(Collections.singleton(JavaRequires.JavaModifier.TRANSITIVE), "mod_r_t")
+                    .requires(
+                            new HashSet<JavaRequires.JavaModifier>(Arrays.asList(
+                                    JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE)),
+                            "mod_r_s_t")
+                    .build()
+                    .requires();
+
+            assertEquals(expectedRequires, descriptor.requires());
         }
     }
 }

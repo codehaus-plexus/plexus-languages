@@ -22,7 +22,6 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.IOException;
 import java.nio.file.Path;
 
-interface ModuleNameExtractor
-{
-    String extract( Path path ) throws IOException;
+interface ModuleNameExtractor {
+    String extract(Path path) throws IOException;
 }

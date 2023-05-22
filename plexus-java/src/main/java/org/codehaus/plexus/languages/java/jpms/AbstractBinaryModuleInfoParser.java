@@ -29,54 +29,41 @@ import java.util.jar.Manifest;
 
 import org.codehaus.plexus.languages.java.version.JavaVersion;
 
-abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
-{
+abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
     @Override
-    public JavaModuleDescriptor getModuleDescriptor( Path modulePath )
-        throws IOException
-    {
-        return getModuleDescriptor( modulePath, JavaVersion.JAVA_SPECIFICATION_VERSION );
+    public JavaModuleDescriptor getModuleDescriptor(Path modulePath) throws IOException {
+        return getModuleDescriptor(modulePath, JavaVersion.JAVA_SPECIFICATION_VERSION);
     }
-    
+
     @Override
-    public JavaModuleDescriptor getModuleDescriptor( Path modulePath, JavaVersion jdkVersion )
-        throws IOException
-    {
+    public JavaModuleDescriptor getModuleDescriptor(Path modulePath, JavaVersion jdkVersion) throws IOException {
         JavaModuleDescriptor descriptor;
-        if ( Files.isDirectory( modulePath ) )
-        {
-            try ( InputStream in = Files.newInputStream( modulePath.resolve( "module-info.class" ) ) )
-            {
-                descriptor = parse( in );
+        if (Files.isDirectory(modulePath)) {
+            try (InputStream in = Files.newInputStream(modulePath.resolve("module-info.class"))) {
+                descriptor = parse(in);
             }
-        }
-        else
-        {
-            try ( JarFile jarFile = new JarFile( modulePath.toFile() ) )
-            {
+        } else {
+            try (JarFile jarFile = new JarFile(modulePath.toFile())) {
                 JarEntry moduleInfo;
-                if ( modulePath.toString().toLowerCase().endsWith( ".jmod" ) )
-                {
-                    moduleInfo = jarFile.getJarEntry( "classes/module-info.class" );
-                }
-                else
-                {
-                    moduleInfo = jarFile.getJarEntry( "module-info.class" );
+                if (modulePath.toString().toLowerCase().endsWith(".jmod")) {
+                    moduleInfo = jarFile.getJarEntry("classes/module-info.class");
+                } else {
+                    moduleInfo = jarFile.getJarEntry("module-info.class");
 
-                    if ( moduleInfo == null )
-                    {
-                        Manifest manifest =  jarFile.getManifest();
+                    if (moduleInfo == null) {
+                        Manifest manifest = jarFile.getManifest();
 
-                        if ( manifest != null && "true".equalsIgnoreCase( manifest.getMainAttributes().getValue( "Multi-Release" ) ) ) 
-                        {
-                            int javaVersion = Integer.valueOf( jdkVersion.asMajor().getValue( 1 ) );
-                            
-                            for ( int version = javaVersion; version >= 9; version-- )
-                            {
+                        if (manifest != null
+                                && "true"
+                                        .equalsIgnoreCase(
+                                                manifest.getMainAttributes().getValue("Multi-Release"))) {
+                            int javaVersion =
+                                    Integer.valueOf(jdkVersion.asMajor().getValue(1));
+
+                            for (int version = javaVersion; version >= 9; version--) {
                                 String resource = "META-INF/versions/" + version + "/module-info.class";
-                                JarEntry entry = jarFile.getJarEntry( resource );
-                                if ( entry != null )
-                                {
+                                JarEntry entry = jarFile.getJarEntry(resource);
+                                if (entry != null) {
                                     moduleInfo = entry;
                                     break;
                                 }
@@ -85,12 +72,9 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
                     }
                 }
 
-                if ( moduleInfo != null )
-                {
-                    descriptor = parse( jarFile.getInputStream( moduleInfo ) );
-                }
-                else
-                {
+                if (moduleInfo != null) {
+                    descriptor = parse(jarFile.getInputStream(moduleInfo));
+                } else {
                     descriptor = null;
                 }
             }
@@ -98,5 +82,5 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser
         return descriptor;
     }
 
-    abstract JavaModuleDescriptor parse( InputStream in ) throws IOException;
+    abstract JavaModuleDescriptor parse(InputStream in) throws IOException;
 }

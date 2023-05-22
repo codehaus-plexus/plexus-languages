@@ -34,86 +34,72 @@ import com.thoughtworks.qdox.model.JavaModuleDescriptor;
 
 /**
  * Extract information from module with QDox
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-class SourceModuleInfoParser
-{
+class SourceModuleInfoParser {
 
-    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath( Path modulePath )
-                    throws IOException
-    {
+    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath(Path modulePath)
+            throws IOException {
         File moduleDescriptor = modulePath.toFile();
 
         org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder builder;
-        if ( moduleDescriptor.exists() )
-        {
-            JavaModuleDescriptor descriptor = new JavaProjectBuilder().addSourceFolder( moduleDescriptor.getParentFile() ).getDescriptor();
+        if (moduleDescriptor.exists()) {
+            JavaModuleDescriptor descriptor = new JavaProjectBuilder()
+                    .addSourceFolder(moduleDescriptor.getParentFile())
+                    .getDescriptor();
 
-            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newModule( descriptor.getName() );
-            
-            for ( JavaModuleDescriptor.JavaRequires requires : descriptor.getRequires() )
-            {
-                if ( requires.isStatic() || requires.isTransitive() )
-                {
-                    Set<org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers =
-                        new LinkedHashSet<>( 2 );
-                    if ( requires.isStatic() )
-                    {
-                        modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newModule(descriptor.getName());
+
+            for (JavaModuleDescriptor.JavaRequires requires : descriptor.getRequires()) {
+                if (requires.isStatic() || requires.isTransitive()) {
+                    Set<org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier>
+                            modifiers = new LinkedHashSet<>(2);
+                    if (requires.isStatic()) {
+                        modifiers.add(
+                                org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
+                                        .STATIC);
                     }
-                    if ( requires.isTransitive() )
-                    {
-                        modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+                    if (requires.isTransitive()) {
+                        modifiers.add(
+                                org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
+                                        .TRANSITIVE);
                     }
-                    builder.requires( modifiers , requires.getModule().getName() );
-                }
-                else
-                {
-                    builder.requires( requires.getModule().getName() );
+                    builder.requires(modifiers, requires.getModule().getName());
+                } else {
+                    builder.requires(requires.getModule().getName());
                 }
             }
-            
-            for ( JavaModuleDescriptor.JavaExports exports : descriptor.getExports() )
-            {
-                if ( exports.getTargets().isEmpty()  )
-                {
-                    builder.exports( exports.getSource().getName() );
-                }
-                else
-                {
+
+            for (JavaModuleDescriptor.JavaExports exports : descriptor.getExports()) {
+                if (exports.getTargets().isEmpty()) {
+                    builder.exports(exports.getSource().getName());
+                } else {
                     Set<String> targets = new LinkedHashSet<>();
-                    for ( JavaModule module : exports.getTargets() )
-                    {
-                        targets.add( module.getName() );
+                    for (JavaModule module : exports.getTargets()) {
+                        targets.add(module.getName());
                     }
-                    builder.exports( exports.getSource().getName(), targets );
+                    builder.exports(exports.getSource().getName(), targets);
                 }
             }
-            
-            for ( JavaModuleDescriptor.JavaUses uses : descriptor.getUses() )
-            {
-                builder.uses( uses.getService().getName() );
+
+            for (JavaModuleDescriptor.JavaUses uses : descriptor.getUses()) {
+                builder.uses(uses.getService().getName());
             }
-            
-            for ( JavaModuleDescriptor.JavaProvides provides : descriptor.getProvides() )
-            {
-                List<String> providers = new ArrayList<>( provides.getProviders().size() );
-                for ( JavaClass provider : provides.getProviders() )
-                {
-                    providers.add( provider.getName() );
+
+            for (JavaModuleDescriptor.JavaProvides provides : descriptor.getProvides()) {
+                List<String> providers = new ArrayList<>(provides.getProviders().size());
+                for (JavaClass provider : provides.getProviders()) {
+                    providers.add(provider.getName());
                 }
-                
-                builder.provides( provides.getService().getName(), providers );
+
+                builder.provides(provides.getService().getName(), providers);
             }
-        }
-        else
-        {
-            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newAutomaticModule( null );
+        } else {
+            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newAutomaticModule(null);
         }
 
         return builder.build();
     }
-
 }

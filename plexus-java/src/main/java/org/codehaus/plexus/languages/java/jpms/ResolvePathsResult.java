@@ -27,110 +27,98 @@ import java.util.Map;
 
 /**
  * Holds the results of the project analyzer
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class ResolvePathsResult<T>
-{
+public class ResolvePathsResult<T> {
     private JavaModuleDescriptor mainModuleDescriptor;
-    
+
     /**
      * Ordered map, respects the classpath order
      */
     private Map<T, JavaModuleDescriptor> pathElements;
-    
+
     private Map<T, ModuleNameSource> modulepathElements = new LinkedHashMap<>();
-    
+
     private Collection<T> classpathElements = new ArrayList<>();
-    
+
     private Map<T, Exception> pathExceptions = new HashMap<>();
 
-    void setMainModuleDescriptor( JavaModuleDescriptor mainModuleDescriptor )
-    {
+    void setMainModuleDescriptor(JavaModuleDescriptor mainModuleDescriptor) {
         this.mainModuleDescriptor = mainModuleDescriptor;
     }
 
     /**
-     * The resolved main module descriptor  
-     * 
-     * @return the resolved descriptor 
+     * The resolved main module descriptor
+     *
+     * @return the resolved descriptor
      * @see ResolvePathsRequest#setMainModuleDescriptor(Object)
      */
-    public JavaModuleDescriptor getMainModuleDescriptor()
-    {
+    public JavaModuleDescriptor getMainModuleDescriptor() {
         return mainModuleDescriptor;
     }
 
-    void setPathElements( Map<T, JavaModuleDescriptor> pathElements )
-    {
+    void setPathElements(Map<T, JavaModuleDescriptor> pathElements) {
         this.pathElements = pathElements;
     }
-    
+
     /**
      * Ordered map, respects the classpath order
      */
-    public Map<T, JavaModuleDescriptor> getPathElements()
-    {
+    public Map<T, JavaModuleDescriptor> getPathElements() {
         return pathElements;
     }
-    
-    void setClasspathElements( Collection<T> classpathElements )
-    {
+
+    void setClasspathElements(Collection<T> classpathElements) {
         this.classpathElements = classpathElements;
     }
-    
+
     /**
      * All T that belong to the classpath based on the module descriptor
-     * 
+     *
      * @return the classpath elements, never {@code null}
      * @see #getPathElements()
      */
-    public Collection<T> getClasspathElements()
-    {
+    public Collection<T> getClasspathElements() {
         return classpathElements;
     }
-    
-    void setModulepathElements( Map<T, ModuleNameSource> modulepathElements )
-    {
+
+    void setModulepathElements(Map<T, ModuleNameSource> modulepathElements) {
         this.modulepathElements = modulepathElements;
     }
-    
+
     /**
      * All T that belong to the modulepath, based on the module descriptor.
-     * For every T the source for the module name is added. 
-     * 
-     * @return all modulepath elements, never {@code null} 
+     * For every T the source for the module name is added.
+     *
+     * @return all modulepath elements, never {@code null}
      * @see #getPathElements()
      */
-    public Map<T, ModuleNameSource> getModulepathElements()
-    {
+    public Map<T, ModuleNameSource> getModulepathElements() {
         return modulepathElements;
     }
 
-    void setPathExceptions( Map<T, Exception> pathExceptions )
-    {
+    void setPathExceptions(Map<T, Exception> pathExceptions) {
         this.pathExceptions = pathExceptions;
     }
 
     /**
      * Map containing exceptions for every T which modulename resolution failed
-     * 
+     *
      * @return the exceptions for every T, never {@code null}
      */
-    public Map<T, Exception> getPathExceptions()
-    {
+    public Map<T, Exception> getPathExceptions() {
         return pathExceptions;
     }
 
     @Override
     public String toString() {
-        return "ResolvePathsResult{" + System.lineSeparator() +
-                "mainModuleDescriptor=" + mainModuleDescriptor + System.lineSeparator() +
-                ", pathElements=" + pathElements + System.lineSeparator() +
-                ", modulepathElements=" + modulepathElements + System.lineSeparator() +
-                ", classpathElements=" + classpathElements + System.lineSeparator() +
-                ", pathExceptions=" + pathExceptions + System.lineSeparator() +
-                '}';
+        return "ResolvePathsResult{" + System.lineSeparator() + "mainModuleDescriptor="
+                + mainModuleDescriptor + System.lineSeparator() + ", pathElements="
+                + pathElements + System.lineSeparator() + ", modulepathElements="
+                + modulepathElements + System.lineSeparator() + ", classpathElements="
+                + classpathElements + System.lineSeparator() + ", pathExceptions="
+                + pathExceptions + System.lineSeparator() + '}';
     }
 }

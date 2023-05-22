@@ -35,89 +35,73 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * Extract information from module with ASM
- * 
- * 
+ *
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser
-{
+class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser {
     @Override
-    JavaModuleDescriptor parse( InputStream in )
-        throws IOException
-    {
+    JavaModuleDescriptor parse(InputStream in) throws IOException {
         final JavaModuleDescriptorWrapper wrapper = new JavaModuleDescriptorWrapper();
 
-        ClassReader reader = new ClassReader( in );
-        reader.accept( new ClassVisitor( Opcodes.ASM9 )
-        {
-            @Override
-            public ModuleVisitor visitModule( String name, int arg1, String arg2 )
-            {
-                wrapper.builder = JavaModuleDescriptor.newModule( name );
-
-                return new ModuleVisitor( Opcodes.ASM9 )
-                {
+        ClassReader reader = new ClassReader(in);
+        reader.accept(
+                new ClassVisitor(Opcodes.ASM9) {
                     @Override
-                    public void visitRequire( String module, int access, String version )
-                    {
-                        if ( ( access & ( Opcodes.ACC_STATIC_PHASE | Opcodes.ACC_TRANSITIVE ) ) != 0 )
-                        {
-                            Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers = new LinkedHashSet<>();
-                            if ( ( access & Opcodes.ACC_STATIC_PHASE ) != 0 )
-                            {
-                                modifiers.add( JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+                    public ModuleVisitor visitModule(String name, int arg1, String arg2) {
+                        wrapper.builder = JavaModuleDescriptor.newModule(name);
+
+                        return new ModuleVisitor(Opcodes.ASM9) {
+                            @Override
+                            public void visitRequire(String module, int access, String version) {
+                                if ((access & (Opcodes.ACC_STATIC_PHASE | Opcodes.ACC_TRANSITIVE)) != 0) {
+                                    Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers =
+                                            new LinkedHashSet<>();
+                                    if ((access & Opcodes.ACC_STATIC_PHASE) != 0) {
+                                        modifiers.add(JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC);
+                                    }
+                                    if ((access & Opcodes.ACC_TRANSITIVE) != 0) {
+                                        modifiers.add(JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE);
+                                    }
+
+                                    wrapper.builder.requires(modifiers, module);
+                                } else {
+                                    wrapper.builder.requires(module);
+                                }
                             }
-                            if ( ( access & Opcodes.ACC_TRANSITIVE ) != 0 )
-                            {
-                                modifiers.add( JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+
+                            @Override
+                            public void visitExport(String pn, int ms, String... targets) {
+                                if (targets == null || targets.length == 0) {
+                                    wrapper.builder.exports(pn.replace('/', '.'));
+                                } else {
+                                    wrapper.builder.exports(
+                                            pn.replace('/', '.'), new HashSet<>(Arrays.asList(targets)));
+                                }
                             }
 
-                            wrapper.builder.requires( modifiers, module );
-                        }
-                        else
-                        {
-                            wrapper.builder.requires( module );
-                        }
-                    }
+                            @Override
+                            public void visitUse(String service) {
+                                wrapper.builder.uses(service.replace('/', '.'));
+                            }
 
-                    @Override
-                    public void visitExport( String pn, int ms, String... targets )
-                    {
-                        if ( targets == null || targets.length == 0 )
-                        {
-                            wrapper.builder.exports( pn.replace( '/', '.' ) );
-                        }
-                        else
-                        {
-                            wrapper.builder.exports( pn.replace( '/', '.' ), new HashSet<>( Arrays.asList( targets ) ) );
-                        }
+                            @Override
+                            public void visitProvide(String service, String... providers) {
+                                List<String> renamedProvides = new ArrayList<>(providers.length);
+                                for (String provider : providers) {
+                                    renamedProvides.add(provider.replace('/', '.'));
+                                }
+                                wrapper.builder.provides(service.replace('/', '.'), renamedProvides);
+                            }
+                        };
                     }
-                    
-                    @Override
-                    public void visitUse( String service )
-                    {
-                        wrapper.builder.uses( service.replace( '/', '.' ) );
-                    }
-                    
-                    @Override
-                    public void visitProvide( String service, String... providers )
-                    {
-                        List<String> renamedProvides = new ArrayList<>( providers.length );
-                        for ( String provider : providers )
-                        {
-                            renamedProvides.add( provider.replace( '/', '.' ) );
-                        }
-                        wrapper.builder.provides( service.replace( '/', '.' ), renamedProvides );
-                    }
-                };
-            }
-        }, 0 );
+                },
+                0);
         return wrapper.builder.build();
     }
 
-    private static class JavaModuleDescriptorWrapper
-    {
+    private static class JavaModuleDescriptorWrapper {
         private JavaModuleDescriptor.Builder builder;
     }
 }

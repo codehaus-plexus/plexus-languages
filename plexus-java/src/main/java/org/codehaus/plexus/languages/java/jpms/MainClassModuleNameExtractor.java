@@ -35,102 +35,87 @@ import java.util.Properties;
 
 /**
  * Extract the module name by calling the main method with an external JVM
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class MainClassModuleNameExtractor
-{
+public class MainClassModuleNameExtractor {
     private final Path jdkHome;
 
-    public MainClassModuleNameExtractor( Path jdkHome )
-    {
+    public MainClassModuleNameExtractor(Path jdkHome) {
         this.jdkHome = jdkHome;
     }
 
-    public <T> Map<T, String> extract( Map<T, Path> files )
-        throws IOException
-    {
-        Path workDir = Files.createTempDirectory( "plexus-java_jpms-" );
-        
-        String classResourcePath = CmdModuleNameExtractor.class.getName().replace( '.', '/' ) + ".class";
+    public <T> Map<T, String> extract(Map<T, Path> files) throws IOException {
+        Path workDir = Files.createTempDirectory("plexus-java_jpms-");
+
+        String classResourcePath = CmdModuleNameExtractor.class.getName().replace('.', '/') + ".class";
 
         try (InputStream is =
-            MainClassModuleNameExtractor.class.getResourceAsStream( "/META-INF/versions/9/" + classResourcePath ))
-        {
-            if ( is==null )
-            {
+                MainClassModuleNameExtractor.class.getResourceAsStream("/META-INF/versions/9/" + classResourcePath)) {
+            if (is == null) {
                 return Collections.emptyMap();
             }
-            Path target = workDir.resolve( classResourcePath );
+            Path target = workDir.resolve(classResourcePath);
 
-            Files.createDirectories( target.getParent() );
+            Files.createDirectories(target.getParent());
 
-            Files.copy( is, target );
+            Files.copy(is, target);
         }
 
-        try (BufferedWriter argsWriter = Files.newBufferedWriter( workDir.resolve( "args" ), Charset.defaultCharset() ))
-        {
-            argsWriter.append( "--class-path" );
+        try (BufferedWriter argsWriter = Files.newBufferedWriter(workDir.resolve("args"), Charset.defaultCharset())) {
+            argsWriter.append("--class-path");
             argsWriter.newLine();
 
-            argsWriter.append( "." );
+            argsWriter.append(".");
             argsWriter.newLine();
 
-            argsWriter.append( CmdModuleNameExtractor.class.getName() );
+            argsWriter.append(CmdModuleNameExtractor.class.getName());
             argsWriter.newLine();
 
-            for ( Path p : files.values() )
-            {
+            for (Path p : files.values()) {
                 // make sure the path is surrounded with quotes in case there is space
-                argsWriter.append( '"' );
+                argsWriter.append('"');
                 // make sure to escape Windows paths
-                argsWriter.append( p.toAbsolutePath().toString().replace( "\\", "\\\\" ) );
-                argsWriter.append( '"' );
+                argsWriter.append(p.toAbsolutePath().toString().replace("\\", "\\\\"));
+                argsWriter.append('"');
                 argsWriter.newLine();
             }
         }
 
-        ProcessBuilder builder = new ProcessBuilder( jdkHome.resolve( "bin/java" ).toAbsolutePath().toString(),
-                                                     "@args" ).directory( workDir.toFile() );
+        ProcessBuilder builder = new ProcessBuilder(
+                        jdkHome.resolve("bin/java").toAbsolutePath().toString(), "@args")
+                .directory(workDir.toFile());
 
         Process p = builder.start();
 
         Properties output = new Properties();
-        try (InputStream is = p.getInputStream())
-        {
-            output.load( is );
+        try (InputStream is = p.getInputStream()) {
+            output.load(is);
         }
 
-        Map<T, String> moduleNames = new HashMap<>( files.size() );
-        for ( Map.Entry<T, Path> entry : files.entrySet() )
-        {
-            moduleNames.put( entry.getKey(), output.getProperty( entry.getValue().toAbsolutePath().toString(), null ) );
+        Map<T, String> moduleNames = new HashMap<>(files.size());
+        for (Map.Entry<T, Path> entry : files.entrySet()) {
+            moduleNames.put(
+                    entry.getKey(),
+                    output.getProperty(entry.getValue().toAbsolutePath().toString(), null));
         }
 
-        try
-        {
-            Files.walkFileTree( workDir, new SimpleFileVisitor<Path>()
-            {
+        try {
+            Files.walkFileTree(workDir, new SimpleFileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile( Path file, BasicFileAttributes attrs )
-                    throws IOException
-                {
-                    Files.delete( file );
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory( Path dir, IOException exc )
-                    throws IOException
-                {
-                    Files.delete( dir );
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir);
                     return FileVisitResult.CONTINUE;
                 }
-            } );
-        }
-        catch ( IOException e )
-        {
+            });
+        } catch (IOException e) {
             // noop, we did our best to clean it up
         }
 

@@ -19,7 +19,8 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-public enum ModuleNameSource
-{
-    FILENAME, MANIFEST, MODULEDESCRIPTOR
+public enum ModuleNameSource {
+    FILENAME,
+    MANIFEST,
+    MODULEDESCRIPTOR
 }

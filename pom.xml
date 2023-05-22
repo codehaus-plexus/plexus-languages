@@ -13,9 +13,7 @@
   <packaging>pom</packaging>
 
   <name>Plexus Languages</name>
-  <description>
-    Plexus Languages maintains shared language features.
-  </description>
+  <description>Plexus Languages maintains shared language features.</description>
 
   <modules>
     <module>plexus-java</module>
@@ -24,8 +22,8 @@
   <scm>
     <connection>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</connection>
     <developerConnection>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</developerConnection>
-    <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
     <tag>HEAD</tag>
+    <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
   </scm>
   <issueManagement>
     <system>github</system>
@@ -89,7 +87,7 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <reporting>
     <plugins>
       <plugin>
@@ -122,7 +120,7 @@
                     <requireJavaVersion>
                       <version>9</version>
                     </requireJavaVersion>
-                  </rules>    
+                  </rules>
                 </configuration>
               </execution>
             </executions>

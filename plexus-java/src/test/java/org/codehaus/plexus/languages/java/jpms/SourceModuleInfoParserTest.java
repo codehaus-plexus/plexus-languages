@@ -19,11 +19,6 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,55 +30,59 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.Test;
 
-public class SourceModuleInfoParserTest
-{
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class SourceModuleInfoParserTest {
     private SourceModuleInfoParser parser = new SourceModuleInfoParser();
 
     @Test
-    public void test() throws Exception
-    {
-        JavaModuleDescriptor moduleDescriptor = parser.fromSourcePath( Paths.get( "src/test/resources/src.dir/module-info.java" ) );
-        assertEquals( "a.b.c", moduleDescriptor.name() );
-        
+    public void test() throws Exception {
+        JavaModuleDescriptor moduleDescriptor =
+                parser.fromSourcePath(Paths.get("src/test/resources/src.dir/module-info.java"));
+        assertEquals("a.b.c", moduleDescriptor.name());
+
         Iterator<JavaRequires> requiresIter = moduleDescriptor.requires().iterator();
-        
+
         JavaRequires requires = requiresIter.next();
-        assertEquals( "d.e", requires.name() );
-        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertEquals("d.e", requires.name());
+        assertFalse(requires.modifiers().contains(JavaRequires.JavaModifier.STATIC));
+        assertFalse(requires.modifiers().contains(JavaRequires.JavaModifier.TRANSITIVE));
 
         requires = requiresIter.next();
-        assertEquals( "s.d.e", requires.name() );
-        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
+        assertEquals("s.d.e", requires.name());
+        assertTrue(requires.modifiers().contains(JavaRequires.JavaModifier.STATIC));
+        assertFalse(requires.modifiers().contains(JavaRequires.JavaModifier.TRANSITIVE));
 
         requires = requiresIter.next();
-        assertEquals( "t.d.e", requires.name() );
-        assertFalse( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
-        
+        assertEquals("t.d.e", requires.name());
+        assertFalse(requires.modifiers().contains(JavaRequires.JavaModifier.STATIC));
+        assertTrue(requires.modifiers().contains(JavaRequires.JavaModifier.TRANSITIVE));
+
         requires = requiresIter.next();
-        assertEquals( "s.t.d.e", requires.name() );
-        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.STATIC ) );
-        assertTrue( requires.modifiers().contains( JavaRequires.JavaModifier.TRANSITIVE ) );
-        
+        assertEquals("s.t.d.e", requires.name());
+        assertTrue(requires.modifiers().contains(JavaRequires.JavaModifier.STATIC));
+        assertTrue(requires.modifiers().contains(JavaRequires.JavaModifier.TRANSITIVE));
+
         Iterator<JavaExports> exportsIter = moduleDescriptor.exports().iterator();
-        
-        JavaExports exports = exportsIter.next(); 
-        assertEquals( "f.g", exports.source() );
-        
-        exports = exportsIter.next(); 
-        assertEquals( "f.g.h", exports.source() );
-        assertEquals( new HashSet<>( Arrays.asList( "i.j", "k.l.m" ) ), exports.targets() );
-        
+
+        JavaExports exports = exportsIter.next();
+        assertEquals("f.g", exports.source());
+
+        exports = exportsIter.next();
+        assertEquals("f.g.h", exports.source());
+        assertEquals(new HashSet<>(Arrays.asList("i.j", "k.l.m")), exports.targets());
+
         Set<String> uses = moduleDescriptor.uses();
-        assertArrayEquals( new String[] { "com.example.foo.spi.Intf" } , uses.toArray( new String[0] ) );
-        
+        assertArrayEquals(new String[] {"com.example.foo.spi.Intf"}, uses.toArray(new String[0]));
+
         Iterator<JavaProvides> providesIter = moduleDescriptor.provides().iterator();
         JavaProvides provides = providesIter.next();
-        
-        assertEquals( "com.example.foo.spi.Intf", provides.service() );
-        assertArrayEquals( new String[] { "com.example.foo.Impl" }, provides.providers().toArray( new String[0] ) );
-    }
 
+        assertEquals("com.example.foo.spi.Intf", provides.service());
+        assertArrayEquals(
+                new String[] {"com.example.foo.Impl"}, provides.providers().toArray(new String[0]));
+    }
 }

@@ -18,44 +18,40 @@ package org.codehaus.plexus.languages.java.jpms;
  * specific language governing permissions and limitations
  * under the License.
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.nio.file.Paths;
 
 import org.junit.Test;
 
-public class ManifestModuleNameExtractorTest
-{
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+public class ManifestModuleNameExtractorTest {
     private ManifestModuleNameExtractor extractor = new ManifestModuleNameExtractor();
 
     @Test
-    public void testNoManifestInJar() throws Exception
-    {
-        assertNull( extractor.extract( Paths.get( "src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
+    public void testNoManifestInJar() throws Exception {
+        assertNull(extractor.extract(Paths.get("src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    public void testManifestInJar() throws Exception
-    {
-        assertEquals( "org.codehaus.plexus.languages.java", extractor.extract( Paths.get( "src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar" ) ) );
+    public void testManifestInJar() throws Exception {
+        assertEquals(
+                "org.codehaus.plexus.languages.java",
+                extractor.extract(Paths.get("src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    public void testNoManifestInDir() throws Exception
-    {
-        assertNull( extractor.extract( Paths.get( "src/test/resources/empty/out" ) ) );
+    public void testNoManifestInDir() throws Exception {
+        assertNull(extractor.extract(Paths.get("src/test/resources/empty/out")));
     }
 
     @Test
-    public void testEmptyManifestInDir() throws Exception
-    {
-        assertNull( extractor.extract( Paths.get( "src/test/resources/manifest.without/out" ) ) );
+    public void testEmptyManifestInDir() throws Exception {
+        assertNull(extractor.extract(Paths.get("src/test/resources/manifest.without/out")));
     }
 
     @Test
-    public void testManifestInDir() throws Exception
-    {
-        assertEquals( "auto.by.manifest", extractor.extract( Paths.get( "src/test/resources/dir.manifest.with/out" ) ) );
+    public void testManifestInDir() throws Exception {
+        assertEquals("auto.by.manifest", extractor.extract(Paths.get("src/test/resources/dir.manifest.with/out")));
     }
 }
