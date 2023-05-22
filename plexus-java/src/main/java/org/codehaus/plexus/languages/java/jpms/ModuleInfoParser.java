@@ -26,29 +26,27 @@ import org.codehaus.plexus.languages.java.version.JavaVersion;
 
 /**
  * Extract information from the module-info file
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-interface ModuleInfoParser
-{
+interface ModuleInfoParser {
     /**
      * Extracts the name from the module-info file
-     * 
+     *
      * @param modulePath the path to the {@code module-info.class}
      * @return the module descriptor
      * @throws IOException when the file could not be parsed
      */
-    JavaModuleDescriptor getModuleDescriptor( Path modulePath ) throws IOException;
-    
+    JavaModuleDescriptor getModuleDescriptor(Path modulePath) throws IOException;
+
     /**
      * Extracts the name from the module-info file
-     * 
+     *
      * @param modulePath the path to the {@code module-info.class}
      * @param javaVersion the java version in case of a multirelease jar
      * @return the module descriptor
      * @throws IOException when the file could not be parsed
      */
-    JavaModuleDescriptor getModuleDescriptor( Path modulePath, JavaVersion javaVersion )
-        throws IOException;
+    JavaModuleDescriptor getModuleDescriptor(Path modulePath, JavaVersion javaVersion) throws IOException;
 }

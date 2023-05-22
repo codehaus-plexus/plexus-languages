@@ -24,83 +24,68 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public abstract class ResolvePathRequest<T>
-{
+public abstract class ResolvePathRequest<T> {
     private Path jdkHome;
-    
+
     private T path;
-    
-    private ResolvePathRequest()
-    {
-    }
-    
-    public static ResolvePathRequest<File> ofFile( File file )
-    {
-        ResolvePathRequest<File> request = new ResolvePathRequest<File>()
-        {
+
+    private ResolvePathRequest() {}
+
+    public static ResolvePathRequest<File> ofFile(File file) {
+        ResolvePathRequest<File> request = new ResolvePathRequest<File>() {
             @Override
-            protected Path toPath( File f )
-            {
+            protected Path toPath(File f) {
                 return f.toPath();
             }
         };
         request.path = file;
         return request;
     }
-    
-    public static ResolvePathRequest<Path> ofPath( Path path )
-    {
-        ResolvePathRequest<Path> request = new ResolvePathRequest<Path>()
-        {
+
+    public static ResolvePathRequest<Path> ofPath(Path path) {
+        ResolvePathRequest<Path> request = new ResolvePathRequest<Path>() {
             @Override
-            protected Path toPath( Path p )
-            {
+            protected Path toPath(Path p) {
                 return p;
             }
         };
         request.path = path;
         return request;
     }
-    
-    public static ResolvePathRequest<String> ofString( String string )
-    {
-        ResolvePathRequest<String> request = new ResolvePathRequest<String>()
-        {
+
+    public static ResolvePathRequest<String> ofString(String string) {
+        ResolvePathRequest<String> request = new ResolvePathRequest<String>() {
             @Override
-            protected Path toPath( String s )
-            {
-                return Paths.get( s );
+            protected Path toPath(String s) {
+                return Paths.get(s);
             }
         };
         request.path = string;
         return request;
     }
 
-    protected abstract Path toPath( T t );
-    
-    public T getPathElement()
-    {
+    protected abstract Path toPath(T t);
+
+    public T getPathElement() {
         return path;
     }
-    
+
     /**
      * In case the JRE is Java 8 or before, this jdkHome is used to extract the module name.
-     * 
+     *
      * @param jdkHome
      * @return this request
      */
-    public ResolvePathRequest<T> setJdkHome( T jdkHome )
-    {
-        this.jdkHome = toPath( jdkHome );
+    public ResolvePathRequest<T> setJdkHome(T jdkHome) {
+        this.jdkHome = toPath(jdkHome);
         return this;
     }
 
-    public Path getJdkHome()
-    {
+    public Path getJdkHome() {
         return jdkHome;
     }
 }

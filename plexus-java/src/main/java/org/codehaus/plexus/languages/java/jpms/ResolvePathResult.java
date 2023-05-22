@@ -21,39 +21,32 @@ package org.codehaus.plexus.languages.java.jpms;
 
 /**
  * Holds the results of the location manager
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class ResolvePathResult
-{
+public class ResolvePathResult {
     private JavaModuleDescriptor moduleDescriptor;
-    
-    private ModuleNameSource moduleNameSource;
-    
-    ResolvePathResult()
-    {
-    }
 
-    ResolvePathResult setModuleDescriptor( JavaModuleDescriptor moduleDescriptor )
-    {
+    private ModuleNameSource moduleNameSource;
+
+    ResolvePathResult() {}
+
+    ResolvePathResult setModuleDescriptor(JavaModuleDescriptor moduleDescriptor) {
         this.moduleDescriptor = moduleDescriptor;
         return this;
     }
-    
-    public JavaModuleDescriptor getModuleDescriptor()
-    {
+
+    public JavaModuleDescriptor getModuleDescriptor() {
         return moduleDescriptor;
     }
-    
-    ResolvePathResult setModuleNameSource( ModuleNameSource moduleNameSource )
-    {
+
+    ResolvePathResult setModuleNameSource(ModuleNameSource moduleNameSource) {
         this.moduleNameSource = moduleNameSource;
         return this;
     }
-    
-    public ModuleNameSource getModuleNameSource()
-    {
+
+    public ModuleNameSource getModuleNameSource() {
         return moduleNameSource;
     }
 }

@@ -18,7 +18,4 @@ package org.codehaus.plexus.languages.java.jpms;
  * specific language governing permissions and limitations
  * under the License.
  */
-class BinaryModuleInfoParser extends AsmModuleInfoParser
-{
-
-}
+class BinaryModuleInfoParser extends AsmModuleInfoParser {}

@@ -29,51 +29,36 @@ import java.util.jar.Manifest;
 
 /**
  * Extracts the name of the module by reading the Automatic-Module-Name attribute of the manifest file
- * 
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-class ManifestModuleNameExtractor implements ModuleNameExtractor
-{
+class ManifestModuleNameExtractor implements ModuleNameExtractor {
     @Override
-    public String extract( Path file )
-        throws IOException
-    {
-        Manifest manifest = extractManifest( file.toFile() );
-        
+    public String extract(Path file) throws IOException {
+        Manifest manifest = extractManifest(file.toFile());
+
         String automaticModuleName;
-        if ( manifest != null )
-        {
-            automaticModuleName = manifest.getMainAttributes().getValue( "Automatic-Module-Name" );
-        }
-        else
-        {
+        if (manifest != null) {
+            automaticModuleName = manifest.getMainAttributes().getValue("Automatic-Module-Name");
+        } else {
             automaticModuleName = null;
         }
 
         return automaticModuleName;
     }
-    
-    private Manifest extractManifest( File file )
-        throws IOException
-    {
+
+    private Manifest extractManifest(File file) throws IOException {
         Manifest manifest;
-        if ( file.isFile() )
-        {
-            try ( JarFile jarFile = new JarFile( file ) )
-            {
+        if (file.isFile()) {
+            try (JarFile jarFile = new JarFile(file)) {
                 manifest = jarFile.getManifest();
             }
-        }
-        else if ( new File( file, "META-INF/MANIFEST.MF" ).exists() )
-        {
-            try ( InputStream is = new FileInputStream( new File( file, "META-INF/MANIFEST.MF" ) ) )
-            {
-                manifest = new Manifest( is );
+        } else if (new File(file, "META-INF/MANIFEST.MF").exists()) {
+            try (InputStream is = new FileInputStream(new File(file, "META-INF/MANIFEST.MF"))) {
+                manifest = new Manifest(is);
             }
-        }
-        else
-        {
+        } else {
             manifest = null;
         }
 
