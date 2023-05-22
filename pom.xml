@@ -38,8 +38,6 @@
 
   <properties>
     <scm.url>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</scm.url>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <javaVersion>8</javaVersion>
     <project.build.outputTimestamp>2023-01-01T19:06:16Z</project.build.outputTimestamp>
   </properties>
 
@@ -48,32 +46,10 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.2.2</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.shared</groupId>
-              <artifactId>maven-shared-resources</artifactId>
-              <version>5</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.5.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -108,7 +84,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.3.0</version>
             <executions>
               <execution>
                 <id>enforce-java</id>
