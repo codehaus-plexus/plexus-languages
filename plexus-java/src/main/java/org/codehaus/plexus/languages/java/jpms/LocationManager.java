@@ -262,6 +262,12 @@ public class LocationManager {
                             .put(
                                     entry.getKey(),
                                     moduleNameSources.get(entry.getValue().name()));
+                } else {
+                    result.getPathExceptions()
+                            .put(
+                                    entry.getKey(),
+                                    new IllegalStateException(
+                                            "Module '" + entry.getValue().name() + "' is already on the module path!"));
                 }
             } else {
                 result.getClasspathElements().add(entry.getKey());
