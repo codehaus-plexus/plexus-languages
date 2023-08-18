@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 
@@ -249,22 +250,47 @@ public class LocationManager {
                     request.isIncludeStatic());
         }
 
-        // in case of identical module names, first one wins
+        Map<T, JavaModuleDescriptor> definedModules = new HashMap<>();
+        Map<T, JavaModuleDescriptor> automaticModules = new HashMap<>();
+
+        pathElements.forEach((k, v) -> {
+            if (v != null && !v.isAutomatic()) {
+                definedModules.put(k, v);
+            } else {
+                automaticModules.put(k, v);
+            }
+        });
+
+        // in case of identical module names, first one wins, others drop onto classpath
+        // if they are automatic modules.
         Set<String> collectedModules = new HashSet<>(requiredNamedModules.size());
 
-        for (Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet()) {
-            if (entry.getValue() != null
-                    && requiredNamedModules.contains(entry.getValue().name())) {
-                if (collectedModules.add(entry.getValue().name())) {
-                    result.getModulepathElements()
-                            .put(
-                                    entry.getKey(),
-                                    moduleNameSources.get(entry.getValue().name()));
+        Consumer<Map<T, JavaModuleDescriptor>> moduleAcceptor = moduleSet -> {
+            for (Entry<T, JavaModuleDescriptor> entry : moduleSet.entrySet()) {
+                if (entry.getValue() != null
+                        && requiredNamedModules.contains(entry.getValue().name())) {
+                    if (collectedModules.add(entry.getValue().name())) {
+                        result.getModulepathElements()
+                                .put(
+                                        entry.getKey(),
+                                        moduleNameSources.get(entry.getValue().name()));
+                        // if the module is an automatic module, add it to the classpath
+                    } else if (entry.getValue().isAutomatic()) {
+                        result.getClasspathElements().add(entry.getKey());
+                    }
+                } else {
+                    result.getClasspathElements().add(entry.getKey());
                 }
-            } else {
-                result.getClasspathElements().add(entry.getKey());
             }
-        }
+        };
+
+        // process defined modules first. This fixes a corner case where a project creates
+        // a main artifact that is a JPMS module and a tests artifact that is not. If the
+        // main artifact and the test artifact happen to have the same module id (one from
+        // the module-info, one from the automatic module naming), the main artifact will
+        // be on the module path and the test artifact will be on the class path.
+        moduleAcceptor.accept(definedModules);
+        moduleAcceptor.accept(automaticModules);
 
         return result;
     }
