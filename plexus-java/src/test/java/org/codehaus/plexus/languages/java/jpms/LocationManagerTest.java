@@ -162,6 +162,36 @@ class LocationManagerTest {
                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 
         when(asmParser.getModuleDescriptor(pj1))
+                .thenReturn(JavaModuleDescriptor.newModule("plexus.java").build());
+        when(asmParser.getModuleDescriptor(pj2))
+                .thenReturn(JavaModuleDescriptor.newModule("plexus.java").build());
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
+
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).containsKey(pj1);
+        assertThat(result.getModulepathElements()).doesNotContainKey(pj2);
+        assertThat(result.getClasspathElements()).isEmpty();
+        // duplicate is flagged as an error
+        assertThat(result.getPathExceptions()).containsOnlyKeys(pj2);
+        assertThat(result.getPathExceptions().get(pj2))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Module 'plexus.java' is already on the module path!");
+    }
+
+    @Test
+    public void testIdenticalAutomaticModuleNames() throws Exception {
+        Path pj1 = Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
+        Path pj2 = Paths.get("src/test/resources/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
+        JavaModuleDescriptor descriptor =
+                JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
+        when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        ResolvePathsRequest<Path> request =
+                ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
+
+        when(asmParser.getModuleDescriptor(pj1))
                 .thenReturn(
                         JavaModuleDescriptor.newAutomaticModule("plexus.java").build());
         when(asmParser.getModuleDescriptor(pj2))
@@ -173,8 +203,42 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).containsOnlyKeys(pj1);
         assertThat(result.getModulepathElements()).doesNotContainKey(pj2);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        // duplicate is flagged as an error
+        assertThat(result.getPathExceptions()).containsOnlyKeys(pj2);
+        assertThat(result.getPathExceptions().get(pj2))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Module 'plexus.java' is already on the module path!");
+    }
+
+    @Test
+    public void testMainJarModuleAndTestJarAutomatic() throws Exception {
+        Path pj1 = Paths.get("src/test/resources/jar.tests/plexus-java-1.0.0-SNAPSHOT.jar");
+        Path pj2 = Paths.get("src/test/resources/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar");
+        JavaModuleDescriptor descriptor =
+                JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
+        when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        ResolvePathsRequest<Path> request =
+                ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
+
+        when(asmParser.getModuleDescriptor(pj1))
+                .thenReturn(JavaModuleDescriptor.newModule("plexus.java").build());
+        when(asmParser.getModuleDescriptor(pj2)).thenReturn(null);
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
+
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).containsKey(pj1);
+        assertThat(result.getModulepathElements()).doesNotContainKey(pj2);
+        assertThat(result.getClasspathElements()).isEmpty();
+
+        // duplicate is flagged as an error
+        assertThat(result.getPathExceptions()).containsOnlyKeys(pj2);
+        assertThat(result.getPathExceptions().get(pj2))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Module 'plexus.java' is already on the module path!");
     }
 
     @Test
@@ -473,9 +537,13 @@ class LocationManagerTest {
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB);
-        // with current default the duplicate will be ignored
         assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(1);
+        // duplicate (module B / module C) is flagged as an error
+        assertThat(result.getPathExceptions()).containsOnlyKeys(moduleC);
+        assertThat(result.getPathExceptions().get(moduleC))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Module 'anonymous' is already on the module path!");
     }
 
     @Test
