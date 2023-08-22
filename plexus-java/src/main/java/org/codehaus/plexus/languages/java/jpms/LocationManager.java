@@ -250,8 +250,8 @@ public class LocationManager {
                     request.isIncludeStatic());
         }
 
-        Map<T, JavaModuleDescriptor> definedModules = new HashMap<>();
-        Map<T, JavaModuleDescriptor> automaticModules = new HashMap<>();
+        Map<T, JavaModuleDescriptor> definedModules = new LinkedHashMap<>();
+        Map<T, JavaModuleDescriptor> automaticModules = new LinkedHashMap<>();
 
         pathElements.forEach((k, v) -> {
             if (v != null && !v.isAutomatic()) {
