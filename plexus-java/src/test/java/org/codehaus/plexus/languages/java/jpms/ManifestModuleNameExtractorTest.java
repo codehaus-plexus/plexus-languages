@@ -20,38 +20,38 @@ package org.codehaus.plexus.languages.java.jpms;
  */
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ManifestModuleNameExtractorTest {
+class ManifestModuleNameExtractorTest {
     private ManifestModuleNameExtractor extractor = new ManifestModuleNameExtractor();
 
     @Test
-    public void testNoManifestInJar() throws Exception {
+    void testNoManifestInJar() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/resources/jar.name/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    public void testManifestInJar() throws Exception {
+    void testManifestInJar() throws Exception {
         assertEquals(
                 "org.codehaus.plexus.languages.java",
                 extractor.extract(Paths.get("src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    public void testNoManifestInDir() throws Exception {
+    void testNoManifestInDir() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/resources/empty/out")));
     }
 
     @Test
-    public void testEmptyManifestInDir() throws Exception {
+    void testEmptyManifestInDir() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/resources/manifest.without/out")));
     }
 
     @Test
-    public void testManifestInDir() throws Exception {
+    void testManifestInDir() throws Exception {
         assertEquals("auto.by.manifest", extractor.extract(Paths.get("src/test/resources/dir.manifest.with/out")));
     }
 }

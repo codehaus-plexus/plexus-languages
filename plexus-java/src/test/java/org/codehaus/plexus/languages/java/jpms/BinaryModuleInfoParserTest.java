@@ -33,28 +33,24 @@ import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.codehaus.plexus.languages.java.version.JavaVersion;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BinaryModuleInfoParserTest {
-    private BinaryModuleInfoParser parser = new BinaryModuleInfoParser();
+class BinaryModuleInfoParserTest {
+    private final BinaryModuleInfoParser parser = new BinaryModuleInfoParser();
 
     @Test
-    public void testJarDescriptor() throws Exception {
+    void testJarDescriptor() throws Exception {
         JavaModuleDescriptor descriptor =
                 parser.getModuleDescriptor(Paths.get("src/test/resources/jar.descriptor/asm-6.0_BETA.jar"));
 
         assertNotNull(descriptor);
-        assertEquals("org.objectweb.asm", descriptor.name());
-        assertEquals(false, descriptor.isAutomatic());
+        assertThat(descriptor.name()).isEqualTo("org.objectweb.asm");
+        assertFalse(descriptor.isAutomatic());
 
-        assertEquals(1, descriptor.requires().size());
+        assertThat(descriptor.requires()).hasSize(1);
         assertEquals("java.base", descriptor.requires().iterator().next().name());
 
         Set<JavaExports> expectedExports = JavaModuleDescriptor.newAutomaticModule("_")
@@ -66,17 +62,17 @@ public class BinaryModuleInfoParserTest {
     }
 
     @Test
-    public void testMultiReleaseJarDescriptor() throws Exception {
+    void testMultiReleaseJarDescriptor() throws Exception {
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
                 Paths.get("src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar"), JavaVersion.parse("17"));
 
         assertNotNull(descriptor);
         assertEquals("de.adito.jloadr", descriptor.name());
-        assertEquals(false, descriptor.isAutomatic());
+        assertFalse(descriptor.isAutomatic());
     }
 
     @Test
-    public void testIncompleteMultiReleaseJarDescriptor() throws Exception {
+    void testIncompleteMultiReleaseJarDescriptor() throws Exception {
         // this jar is missing the Multi-Release: true entry in the Manifest
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
                 Paths.get("src/test/resources/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar"));
@@ -85,7 +81,7 @@ public class BinaryModuleInfoParserTest {
     }
 
     @Test
-    public void testClassicJar() throws Exception {
+    void testClassicJar() throws Exception {
         JavaModuleDescriptor descriptor =
                 parser.getModuleDescriptor(Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"));
 
@@ -93,15 +89,15 @@ public class BinaryModuleInfoParserTest {
     }
 
     @Test
-    public void testOutputDirectoryDescriptor() throws Exception {
+    void testOutputDirectoryDescriptor() throws Exception {
         JavaModuleDescriptor descriptor =
                 parser.getModuleDescriptor(Paths.get("src/test/resources/dir.descriptor/out"));
 
         assertNotNull(descriptor);
         assertEquals("org.codehaus.plexus.languages.java.demo", descriptor.name());
-        assertEquals(false, descriptor.isAutomatic());
+        assertFalse(descriptor.isAutomatic());
 
-        assertEquals(3, descriptor.requires().size());
+        assertThat(descriptor.requires()).hasSize(3);
 
         Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule("_")
                 .requires("java.base")
@@ -113,19 +109,21 @@ public class BinaryModuleInfoParserTest {
         assertEquals(expectedRequires, descriptor.requires());
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void testClassicOutputDirectory() throws Exception {
-        parser.getModuleDescriptor(Paths.get("src/test/resources/dir.empty/out"));
+    @Test
+    void testClassicOutputDirectory() {
+        assertThrows(
+                NoSuchFileException.class,
+                () -> parser.getModuleDescriptor(Paths.get("src/test/resources/dir.empty/out")));
     }
 
     @Test
-    public void testJModDescriptor() throws Exception {
+    void testJModDescriptor() throws Exception {
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
                 Paths.get("src/test/resources/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod"));
 
         assertNotNull(descriptor);
         assertEquals("com.corporate.project", descriptor.name());
-        assertEquals(false, descriptor.isAutomatic());
+        assertFalse(descriptor.isAutomatic());
 
         assertEquals(1, descriptor.requires().size());
         assertEquals("java.base", descriptor.requires().iterator().next().name());
@@ -135,13 +133,14 @@ public class BinaryModuleInfoParserTest {
                 "com.corporate.project", descriptor.exports().iterator().next().source());
     }
 
-    @Test(expected = IOException.class)
-    public void testInvalidFile() throws Exception {
-        parser.getModuleDescriptor(Paths.get("src/test/resources/nonjar/pom.xml"));
+    @Test
+    void testInvalidFile() {
+        assertThrows(
+                IOException.class, () -> parser.getModuleDescriptor(Paths.get("src/test/resources/nonjar/pom.xml")));
     }
 
     @Test
-    public void testUses() throws Exception {
+    void testUses() throws Exception {
         try (InputStream is =
                 Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.uses/out/module-info.class"))) {
             JavaModuleDescriptor descriptor = parser.parse(is);
@@ -157,7 +156,7 @@ public class BinaryModuleInfoParserTest {
     }
 
     @Test
-    public void testProvides() throws Exception {
+    void testProvides() throws Exception {
         JavaModuleDescriptor descriptor =
                 parser.getModuleDescriptor(Paths.get("src/test/resources/jar.service/threeten-extra-1.4.jar"));
 
@@ -182,13 +181,13 @@ public class BinaryModuleInfoParserTest {
     }
 
     @Test
-    public void testRequires() throws Exception {
+    void testRequires() throws Exception {
         try (InputStream is =
                 Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.requires/out/module-info.class"))) {
             JavaModuleDescriptor descriptor = parser.parse(is);
 
             assertNotNull(descriptor);
-            assertThat(descriptor.requires().size(), is(5));
+            assertThat(descriptor.requires()).hasSize(5);
 
             Set<JavaRequires> expectedRequires = JavaModuleDescriptor.newAutomaticModule("_")
                     .requires("java.base")
@@ -196,7 +195,7 @@ public class BinaryModuleInfoParserTest {
                     .requires(Collections.singleton(JavaRequires.JavaModifier.STATIC), "mod_r_s")
                     .requires(Collections.singleton(JavaRequires.JavaModifier.TRANSITIVE), "mod_r_t")
                     .requires(
-                            new HashSet<JavaRequires.JavaModifier>(Arrays.asList(
+                            new HashSet<>(Arrays.asList(
                                     JavaRequires.JavaModifier.STATIC, JavaRequires.JavaModifier.TRANSITIVE)),
                             "mod_r_s_t")
                     .build()

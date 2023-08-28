@@ -21,43 +21,35 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.nio.file.Paths;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public abstract class AbstractFilenameModuleNameExtractorTest {
     protected abstract ModuleNameExtractor getExtractor();
 
-    @BeforeClass
-    public static void assume() {
-        assumeThat("Requires at least Java 9", System.getProperty("java.version"), not(startsWith("1.")));
-    }
-
     @Test
-    public void testJarWithoutManifest() throws Exception {
+    void testJarWithoutManifest() throws Exception {
         String name = getExtractor().extract(Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"));
         assertEquals("plexus.java", name);
     }
 
     @Test
-    public void testJarWithManifest() throws Exception {
+    void testJarWithManifest() throws Exception {
         String name = getExtractor()
                 .extract(Paths.get("src/test/resources/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar"));
         assertEquals("org.codehaus.plexus.languages.java", name);
     }
 
     @Test
-    public void testJarUnsupported() throws Exception {
+    void testJarUnsupported() throws Exception {
         String name = getExtractor().extract(Paths.get("src/test/resources/jar.unsupported/jdom-1.0.jar"));
-        assertEquals(null, name);
+        assertNull(name);
     }
 
     @Test
-    public void testJarWithSpacesInPath() throws Exception {
+    void testJarWithSpacesInPath() throws Exception {
         String name = getExtractor()
                 .extract(Paths.get("src/test/resources/jar with spaces in path/plexus-java-1.0.0-SNAPSHOT.jar"));
         assertEquals("org.codehaus.plexus.languages.java", name);

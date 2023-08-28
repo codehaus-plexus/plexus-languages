@@ -24,17 +24,16 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assume.assumeThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -44,8 +43,9 @@ import static org.mockito.Mockito.when;
  *
  * @author Robert Scholte
  */
-@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
-public class LocationManagerIT {
+@DisabledOnJre(value = JRE.JAVA_8, disabledReason = "Requires Java 9+ Module System")
+@ExtendWith(MockitoExtension.class)
+class LocationManagerIT {
     @Mock
     private BinaryModuleInfoParser asmParser;
 
@@ -56,13 +56,8 @@ public class LocationManagerIT {
 
     final Path mockModuleInfoJava = Paths.get("src/test/resources/mock/module-info.java");
 
-    @BeforeClass
-    public static void assume() {
-        assumeThat("Requires at least Java 9", System.getProperty("java.version"), not(startsWith("1.")));
-    }
-
-    @Before
-    public void onSetup() {
+    @BeforeEach
+    void onSetup() {
         locationManager = new LocationManager(qdoxParser) {
             @Override
             ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
@@ -72,7 +67,7 @@ public class LocationManagerIT {
     }
 
     @Test
-    public void testManifestWithoutReflectRequires() throws Exception {
+    void testManifestWithoutReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/resources/manifest.without/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("any").build();
@@ -82,15 +77,15 @@ public class LocationManagerIT {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getPathExceptions().size(), is(0));
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(1));
+        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(1);
     }
 
     @Test
-    public void testEmptyWithReflectRequires() throws Exception {
+    void testEmptyWithReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/resources/empty/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("a.b.c").build();
@@ -100,34 +95,32 @@ public class LocationManagerIT {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getPathExceptions().size(), is(0));
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(1));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testResolvePathWithException() throws Exception {
-        assumeThat("Requires at least Java 9", System.getProperty("java.version"), not(startsWith("1.")));
-
-        Path p = Paths.get("src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
-        ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(p);
-
-        locationManager.resolvePath(request);
+        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(1);
     }
 
     @Test
-    public void testClassicJarNameStartsWithNumber() throws Exception {
-        assumeThat("Requires at least Java 9", System.getProperty("java.version"), not(startsWith("1.")));
+    void testResolvePathWithException() {
+        assertThrows(RuntimeException.class, () -> {
+            Path p = Paths.get("src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
+            ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(p);
 
+            locationManager.resolvePath(request);
+        });
+    }
+
+    @Test
+    void testClassicJarNameStartsWithNumber() throws Exception {
         Path p = Paths.get("src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Arrays.asList(p)).setMainModuleDescriptor(mockModuleInfoJava);
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getPathExceptions().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(1));
+        assertThat(result.getPathExceptions()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(1);
     }
 }

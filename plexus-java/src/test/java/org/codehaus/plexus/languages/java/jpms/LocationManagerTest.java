@@ -27,31 +27,27 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
-public class LocationManagerTest {
-    @Mock
+class LocationManagerTest {
     private BinaryModuleInfoParser asmParser;
 
-    @Mock
     private SourceModuleInfoParser qdoxParser;
 
     private LocationManager locationManager;
 
     final Path mockModuleInfoJava = Paths.get("src/test/resources/mock/module-info.java");
 
-    @Before
-    public void onSetup() {
+    @BeforeEach
+    void onSetup() {
+        asmParser = mock(BinaryModuleInfoParser.class);
+        qdoxParser = mock(SourceModuleInfoParser.class);
         locationManager = new LocationManager(qdoxParser) {
             @Override
             ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
@@ -61,18 +57,18 @@ public class LocationManagerTest {
     }
 
     @Test
-    public void testNoPaths() throws Exception {
+    void testNoPaths() throws Exception {
         ResolvePathsResult<File> result =
                 locationManager.resolvePaths(ResolvePathsRequest.ofFiles(Collections.emptyList()));
-        assertThat(result.getMainModuleDescriptor(), nullValue(JavaModuleDescriptor.class));
-        assertThat(result.getPathElements().size(), is(0));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isNull();
+        assertThat(result.getPathElements()).hasSize(0);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testWithUnknownRequires() throws Exception {
+    void testWithUnknownRequires() throws Exception {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("java.base")
                 .requires("jdk.net")
@@ -83,15 +79,15 @@ public class LocationManagerTest {
 
         ResolvePathsResult<File> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(0));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(0);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testManifestWithReflectRequires() throws Exception {
+    void testManifestWithReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/resources/dir.manifest.with/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("auto.by.manifest")
@@ -102,16 +98,16 @@ public class LocationManagerTest {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getModulepathElements().get(abc), is(ModuleNameSource.MANIFEST));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MANIFEST);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testDirDescriptorWithReflectRequires() throws Exception {
+    void testDirDescriptorWithReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/resources/dir.descriptor/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("dir.descriptor")
@@ -125,16 +121,16 @@ public class LocationManagerTest {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getModulepathElements().get(abc), is(ModuleNameSource.MODULEDESCRIPTOR));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testJarWithAsmRequires() throws Exception {
+    void testJarWithAsmRequires() throws Exception {
         Path abc = Paths.get("src/test/resources/jar.descriptor/asm-6.0_BETA.jar");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("org.objectweb.asm")
@@ -147,17 +143,16 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("org.objectweb.asm").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getModulepathElements().get(abc), is(ModuleNameSource.MODULEDESCRIPTOR));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testIdenticalModuleNames() throws Exception {
+    void testIdenticalModuleNames() throws Exception {
         Path pj1 = Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
         Path pj2 = Paths.get("src/test/resources/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
         JavaModuleDescriptor descriptor =
@@ -174,18 +169,16 @@ public class LocationManagerTest {
                         JavaModuleDescriptor.newAutomaticModule("plexus.java").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getModulepathElements().containsKey(pj1), is(true));
-        assertThat(result.getModulepathElements().containsKey(pj2), is(false));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).containsOnlyKeys(pj1);
+        assertThat(result.getModulepathElements()).doesNotContainKey(pj2);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testNonJar() throws Exception {
+    void testNonJar() throws Exception {
         Path p = Paths.get("src/test/resources/nonjar/pom.xml");
 
         ResolvePathsRequest<Path> request =
@@ -193,11 +186,11 @@ public class LocationManagerTest {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getPathExceptions().size(), is(1));
+        assertThat(result.getPathExceptions()).hasSize(1);
     }
 
     @Test
-    public void testAdditionalModules() throws Exception {
+    void testAdditionalModules() throws Exception {
         Path p = Paths.get("src/test/resources/mock/jar0.jar");
 
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base").build();
@@ -211,16 +204,15 @@ public class LocationManagerTest {
                         JavaModuleDescriptor.newAutomaticModule("plexus.java").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-
-        assertThat(result.getMainModuleDescriptor(), is(descriptor));
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testResolvePath() throws Exception {
+    void testResolvePath() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/jar0.jar");
         ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(abc);
 
@@ -229,14 +221,13 @@ public class LocationManagerTest {
 
         ResolvePathResult result = locationManager.resolvePath(request);
 
-        assertThat(
-                result.getModuleDescriptor(),
-                is(JavaModuleDescriptor.newModule("org.objectweb.asm").build()));
-        assertThat(result.getModuleNameSource(), is(ModuleNameSource.MODULEDESCRIPTOR));
+        assertThat(result.getModuleDescriptor())
+                .isEqualTo(JavaModuleDescriptor.newModule("org.objectweb.asm").build());
+        assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
     }
 
     @Test
-    public void testNoMatchingProviders() throws Exception {
+    void testNoMatchingProviders() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request =
@@ -250,14 +241,14 @@ public class LocationManagerTest {
                         .build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(1);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testMainModuleDescriptorWithProviders() throws Exception {
+    void testMainModuleDescriptorWithProviders() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request =
@@ -271,14 +262,14 @@ public class LocationManagerTest {
                         .build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testMainModuleDescriptorWithProvidersDontIncludeProviders() throws Exception {
+    void testMainModuleDescriptorWithProvidersDontIncludeProviders() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc);
@@ -291,14 +282,14 @@ public class LocationManagerTest {
                         .build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(1));
-        assertThat(result.getModulepathElements().size(), is(0));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(1);
+        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).hasSize(1);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testTransitiveProviders() throws Exception {
+    void testTransitiveProviders() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -317,14 +308,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("ghi").uses("tool").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(2));
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(2);
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testDontIncludeProviders() throws Exception {
+    void testDontIncludeProviders() throws Exception {
         Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -342,14 +333,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("ghi").uses("tool").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(1);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testAllowAdditionalModulesWithoutMainDescriptor() throws Exception {
+    void testAllowAdditionalModulesWithoutMainDescriptor() throws Exception {
         Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request =
@@ -361,15 +352,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("ghi").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(1);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testReuseModuleDescriptor() throws Exception {
+    void testReuseModuleDescriptor() throws Exception {
         Path def = Paths.get("src/test/resources/mock/jar0.jar");
 
         ResolvePathRequest<Path> request1 = ResolvePathRequest.ofPath(def);
@@ -383,30 +373,30 @@ public class LocationManagerTest {
 
         ResolvePathsResult<Path> result2 = locationManager.resolvePaths(request2);
 
-        assertThat(result1.getModuleDescriptor(), is(result2.getMainModuleDescriptor()));
+        assertThat(result1.getModuleDescriptor()).isEqualTo(result2.getMainModuleDescriptor());
     }
 
     @Test
-    public void testParseModuleDescriptor() throws Exception {
+    void testParseModuleDescriptor() throws Exception {
         Path descriptorPath = Paths.get("src/test/resources/src.dir/module-info.java");
         when(qdoxParser.fromSourcePath(descriptorPath))
                 .thenReturn(JavaModuleDescriptor.newModule("a.b.c").build());
 
         ResolvePathResult result = locationManager.parseModuleDescriptor(descriptorPath);
-        assertThat(result.getModuleNameSource(), is(ModuleNameSource.MODULEDESCRIPTOR));
-        assertThat(result.getModuleDescriptor().name(), is("a.b.c"));
+        assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getModuleDescriptor().name()).isEqualTo("a.b.c");
 
         locationManager.parseModuleDescriptor(descriptorPath.toFile());
-        assertThat(result.getModuleNameSource(), is(ModuleNameSource.MODULEDESCRIPTOR));
-        assertThat(result.getModuleDescriptor().name(), is("a.b.c"));
+        assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getModuleDescriptor().name()).isEqualTo("a.b.c");
 
         locationManager.parseModuleDescriptor(descriptorPath.toString());
-        assertThat(result.getModuleNameSource(), is(ModuleNameSource.MODULEDESCRIPTOR));
-        assertThat(result.getModuleDescriptor().name(), is("a.b.c"));
+        assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getModuleDescriptor().name()).isEqualTo("a.b.c");
     }
 
     @Test
-    public void testTransitiveStatic() throws Exception {
+    void testTransitiveStatic() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -425,14 +415,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("moduleC").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getClasspathElements()).hasSize(1);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testDirectStatic() throws Exception {
+    void testDirectStatic() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -456,20 +446,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("moduleD").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(3));
-        assertThat(
-                "content: " + result.getModulepathElements(),
-                result.getModulepathElements().size(),
-                is(2));
-        assertThat(result.getModulepathElements().containsKey(moduleB), is(true));
-        assertThat(result.getModulepathElements().containsKey(moduleD), is(true));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getClasspathElements().contains(moduleC), is(true));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(3);
+        assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleD);
+        assertThat(result.getClasspathElements()).containsOnly(moduleC);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testDuplicateModule() throws Exception {
+    void testDuplicateModule() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -487,16 +471,15 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("anonymous").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(2));
-        assertThat(result.getModulepathElements().size(), is(1));
-        assertThat(result.getModulepathElements().containsKey(moduleB), is(true));
+        assertThat(result.getPathElements()).hasSize(2);
+        assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB);
         // with current default the duplicate will be ignored
-        assertThat(result.getClasspathElements().size(), is(0));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
     @Test
-    public void testStaticTransitive() throws Exception {
+    void testStaticTransitive() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -520,23 +503,17 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("moduleD").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(result.getPathElements().size(), is(3));
-        assertThat(
-                "modulepathelements:" + result.getModulepathElements(),
-                result.getModulepathElements().size(),
-                is(2));
-        assertThat(result.getModulepathElements().containsKey(moduleB), is(true));
-        assertThat(result.getModulepathElements().containsKey(moduleC), is(true));
-        assertThat(result.getClasspathElements().size(), is(1));
-        assertThat(result.getClasspathElements().contains(moduleD), is(true));
-        assertThat(result.getPathExceptions().size(), is(0));
+        assertThat(result.getPathElements()).hasSize(3);
+        assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleC);
+        assertThat(result.getClasspathElements()).containsOnly(moduleD);
+        assertThat(result.getPathExceptions()).hasSize(0);
     }
 
-    @Test
     /**
-     * test case for https://issues.apache.org/jira/browse/MCOMPILER-481
+     * test case for <a href="https://issues.apache.org/jira/browse/MCOMPILER-481">MCOMPILER-481</a>
      */
-    public void includeDeeperRequiresStatic() throws Exception {
+    @Test
+    void includeDeeperRequiresStatic() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -555,19 +532,14 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("moduleC").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(
-                "modulepathelements:" + result.getModulepathElements(),
-                result.getModulepathElements().size(),
-                is(2));
-        assertThat(result.getModulepathElements().containsKey(moduleB), is(true));
-        assertThat(result.getModulepathElements().containsKey(moduleC), is(true));
+        assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleC);
     }
 
-    @Test
     /**
-     * test case for https://issues.apache.org/jira/browse/MCOMPILER-482
+     * test case for <a href="https://issues.apache.org/jira/browse/MCOMPILER-482">MCOMPILER-482</a>
      */
-    public void includeDeeperRequiresStaticTransitive() throws Exception {
+    @Test
+    void includeDeeperRequiresStaticTransitive() throws Exception {
         Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java core
         Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
         Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
@@ -592,12 +564,6 @@ public class LocationManagerTest {
                 .thenReturn(JavaModuleDescriptor.newModule("moduleD").build());
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
-        assertThat(
-                "modulepathelements:" + result.getModulepathElements(),
-                result.getModulepathElements().size(),
-                is(3));
-        assertThat(result.getModulepathElements().containsKey(moduleB), is(true));
-        assertThat(result.getModulepathElements().containsKey(moduleC), is(true));
-        assertThat(result.getModulepathElements().containsKey(moduleD), is(true));
+        assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleC, moduleD);
     }
 }
