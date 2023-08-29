@@ -27,6 +27,10 @@ jobs:
         os: [ubuntu-latest,windows-latest, macOS-latest]
         java: [8, 11, 17]
         jdk: [temurin, zulu, adopt-openj9]
+        include:
+          - os: ubuntu-latest
+            java: 21
+            jdk: corretto
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
