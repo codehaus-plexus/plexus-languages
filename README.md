@@ -1,6 +1,6 @@
 # Plexus Language
 ![Build Status](https://github.com/codehaus-plexus/plexus-languages/workflows/GitHub%20CI/badge.svg)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/codehaus-plexus/plexus-languages/GitHub%20CI)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/codehaus-plexus/plexus-languages/maven.yml?branch=master)
 
 Plexus Languages:
 
