@@ -60,7 +60,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      * Actual parsing is done when calling {@link #compareTo(JavaVersion)}
      *
      * @param s the version string, never {@code null}
-     * @return the version wrapped in a JavadocVersion
+     * @return the version wrapped in a JavaVersion
      */
     public static JavaVersion parse(String s) {
         return new JavaVersion(s, !s.startsWith("1."));
