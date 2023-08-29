@@ -24,11 +24,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+import org.junit.jupiter.api.condition.DisabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
+
+@DisabledOnJre(value = JRE.JAVA_8, disabledReason = "Requires Java 9+ Module System")
 public class MainClassModuleNameExtractorTest extends AbstractFilenameModuleNameExtractorTest {
     @Override
     protected ModuleNameExtractor getExtractor() {
         return new ModuleNameExtractor() {
-            MainClassModuleNameExtractor extractor =
+            final MainClassModuleNameExtractor extractor =
                     new MainClassModuleNameExtractor(Paths.get(System.getProperty("java.home")));
 
             @Override

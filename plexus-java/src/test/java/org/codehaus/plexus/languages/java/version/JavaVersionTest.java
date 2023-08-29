@@ -19,68 +19,79 @@ package org.codehaus.plexus.languages.java.version;
  * under the License.
  */
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
  * Parsing is lazy, only triggered when comparing
  */
-public class JavaVersionTest {
+class JavaVersionTest {
     @Test
-    public void testParse() throws Exception {
-        assertTrue(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4.2")) < 0);
-        assertTrue(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.5")) < 0);
-        assertTrue(JavaVersion.parse("1.8").compareTo(JavaVersion.parse("9")) < 0);
+    void testParse() {
+        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4.2")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.5"))).isLessThan(0);
+        assertThat(JavaVersion.parse("1.8").compareTo(JavaVersion.parse("9"))).isLessThan(0);
 
-        assertTrue(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4")) == 0);
-        assertTrue(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4.2")) == 0);
-        assertTrue(JavaVersion.parse("9").compareTo(JavaVersion.parse("9")) == 0);
+        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4"))).isEqualTo(0);
+        assertThat(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4.2")))
+                .isEqualTo(0);
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9"))).isEqualTo(0);
 
-        assertTrue(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4")) > 0);
-        assertTrue(JavaVersion.parse("1.5").compareTo(JavaVersion.parse("1.4")) > 0);
-        assertTrue(JavaVersion.parse("9").compareTo(JavaVersion.parse("1.8")) > 0);
+        assertThat(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4")))
+                .isGreaterThan(0);
+        assertThat(JavaVersion.parse("1.5").compareTo(JavaVersion.parse("1.4"))).isGreaterThan(0);
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("1.8"))).isGreaterThan(0);
     }
 
     @Test
-    public void testVersionNamingExamples() {
+    void testVersionNamingExamples() {
         // All GA (FCS) versions are ordered based on the standard dot-notation. For example: 1.3.0 < 1.3.0_01 < 1.3.1 <
         // 1.3.1_01.
         // Source: http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html
 
-        assertTrue(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0_01")) < 0);
-        assertTrue(JavaVersion.parse("1.3.0_01").compareTo(JavaVersion.parse("1.3.1")) < 0);
-        assertTrue(JavaVersion.parse("1.3.1").compareTo(JavaVersion.parse("1.3.1_01")) < 0);
+        assertThat(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0_01")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("1.3.0_01").compareTo(JavaVersion.parse("1.3.1")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("1.3.1").compareTo(JavaVersion.parse("1.3.1_01")))
+                .isLessThan(0);
 
-        assertTrue(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0-b24")) < 0);
+        assertThat(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0-b24")))
+                .isLessThan(0);
     }
 
     @Test
-    public void testJEP223Short() {
+    void testJEP223Short() {
         // http://openjdk.java.net/jeps/223
-        assertTrue(JavaVersion.parse("9-ea").compareTo(JavaVersion.parse("9")) < 0);
-        assertTrue(JavaVersion.parse("9").compareTo(JavaVersion.parse("9.0.1")) < 0);
-        assertTrue(JavaVersion.parse("9.0.1").compareTo(JavaVersion.parse("9.0.2")) < 0);
-        assertTrue(JavaVersion.parse("9.0.2").compareTo(JavaVersion.parse("9.1.2")) < 0);
-        assertTrue(JavaVersion.parse("9.1.2").compareTo(JavaVersion.parse("9.1.3")) < 0);
-        assertTrue(JavaVersion.parse("9.1.3").compareTo(JavaVersion.parse("9.1.4")) < 0);
-        assertTrue(JavaVersion.parse("9.1.4").compareTo(JavaVersion.parse("9.2.4")) < 0);
+        assertThat(JavaVersion.parse("9-ea").compareTo(JavaVersion.parse("9"))).isLessThan(0);
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9.0.1"))).isLessThan(0);
+        assertThat(JavaVersion.parse("9.0.1").compareTo(JavaVersion.parse("9.0.2")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("9.0.2").compareTo(JavaVersion.parse("9.1.2")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("9.1.2").compareTo(JavaVersion.parse("9.1.3")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("9.1.3").compareTo(JavaVersion.parse("9.1.4")))
+                .isLessThan(0);
+        assertThat(JavaVersion.parse("9.1.4").compareTo(JavaVersion.parse("9.2.4")))
+                .isLessThan(0);
     }
 
     @Test
-    public void testIsAtLeastString() {
+    void testIsAtLeastString() {
         JavaVersion base = JavaVersion.parse("7");
         assertTrue(base.isAtLeast("7"));
         assertFalse(base.isAtLeast("8"));
     }
 
     @Test
-    public void testIsAtLeastVersion() {
+    void testIsAtLeastVersion() {
         // e.g. can I use the module-path, which is supported since java 9
         JavaVersion j9 = JavaVersion.parse("9");
         assertFalse(JavaVersion.parse("8").isAtLeast(j9));
@@ -88,14 +99,14 @@ public class JavaVersionTest {
     }
 
     @Test
-    public void testIsBeforeString() {
+    void testIsBeforeString() {
         JavaVersion base = JavaVersion.parse("7");
         assertFalse(base.isBefore("7"));
         assertTrue(base.isBefore("8"));
     }
 
     @Test
-    public void testIsBeforeStringVersion() {
+    void testIsBeforeStringVersion() {
         // e.g. can I use -XX:MaxPermSize, which has been removed in Java 9
         JavaVersion j9 = JavaVersion.parse("9");
         assertTrue(JavaVersion.parse("8").isBefore(j9));
@@ -103,19 +114,19 @@ public class JavaVersionTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         JavaVersion seven = JavaVersion.parse("7");
         JavaVersion other = JavaVersion.parse("7");
 
-        assertEquals(seven, seven);
+        assertThat(seven).isEqualTo(seven);
         assertEquals(seven, other);
-        assertNotEquals(seven, null);
+        assertNotEquals(null, seven);
         assertNotEquals(seven, new Object());
         assertNotEquals(seven, JavaVersion.parse("8"));
     }
 
     @Test
-    public void testHascode() {
+    void testHascode() {
         JavaVersion seven = JavaVersion.parse("7");
         JavaVersion other = JavaVersion.parse("7");
 
@@ -123,39 +134,36 @@ public class JavaVersionTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertEquals("7", JavaVersion.parse("7").toString());
 
-        assertEquals(
-                "Raw version should not be parsed",
-                "!@#$%^&*()",
-                JavaVersion.parse("!@#$%^&*()").toString());
+        assertEquals("!@#$%^&*()", JavaVersion.parse("!@#$%^&*()").toString(), "Raw version should not be parsed");
     }
 
     @Test
-    public void testAsMajor() {
+    void testAsMajor() {
         assertEquals(JavaVersion.parse("2"), JavaVersion.parse("1.2").asMajor());
         assertEquals(JavaVersion.parse("5.0"), JavaVersion.parse("5.0").asMajor());
         // only shift one time
-        assertEquals(JavaVersion.parse("1.1.2").asMajor().asMajor().toString(), "1.2");
+        assertEquals("1.2", JavaVersion.parse("1.1.2").asMajor().asMajor().toString());
     }
 
     @Test
-    public void testAsMajorEquals() {
+    void testAsMajorEquals() {
         JavaVersion version = JavaVersion.parse("1.2");
         assertEquals(version, version.asMajor());
     }
 
     @Test
-    public void testValueWithGroups() {
-        assertThat(JavaVersion.parse("1").getValue(1), is("1"));
-        assertThat(JavaVersion.parse("1").getValue(2), is("1.0"));
-        assertThat(JavaVersion.parse("1").getValue(3), is("1.0.0"));
-        assertThat(JavaVersion.parse("2.1").getValue(1), is("2"));
-        assertThat(JavaVersion.parse("2.1").getValue(2), is("2.1"));
-        assertThat(JavaVersion.parse("2.1").getValue(3), is("2.1.0"));
-        assertThat(JavaVersion.parse("3.2.1").getValue(1), is("3"));
-        assertThat(JavaVersion.parse("3.2.1").getValue(2), is("3.2"));
-        assertThat(JavaVersion.parse("3.2.1").getValue(3), is("3.2.1"));
+    void testValueWithGroups() {
+        assertThat(JavaVersion.parse("1").getValue(1)).isEqualTo("1");
+        assertThat(JavaVersion.parse("1").getValue(2)).isEqualTo("1.0");
+        assertThat(JavaVersion.parse("1").getValue(3)).isEqualTo("1.0.0");
+        assertThat(JavaVersion.parse("2.1").getValue(1)).isEqualTo("2");
+        assertThat(JavaVersion.parse("2.1").getValue(2)).isEqualTo("2.1");
+        assertThat(JavaVersion.parse("2.1").getValue(3)).isEqualTo("2.1.0");
+        assertThat(JavaVersion.parse("3.2.1").getValue(1)).isEqualTo("3");
+        assertThat(JavaVersion.parse("3.2.1").getValue(2)).isEqualTo("3.2");
+        assertThat(JavaVersion.parse("3.2.1").getValue(3)).isEqualTo("3.2.1");
     }
 }

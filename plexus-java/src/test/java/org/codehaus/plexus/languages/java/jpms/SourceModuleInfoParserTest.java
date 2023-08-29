@@ -28,18 +28,18 @@ import java.util.Set;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaExports;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SourceModuleInfoParserTest {
-    private SourceModuleInfoParser parser = new SourceModuleInfoParser();
+class SourceModuleInfoParserTest {
+    private final SourceModuleInfoParser parser = new SourceModuleInfoParser();
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         JavaModuleDescriptor moduleDescriptor =
                 parser.fromSourcePath(Paths.get("src/test/resources/src.dir/module-info.java"));
         assertEquals("a.b.c", moduleDescriptor.name());

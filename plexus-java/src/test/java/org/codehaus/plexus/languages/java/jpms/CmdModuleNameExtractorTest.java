@@ -21,15 +21,15 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.nio.file.Path;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class CmdModuleNameExtractorTest {
+class CmdModuleNameExtractorTest {
     @Test
-    public void testMethodCount() throws Exception {
+    void testMethodCount() throws Exception {
         // ensure that both implementations are in sync
-        assertEquals(2, CmdModuleNameExtractor.class.getDeclaredMethods().length);
+        assertThat(CmdModuleNameExtractor.class.getDeclaredMethods().length).isEqualTo(2);
 
         // if these don't exist, a NoSuchMethodException is thrown
         CmdModuleNameExtractor.class.getDeclaredMethod("main", String[].class);
