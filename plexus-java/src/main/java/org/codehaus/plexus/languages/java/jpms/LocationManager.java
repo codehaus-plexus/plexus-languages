@@ -188,8 +188,7 @@ public class LocationManager {
                 continue;
             }
 
-            // Consider strategies how to handle duplicate modules by name
-            // For now, just ignore it
+            // in case of identical module names, first one wins
             if (moduleDescriptor != null && moduleNameSources.putIfAbsent(moduleDescriptor.name(), source) == null) {
                 availableNamedModules.put(moduleDescriptor.name(), moduleDescriptor);
 
@@ -249,12 +248,15 @@ public class LocationManager {
                     request.isIncludeStatic());
         }
 
-        // in case of identical module names, first one wins
         Set<String> collectedModules = new HashSet<>(requiredNamedModules.size());
 
         for (Entry<T, JavaModuleDescriptor> entry : pathElements.entrySet()) {
             if (entry.getValue() != null
                     && requiredNamedModules.contains(entry.getValue().name())) {
+                // Consider strategies how to handle duplicate modules by name
+                // For now only add first on modulePath, just ignore others,
+                //   This has effectively the same result as putting it on the modulePath, but might better help
+                // analyzing issues.
                 if (collectedModules.add(entry.getValue().name())) {
                     result.getModulepathElements()
                             .put(
