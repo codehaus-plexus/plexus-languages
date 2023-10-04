@@ -64,15 +64,6 @@
       <plugin>
         <groupId>org.eclipse.sisu</groupId>
         <artifactId>sisu-maven-plugin</artifactId>
-        <version>0.3.5</version>
-        <executions>
-          <execution>
-            <id>index-project</id>
-            <goals>
-              <goal>main-index</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <!-- Rerun unittests with the multirelease jar, cannot be done with exploded directory of classes  -->
       <plugin>
