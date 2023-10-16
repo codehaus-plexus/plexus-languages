@@ -37,7 +37,6 @@
   </distributionManagement>
 
   <properties>
-    <junit5Version>5.10.0</junit5Version>
     <scm.url>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.outputTimestamp>2023-01-01T19:06:16Z</project.build.outputTimestamp>
   </properties>
