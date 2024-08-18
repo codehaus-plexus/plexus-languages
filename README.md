@@ -1,7 +1,7 @@
 # Plexus Language
 ![Build Status](https://github.com/codehaus-plexus/plexus-languages/workflows/GitHub%20CI/badge.svg)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/codehaus-plexus/plexus-languages/maven.yml?branch=master)
-[![Reproducible Builds](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jvm-repo-rebuild/reproducible-central/master/content/org/codehaus/plexus/plexus-languages/badge.json)](https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/content/org/codehaus/plexus/plexus-languages/README.md)
+[![Reproducible Builds](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jvm-repo-rebuild/reproducible-central/master/content/org/codehaus/plexus/plexus-languages/badge.json)](https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/org/codehaus/plexus/plexus-languages/README.md)
 
 Plexus Languages:
 
