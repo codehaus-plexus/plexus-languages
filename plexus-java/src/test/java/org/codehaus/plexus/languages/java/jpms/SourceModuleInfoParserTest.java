@@ -41,7 +41,7 @@ class SourceModuleInfoParserTest {
     @Test
     void test() throws Exception {
         JavaModuleDescriptor moduleDescriptor =
-                parser.fromSourcePath(Paths.get("src/test/resources/src.dir/module-info.java"));
+                parser.fromSourcePath(Paths.get("src/test/test-data/src.dir/module-info.java"));
         assertEquals("a.b.c", moduleDescriptor.name());
 
         Iterator<JavaRequires> requiresIter = moduleDescriptor.requires().iterator();

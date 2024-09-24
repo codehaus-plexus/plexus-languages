@@ -36,7 +36,7 @@ class JavaClassVersionTest {
     static Stream<Path> provideClassFiles() {
         List<Path> paths;
         try (DirectoryStream<Path> directoryStream =
-                Files.newDirectoryStream(Paths.get("src/test/resources/classfile.version/"), "*-[0-9]?.class")) {
+                Files.newDirectoryStream(Paths.get("src/test/test-data/classfile.version/"), "*-[0-9]?.class")) {
             paths = StreamSupport.stream(directoryStream.spliterator(), false)
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
@@ -48,7 +48,7 @@ class JavaClassVersionTest {
 
     @Test
     void testJavaClassPreview() {
-        Path previewFile = Paths.get("src/test/resources/classfile.version/helloworld-preview.class");
+        Path previewFile = Paths.get("src/test/test-data/classfile.version/helloworld-preview.class");
         JavaClassfileVersion previewClass = JavaClassfileVersion.of(previewFile);
         assertTrue(previewClass.isPreview());
         assertEquals(20 + 44, previewClass.majorVersion());

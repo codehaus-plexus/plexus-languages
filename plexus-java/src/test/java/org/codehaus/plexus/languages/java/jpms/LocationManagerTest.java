@@ -42,7 +42,7 @@ class LocationManagerTest {
 
     private LocationManager locationManager;
 
-    final Path mockModuleInfoJava = Paths.get("src/test/resources/mock/module-info.java");
+    final Path mockModuleInfoJava = Paths.get("src/test/test-data/mock/module-info.java");
 
     @BeforeEach
     void onSetup() {
@@ -88,7 +88,7 @@ class LocationManagerTest {
 
     @Test
     void testManifestWithReflectRequires() throws Exception {
-        Path abc = Paths.get("src/test/resources/dir.manifest.with/out");
+        Path abc = Paths.get("src/test/test-data/dir.manifest.with/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("auto.by.manifest")
                 .build();
@@ -108,7 +108,7 @@ class LocationManagerTest {
 
     @Test
     void testDirDescriptorWithReflectRequires() throws Exception {
-        Path abc = Paths.get("src/test/resources/dir.descriptor/out");
+        Path abc = Paths.get("src/test/test-data/dir.descriptor/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("dir.descriptor")
                 .build();
@@ -131,7 +131,7 @@ class LocationManagerTest {
 
     @Test
     void testJarWithAsmRequires() throws Exception {
-        Path abc = Paths.get("src/test/resources/jar.descriptor/asm-6.0_BETA.jar");
+        Path abc = Paths.get("src/test/test-data/jar.descriptor/asm-6.0_BETA.jar");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("org.objectweb.asm")
                 .build();
@@ -153,8 +153,8 @@ class LocationManagerTest {
 
     @Test
     void testIdenticalModuleNames() throws Exception {
-        Path pj1 = Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
-        Path pj2 = Paths.get("src/test/resources/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
+        Path pj1 = Paths.get("src/test/test-data/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
+        Path pj2 = Paths.get("src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -183,8 +183,8 @@ class LocationManagerTest {
 
     @Test
     public void testIdenticalAutomaticModuleNames() throws Exception {
-        Path pj1 = Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
-        Path pj2 = Paths.get("src/test/resources/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
+        Path pj1 = Paths.get("src/test/test-data/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar");
+        Path pj2 = Paths.get("src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -213,8 +213,8 @@ class LocationManagerTest {
 
     @Test
     public void testMainJarModuleAndTestJarAutomatic() throws Exception {
-        Path pj1 = Paths.get("src/test/resources/jar.tests/plexus-java-1.0.0-SNAPSHOT.jar");
-        Path pj2 = Paths.get("src/test/resources/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar");
+        Path pj1 = Paths.get("src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT.jar");
+        Path pj2 = Paths.get("src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -243,7 +243,7 @@ class LocationManagerTest {
 
     @Test
     void testNonJar() throws Exception {
-        Path p = Paths.get("src/test/resources/nonjar/pom.xml");
+        Path p = Paths.get("src/test/test-data/nonjar/pom.xml");
 
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setMainModuleDescriptor(mockModuleInfoJava);
@@ -255,7 +255,7 @@ class LocationManagerTest {
 
     @Test
     void testAdditionalModules() throws Exception {
-        Path p = Paths.get("src/test/resources/mock/jar0.jar");
+        Path p = Paths.get("src/test/test-data/mock/jar0.jar");
 
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -277,7 +277,7 @@ class LocationManagerTest {
 
     @Test
     void testResolvePath() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/jar0.jar");
+        Path abc = Paths.get("src/test/test-data/mock/jar0.jar");
         ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(abc);
 
         when(asmParser.getModuleDescriptor(abc))
@@ -292,8 +292,8 @@ class LocationManagerTest {
 
     @Test
     void testNoMatchingProviders() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
+        Path abc = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(true);
 
@@ -313,8 +313,8 @@ class LocationManagerTest {
 
     @Test
     void testMainModuleDescriptorWithProviders() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
+        Path abc = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(true);
 
@@ -334,8 +334,8 @@ class LocationManagerTest {
 
     @Test
     void testMainModuleDescriptorWithProvidersDontIncludeProviders() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
+        Path abc = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc);
 
         when(qdoxParser.fromSourcePath(abc))
@@ -354,9 +354,9 @@ class LocationManagerTest {
 
     @Test
     void testTransitiveProviders() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path abc = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path ghi = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(def, ghi)
                 .setMainModuleDescriptor(abc)
                 .setIncludeAllProviders(true);
@@ -380,9 +380,9 @@ class LocationManagerTest {
 
     @Test
     void testDontIncludeProviders() throws Exception {
-        Path abc = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path abc = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path ghi = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def, ghi).setMainModuleDescriptor(abc);
 
@@ -405,8 +405,8 @@ class LocationManagerTest {
 
     @Test
     void testAllowAdditionalModulesWithoutMainDescriptor() throws Exception {
-        Path def = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path ghi = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path ghi = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def, ghi).setAdditionalModules(Collections.singleton("def"));
 
@@ -424,7 +424,7 @@ class LocationManagerTest {
 
     @Test
     void testReuseModuleDescriptor() throws Exception {
-        Path def = Paths.get("src/test/resources/mock/jar0.jar");
+        Path def = Paths.get("src/test/test-data/mock/jar0.jar");
 
         ResolvePathRequest<Path> request1 = ResolvePathRequest.ofPath(def);
         when(asmParser.getModuleDescriptor(def))
@@ -442,7 +442,7 @@ class LocationManagerTest {
 
     @Test
     void testParseModuleDescriptor() throws Exception {
-        Path descriptorPath = Paths.get("src/test/resources/src.dir/module-info.java");
+        Path descriptorPath = Paths.get("src/test/test-data/src.dir/module-info.java");
         when(qdoxParser.fromSourcePath(descriptorPath))
                 .thenReturn(JavaModuleDescriptor.newModule("a.b.c").build());
 
@@ -461,9 +461,9 @@ class LocationManagerTest {
 
     @Test
     void testTransitiveStatic() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
 
@@ -487,10 +487,10 @@ class LocationManagerTest {
 
     @Test
     void testDirectStatic() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
-        Path moduleD = Paths.get("src/test/resources/mock/jar2.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
+        Path moduleD = Paths.get("src/test/test-data/mock/jar2.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
         // .setIncludeStatic( true );
@@ -518,9 +518,9 @@ class LocationManagerTest {
 
     @Test
     void testDuplicateModule() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
 
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
@@ -548,10 +548,10 @@ class LocationManagerTest {
 
     @Test
     void testStaticTransitive() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
-        Path moduleD = Paths.get("src/test/resources/mock/jar2.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
+        Path moduleD = Paths.get("src/test/test-data/mock/jar2.jar"); // any existing file
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
 
@@ -582,9 +582,9 @@ class LocationManagerTest {
      */
     @Test
     void includeDeeperRequiresStatic() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC)
                 .setMainModuleDescriptor(moduleA)
                 .setIncludeStatic(true);
@@ -608,10 +608,10 @@ class LocationManagerTest {
      */
     @Test
     void includeDeeperRequiresStaticTransitive() throws Exception {
-        Path moduleA = Paths.get("src/test/resources/mock/module-info.java"); // some file called module-info.java core
-        Path moduleB = Paths.get("src/test/resources/mock/jar0.jar"); // any existing file
-        Path moduleC = Paths.get("src/test/resources/mock/jar1.jar"); // any existing file
-        Path moduleD = Paths.get("src/test/resources/mock/jar2.jar"); // any existing file
+        Path moduleA = Paths.get("src/test/test-data/mock/module-info.java"); // some file called module-info.java core
+        Path moduleB = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
+        Path moduleC = Paths.get("src/test/test-data/mock/jar1.jar"); // any existing file
+        Path moduleD = Paths.get("src/test/test-data/mock/jar2.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC, moduleD)
                 .setMainModuleDescriptor(moduleA)
                 .setIncludeStatic(true);
