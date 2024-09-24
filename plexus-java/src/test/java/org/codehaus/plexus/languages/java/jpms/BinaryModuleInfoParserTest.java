@@ -49,7 +49,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testJarDescriptor() throws Exception {
         JavaModuleDescriptor descriptor =
-                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.descriptor/asm-6.0_BETA.jar"));
+                parser.getModuleDescriptor(Paths.get("src/test/test-data/jar.descriptor/asm-6.0_BETA.jar"));
 
         assertNotNull(descriptor);
         assertThat(descriptor.name()).isEqualTo("org.objectweb.asm");
@@ -69,7 +69,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testMultiReleaseJarDescriptor() throws Exception {
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
-                Paths.get("src/test/resources/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar"), JavaVersion.parse("17"));
+                Paths.get("src/test/test-data/jar.mr.descriptor/jloadr-1.0-SNAPSHOT.jar"), JavaVersion.parse("17"));
 
         assertNotNull(descriptor);
         assertEquals("de.adito.jloadr", descriptor.name());
@@ -80,7 +80,7 @@ class BinaryModuleInfoParserTest {
     void testIncompleteMultiReleaseJarDescriptor() throws Exception {
         // this jar is missing the Multi-Release: true entry in the Manifest
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
-                Paths.get("src/test/resources/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar"));
+                Paths.get("src/test/test-data/jar.mr.incomplete.descriptor/jloadr-1.0-SNAPSHOT.jar"));
 
         assertNull(descriptor);
     }
@@ -88,7 +88,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testClassicJar() throws Exception {
         JavaModuleDescriptor descriptor =
-                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"));
+                parser.getModuleDescriptor(Paths.get("src/test/test-data/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"));
 
         assertNull(descriptor);
     }
@@ -96,7 +96,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testOutputDirectoryDescriptor() throws Exception {
         JavaModuleDescriptor descriptor =
-                parser.getModuleDescriptor(Paths.get("src/test/resources/dir.descriptor/out"));
+                parser.getModuleDescriptor(Paths.get("src/test/test-data/dir.descriptor/out"));
 
         assertNotNull(descriptor);
         assertEquals("org.codehaus.plexus.languages.java.demo", descriptor.name());
@@ -118,13 +118,13 @@ class BinaryModuleInfoParserTest {
     void testClassicOutputDirectory() {
         assertThrows(
                 NoSuchFileException.class,
-                () -> parser.getModuleDescriptor(Paths.get("src/test/resources/dir.empty/out")));
+                () -> parser.getModuleDescriptor(Paths.get("src/test/test-data/dir.empty/out")));
     }
 
     @Test
     void testJModDescriptor() throws Exception {
         JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
-                Paths.get("src/test/resources/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod"));
+                Paths.get("src/test/test-data/jmod.descriptor/first-jmod-1.0-SNAPSHOT.jmod"));
 
         assertNotNull(descriptor);
         assertEquals("com.corporate.project", descriptor.name());
@@ -141,13 +141,13 @@ class BinaryModuleInfoParserTest {
     @Test
     void testInvalidFile() {
         assertThrows(
-                IOException.class, () -> parser.getModuleDescriptor(Paths.get("src/test/resources/nonjar/pom.xml")));
+                IOException.class, () -> parser.getModuleDescriptor(Paths.get("src/test/test-data/nonjar/pom.xml")));
     }
 
     @Test
     void testUses() throws Exception {
         try (InputStream is =
-                Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.uses/out/module-info.class"))) {
+                Files.newInputStream(Paths.get("src/test/test-data/dir.descriptor.uses/out/module-info.class"))) {
             JavaModuleDescriptor descriptor = parser.parse(is);
 
             assertNotNull(descriptor);
@@ -163,7 +163,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testProvides() throws Exception {
         JavaModuleDescriptor descriptor =
-                parser.getModuleDescriptor(Paths.get("src/test/resources/jar.service/threeten-extra-1.4.jar"));
+                parser.getModuleDescriptor(Paths.get("src/test/test-data/jar.service/threeten-extra-1.4.jar"));
 
         assertNotNull(descriptor);
         assertEquals(1, descriptor.provides().size());
@@ -188,7 +188,7 @@ class BinaryModuleInfoParserTest {
     @Test
     void testRequires() throws Exception {
         try (InputStream is =
-                Files.newInputStream(Paths.get("src/test/resources/dir.descriptor.requires/out/module-info.class"))) {
+                Files.newInputStream(Paths.get("src/test/test-data/dir.descriptor.requires/out/module-info.class"))) {
             JavaModuleDescriptor descriptor = parser.parse(is);
 
             assertNotNull(descriptor);

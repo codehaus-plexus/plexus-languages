@@ -54,7 +54,7 @@ class LocationManagerIT {
 
     private LocationManager locationManager;
 
-    final Path mockModuleInfoJava = Paths.get("src/test/resources/mock/module-info.java");
+    final Path mockModuleInfoJava = Paths.get("src/test/test-data/mock/module-info.java");
 
     @BeforeEach
     void onSetup() {
@@ -68,7 +68,7 @@ class LocationManagerIT {
 
     @Test
     void testManifestWithoutReflectRequires() throws Exception {
-        Path abc = Paths.get("src/test/resources/manifest.without/out");
+        Path abc = Paths.get("src/test/test-data/manifest.without/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("any").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -86,7 +86,7 @@ class LocationManagerIT {
 
     @Test
     void testEmptyWithReflectRequires() throws Exception {
-        Path abc = Paths.get("src/test/resources/empty/out");
+        Path abc = Paths.get("src/test/test-data/empty/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("a.b.c").build();
         when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
@@ -105,7 +105,7 @@ class LocationManagerIT {
     @Test
     void testResolvePathWithException() {
         assertThrows(RuntimeException.class, () -> {
-            Path p = Paths.get("src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
+            Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
             ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(p);
 
             locationManager.resolvePath(request);
@@ -114,7 +114,7 @@ class LocationManagerIT {
 
     @Test
     void testClassicJarNameStartsWithNumber() throws Exception {
-        Path p = Paths.get("src/test/resources/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
+        Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Arrays.asList(p)).setMainModuleDescriptor(mockModuleInfoJava);
 
