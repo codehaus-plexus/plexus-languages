@@ -1,6 +1,7 @@
 package org.codehaus.plexus.languages.java.version;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,9 +63,19 @@ public final class JavaClassfileVersion {
      * @return the {@link JavaClassfileVersion} of the path java class
      */
     public static JavaClassfileVersion of(Path path) {
-        try {
-            byte[] readAllBytes = Files.readAllBytes(path);
-            return of(readAllBytes);
+        try (InputStream is = Files.newInputStream(path)) {
+            byte[] bytes = new byte[8];
+            int total = 0;
+            while (total < 8) {
+                int l = is.read(bytes, total, 8 - total);
+                if (l > 0) {
+                    total += l;
+                }
+                if (l == -1) {
+                    break;
+                }
+            }
+            return of(bytes);
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
