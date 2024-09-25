@@ -29,7 +29,7 @@ class CmdModuleNameExtractorTest {
     @Test
     void testMethodCount() throws Exception {
         // ensure that both implementations are in sync
-        assertThat(CmdModuleNameExtractor.class.getDeclaredMethods().length).isEqualTo(2);
+        assertThat(CmdModuleNameExtractor.class.getDeclaredMethods()).hasSize(2);
 
         // if these don't exist, a NoSuchMethodException is thrown
         CmdModuleNameExtractor.class.getDeclaredMethod("main", String[].class);

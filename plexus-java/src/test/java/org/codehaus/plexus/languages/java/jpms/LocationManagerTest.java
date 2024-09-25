@@ -61,10 +61,10 @@ class LocationManagerTest {
         ResolvePathsResult<File> result =
                 locationManager.resolvePaths(ResolvePathsRequest.ofFiles(Collections.emptyList()));
         assertThat(result.getMainModuleDescriptor()).isNull();
-        assertThat(result.getPathElements()).hasSize(0);
-        assertThat(result.getModulepathElements()).hasSize(0);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathElements()).isEmpty();
+        assertThat(result.getModulepathElements()).isEmpty();
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -80,10 +80,10 @@ class LocationManagerTest {
         ResolvePathsResult<File> result = locationManager.resolvePaths(request);
 
         assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
-        assertThat(result.getPathElements()).hasSize(0);
-        assertThat(result.getModulepathElements()).hasSize(0);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathElements()).isEmpty();
+        assertThat(result.getModulepathElements()).isEmpty();
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -102,8 +102,8 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(1);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MANIFEST);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -125,8 +125,8 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(1);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -147,8 +147,8 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(1);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -271,8 +271,8 @@ class LocationManagerTest {
         assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
         assertThat(result.getPathElements()).hasSize(1);
         assertThat(result.getModulepathElements()).hasSize(1);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -306,9 +306,9 @@ class LocationManagerTest {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(1);
-        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getModulepathElements()).isEmpty();
         assertThat(result.getClasspathElements()).hasSize(1);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -328,8 +328,8 @@ class LocationManagerTest {
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(1);
         assertThat(result.getModulepathElements()).hasSize(1);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -347,9 +347,9 @@ class LocationManagerTest {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(1);
-        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getModulepathElements()).isEmpty();
         assertThat(result.getClasspathElements()).hasSize(1);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -374,8 +374,8 @@ class LocationManagerTest {
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).hasSize(2);
-        assertThat(result.getClasspathElements()).hasSize(0);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -400,7 +400,7 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getClasspathElements()).hasSize(1);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -419,7 +419,7 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getClasspathElements()).hasSize(1);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -482,7 +482,7 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).hasSize(1);
         assertThat(result.getClasspathElements()).hasSize(1);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -513,7 +513,7 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(3);
         assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleD);
         assertThat(result.getClasspathElements()).containsOnly(moduleC);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     @Test
@@ -537,7 +537,7 @@ class LocationManagerTest {
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
         assertThat(result.getPathElements()).hasSize(2);
         assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB);
-        assertThat(result.getClasspathElements()).hasSize(0);
+        assertThat(result.getClasspathElements()).isEmpty();
         assertThat(result.getPathExceptions()).hasSize(1);
         // duplicate (module B / module C) is flagged as an error
         assertThat(result.getPathExceptions()).containsOnlyKeys(moduleC);
@@ -565,7 +565,7 @@ class LocationManagerTest {
                         .build());
         when(asmParser.getModuleDescriptor(moduleC))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleC")
-                        .requires(new HashSet<>(Arrays.asList(JavaModifier.STATIC)), "moduleD")
+                        .requires(new HashSet<>(Collections.singletonList(JavaModifier.STATIC)), "moduleD")
                         .build());
         when(asmParser.getModuleDescriptor(moduleD))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleD").build());
@@ -574,7 +574,7 @@ class LocationManagerTest {
         assertThat(result.getPathElements()).hasSize(3);
         assertThat(result.getModulepathElements()).containsOnlyKeys(moduleB, moduleC);
         assertThat(result.getClasspathElements()).containsOnly(moduleD);
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
     }
 
     /**

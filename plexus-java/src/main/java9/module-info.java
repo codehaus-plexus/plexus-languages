@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-module org.codehaus.plexus.languages.java 
-{
+module org.codehaus.plexus.languages.java {
     requires com.thoughtworks.qdox;
     requires org.objectweb.asm;
-    
+
     exports org.codehaus.plexus.languages.java.jpms;
     exports org.codehaus.plexus.languages.java.version;
-    
-    provides org.codehaus.plexus.languages.java.jpms.LocationManager with org.codehaus.plexus.languages.java.jpms.LocationManager;
+
+    provides org.codehaus.plexus.languages.java.jpms.LocationManager with
+            org.codehaus.plexus.languages.java.jpms.LocationManager;
 }

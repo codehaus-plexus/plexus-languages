@@ -26,7 +26,7 @@ class JavaClassVersionTest {
     @MethodSource("provideClassFiles")
     void testFilesClassVersions(Path filePath) {
         String fileName = filePath.getFileName().toString();
-        int javaVersion = Integer.valueOf(fileName.substring(fileName.indexOf("-") + 1, fileName.length() - 6));
+        int javaVersion = Integer.parseInt(fileName.substring(fileName.indexOf("-") + 1, fileName.length() - 6));
         JavaClassfileVersion classVersion = JavaClassfileVersion.of(filePath);
         assertEquals(javaVersion + 44, classVersion.majorVersion());
         assertEquals(0, classVersion.minorVersion());

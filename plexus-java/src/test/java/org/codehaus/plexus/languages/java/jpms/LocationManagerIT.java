@@ -21,7 +21,6 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -77,10 +76,10 @@ class LocationManagerIT {
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
-        assertThat(result.getPathExceptions()).hasSize(0);
+        assertThat(result.getPathExceptions()).isEmpty();
         assertThat(result.getMainModuleDescriptor()).isEqualTo(descriptor);
         assertThat(result.getPathElements()).hasSize(1);
-        assertThat(result.getModulepathElements()).hasSize(0);
+        assertThat(result.getModulepathElements()).isEmpty();
         assertThat(result.getClasspathElements()).hasSize(1);
     }
 
@@ -116,7 +115,7 @@ class LocationManagerIT {
     void testClassicJarNameStartsWithNumber() throws Exception {
         Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
         ResolvePathsRequest<Path> request =
-                ResolvePathsRequest.ofPaths(Arrays.asList(p)).setMainModuleDescriptor(mockModuleInfoJava);
+                ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setMainModuleDescriptor(mockModuleInfoJava);
 
         ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
 
