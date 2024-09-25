@@ -27,8 +27,12 @@
   </scm>
   <issueManagement>
     <system>github</system>
-    <url>http://github.com/codehaus-plexus/plexus-languages/issues</url>
+    <url>https://github.com/codehaus-plexus/plexus-languages/issues</url>
   </issueManagement>
+  <ciManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codehaus-plexus/plexus-languages/actions</url>
+  </ciManagement>
   <distributionManagement>
     <site>
       <id>github:gh-pages</id>

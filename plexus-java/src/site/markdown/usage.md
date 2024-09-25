@@ -1,5 +1,5 @@
 
-## LocationManager.resolvePaths
+# LocationManager.resolvePaths
 
 In order to use this class you must setup a `ResolvePathsRequest`, which requires a list of all the jars and output directories and the main module descriptor.
 
@@ -25,13 +25,12 @@ The `ResolvePathsResult` contains:
   
  * pathExceptions: pathElements with their exception while trying to resolve it. Only pathElements with an exception are listed.
  
-## JavaVersion
+# JavaVersion
 
 This is a String based, lazy-parsing implementation of a Java Version which can be used to compare versions. It's goal is to support to support the following patterns:
 
- * [Java SE Naming and Versions](http://www.oracle.com/technetwork/java/javase/namechange-140185.html)
- * [JEP 223: New Version-String Scheme](http://openjdk.java.net/jeps/223)
- * [JEP 322: Time-Based Release Versioning](http://openjdk.java.net/jeps/322) 
+ * [JEP 223: New Version-String Scheme](https://openjdk.java.net/jeps/223)
+ * [JEP 322: Time-Based Release Versioning](https://openjdk.java.net/jeps/322) 
 
 Additional features:
 
