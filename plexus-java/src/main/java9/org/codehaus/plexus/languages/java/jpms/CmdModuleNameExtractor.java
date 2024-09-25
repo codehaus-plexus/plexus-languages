@@ -41,54 +41,43 @@ import java.util.Set;
  * <p>
  * The result is a properties-file written ot the StdOut, having the jar path as key and the module name as value.<br>
  * Any exception is written to the StdErr.
- * </p> 
- * 
+ * </p>
+ *
  * @author Robert Scholte
  * @since 1.0.0
  */
-public class CmdModuleNameExtractor
-{
-    public static void main( String[] args )
-    {
+public class CmdModuleNameExtractor {
+    public static void main(String[] args) {
         Properties properties = new Properties();
 
-        for ( String path : args )
-        {
-            try
-            {
-                String moduleName = getModuleName( Paths.get( path ) );
-                if ( moduleName != null )
-                {
-                    properties.setProperty( path, moduleName );
+        for (String path : args) {
+            try {
+                String moduleName = getModuleName(Paths.get(path));
+                if (moduleName != null) {
+                    properties.setProperty(path, moduleName);
                 }
-            }
-            catch ( Exception e )
-            {
-                System.err.append( e.getMessage() );
+            } catch (Exception e) {
+                System.err.append(e.getMessage());
             }
         }
 
-        try
-        {
-            properties.store( System.out, "" );
-        }
-        catch ( IOException e )
-        {
-            System.exit( 1 );
+        try {
+            properties.store(System.out, "");
+        } catch (IOException e) {
+            System.exit(1);
         }
     }
 
     /**
      * Get the name of the module, using Java 9 code without reflection
-     * 
+     *
      * @param modulePath the module path
      * @return the module name
      * @throws FindException If an error occurs finding the module
      */
-    public static String getModuleName( Path modulePath ) throws FindException
-    {
-        Set<ModuleReference> moduleReferences = ModuleFinder.of( modulePath ).findAll();
-        
+    public static String getModuleName(Path modulePath) throws FindException {
+        Set<ModuleReference> moduleReferences = ModuleFinder.of(modulePath).findAll();
+
         Optional<ModuleReference> modRef = moduleReferences.stream().findFirst();
 
         return modRef.isPresent() ? modRef.get().descriptor().name() : null;

@@ -19,10 +19,9 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -36,7 +35,7 @@ import java.util.jar.Manifest;
 class ManifestModuleNameExtractor implements ModuleNameExtractor {
     @Override
     public String extract(Path file) throws IOException {
-        Manifest manifest = extractManifest(file.toFile());
+        Manifest manifest = extractManifest(file);
 
         String automaticModuleName;
         if (manifest != null) {
@@ -48,14 +47,14 @@ class ManifestModuleNameExtractor implements ModuleNameExtractor {
         return automaticModuleName;
     }
 
-    private Manifest extractManifest(File file) throws IOException {
+    private Manifest extractManifest(Path file) throws IOException {
         Manifest manifest;
-        if (file.isFile()) {
-            try (JarFile jarFile = new JarFile(file)) {
+        if (Files.isRegularFile(file)) {
+            try (JarFile jarFile = new JarFile(file.toFile())) {
                 manifest = jarFile.getManifest();
             }
-        } else if (new File(file, "META-INF/MANIFEST.MF").exists()) {
-            try (InputStream is = new FileInputStream(new File(file, "META-INF/MANIFEST.MF"))) {
+        } else if (Files.exists(file.resolve("META-INF/MANIFEST.MF"))) {
+            try (InputStream is = Files.newInputStream(file.resolve("META-INF/MANIFEST.MF"))) {
                 manifest = new Manifest(is);
             }
         } else {

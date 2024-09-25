@@ -58,7 +58,7 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
                                         .equalsIgnoreCase(
                                                 manifest.getMainAttributes().getValue("Multi-Release"))) {
                             int javaVersion =
-                                    Integer.valueOf(jdkVersion.asMajor().getValue(1));
+                                    Integer.parseInt(jdkVersion.asMajor().getValue(1));
 
                             for (int version = javaVersion; version >= 9; version--) {
                                 String resource = "META-INF/versions/" + version + "/module-info.class";

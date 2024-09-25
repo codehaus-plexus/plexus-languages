@@ -162,16 +162,13 @@ public class LocationManager {
             JavaModuleDescriptor moduleDescriptor;
             ModuleNameSource source;
 
-            ModuleNameExtractor nameExtractor = new ModuleNameExtractor() {
-                @Override
-                public String extract(Path path) throws IOException {
-                    if (request.getJdkHome() != null) {
-                        filenameAutoModules.put(t, path);
-                    } else {
-                        return CmdModuleNameExtractor.getModuleName(path);
-                    }
-                    return null;
+            ModuleNameExtractor nameExtractor = path -> {
+                if (request.getJdkHome() != null) {
+                    filenameAutoModules.put(t, path);
+                } else {
+                    return CmdModuleNameExtractor.getModuleName(path);
                 }
+                return null;
             };
 
             try {
@@ -323,7 +320,7 @@ public class LocationManager {
         // either jar or outputDirectory
         if (Files.isRegularFile(path) && !path.getFileName().toString().endsWith(".jar")) {
             throw new IllegalArgumentException(
-                    "'" + path.toString() + "' not allowed on the path, only outputDirectories and jars are accepted");
+                    "'" + path + "' not allowed on the path, only outputDirectories and jars are accepted");
         }
 
         if (Files.isRegularFile(path) || Files.exists(path.resolve("module-info.class"))) {
@@ -428,13 +425,8 @@ public class LocationManager {
             // module-info.class uses FQN, i.e. $-separator for subclasses
             final String serviceClassName = provides.service().replace('$', '.');
 
-            Set<String> providingModules = availableProviders.get(serviceClassName);
+            Set<String> providingModules = availableProviders.computeIfAbsent(serviceClassName, k -> new HashSet<>());
 
-            if (providingModules == null) {
-                providingModules = new HashSet<>();
-
-                availableProviders.put(serviceClassName, providingModules);
-            }
             providingModules.add(moduleDescriptor.name());
         }
     }

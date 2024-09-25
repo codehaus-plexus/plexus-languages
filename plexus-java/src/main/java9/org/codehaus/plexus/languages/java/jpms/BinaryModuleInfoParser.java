@@ -21,68 +21,55 @@ package org.codehaus.plexus.languages.java.jpms;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.lang.module.ModuleDescriptor;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder;
 
-class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser
-{
+class BinaryModuleInfoParser extends AbstractBinaryModuleInfoParser {
     @Override
-    JavaModuleDescriptor parse( InputStream in ) throws IOException
-    {
-        ModuleDescriptor descriptor = ModuleDescriptor.read( in );
-        
-        Builder builder = JavaModuleDescriptor.newModule( descriptor.name() );
-        
-        for ( ModuleDescriptor.Requires requires : descriptor.requires() )
-        {
-            if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.STATIC )
-                || requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.TRANSITIVE ) )
-            {
+    JavaModuleDescriptor parse(InputStream in) throws IOException {
+        ModuleDescriptor descriptor = ModuleDescriptor.read(in);
+
+        Builder builder = JavaModuleDescriptor.newModule(descriptor.name());
+
+        for (ModuleDescriptor.Requires requires : descriptor.requires()) {
+            if (requires.modifiers().contains(ModuleDescriptor.Requires.Modifier.STATIC)
+                    || requires.modifiers().contains(ModuleDescriptor.Requires.Modifier.TRANSITIVE)) {
                 Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers = new LinkedHashSet<>();
-                if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.STATIC ) )
-                {
-                    modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC );
+                if (requires.modifiers().contains(ModuleDescriptor.Requires.Modifier.STATIC)) {
+                    modifiers.add(
+                            org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
+                                    .STATIC);
                 }
-                if ( requires.modifiers().contains( ModuleDescriptor.Requires.Modifier.TRANSITIVE ) )
-                {
-                    modifiers.add( org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE );
+                if (requires.modifiers().contains(ModuleDescriptor.Requires.Modifier.TRANSITIVE)) {
+                    modifiers.add(
+                            org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
+                                    .TRANSITIVE);
                 }
-                builder.requires( modifiers, requires.name() );
-            }
-            else
-            {
-                builder.requires( requires.name() );
+                builder.requires(modifiers, requires.name());
+            } else {
+                builder.requires(requires.name());
             }
         }
-        
-        for ( ModuleDescriptor.Exports exports : descriptor.exports() )
-        {
-            if ( exports.targets().isEmpty() )
-            {
-                builder.exports( exports.source() );
-            }
-            else
-            {
-                builder.exports( exports.source(), exports.targets() );
+
+        for (ModuleDescriptor.Exports exports : descriptor.exports()) {
+            if (exports.targets().isEmpty()) {
+                builder.exports(exports.source());
+            } else {
+                builder.exports(exports.source(), exports.targets());
             }
         }
-        
-        for ( String uses : descriptor.uses() )
-        {
-            builder.uses( uses );
+
+        for (String uses : descriptor.uses()) {
+            builder.uses(uses);
         }
-        
-        for ( ModuleDescriptor.Provides provides : descriptor.provides() )
-        {
-            builder.provides( provides.service(), provides.providers() );
+
+        for (ModuleDescriptor.Provides provides : descriptor.provides()) {
+            builder.provides(provides.service(), provides.providers());
         }
-        
-        
+
         return builder.build();
     }
 }

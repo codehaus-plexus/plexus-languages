@@ -34,19 +34,19 @@ class JavaVersionTest {
     @Test
     void testParse() {
         assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4.2")))
-                .isLessThan(0);
-        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.5"))).isLessThan(0);
-        assertThat(JavaVersion.parse("1.8").compareTo(JavaVersion.parse("9"))).isLessThan(0);
+                .isNegative();
+        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.5"))).isNegative();
+        assertThat(JavaVersion.parse("1.8").compareTo(JavaVersion.parse("9"))).isNegative();
 
-        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4"))).isEqualTo(0);
+        assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4"))).isZero();
         assertThat(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4.2")))
-                .isEqualTo(0);
-        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9"))).isEqualTo(0);
+                .isZero();
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9"))).isZero();
 
         assertThat(JavaVersion.parse("1.4.2").compareTo(JavaVersion.parse("1.4")))
-                .isGreaterThan(0);
-        assertThat(JavaVersion.parse("1.5").compareTo(JavaVersion.parse("1.4"))).isGreaterThan(0);
-        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("1.8"))).isGreaterThan(0);
+                .isPositive();
+        assertThat(JavaVersion.parse("1.5").compareTo(JavaVersion.parse("1.4"))).isPositive();
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("1.8"))).isPositive();
     }
 
     @Test
@@ -56,31 +56,31 @@ class JavaVersionTest {
         // Source: http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html
 
         assertThat(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0_01")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("1.3.0_01").compareTo(JavaVersion.parse("1.3.1")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("1.3.1").compareTo(JavaVersion.parse("1.3.1_01")))
-                .isLessThan(0);
+                .isNegative();
 
         assertThat(JavaVersion.parse("1.3.0").compareTo(JavaVersion.parse("1.3.0-b24")))
-                .isLessThan(0);
+                .isNegative();
     }
 
     @Test
     void testJEP223Short() {
         // http://openjdk.java.net/jeps/223
-        assertThat(JavaVersion.parse("9-ea").compareTo(JavaVersion.parse("9"))).isLessThan(0);
-        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9.0.1"))).isLessThan(0);
+        assertThat(JavaVersion.parse("9-ea").compareTo(JavaVersion.parse("9"))).isNegative();
+        assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9.0.1"))).isNegative();
         assertThat(JavaVersion.parse("9.0.1").compareTo(JavaVersion.parse("9.0.2")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("9.0.2").compareTo(JavaVersion.parse("9.1.2")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("9.1.2").compareTo(JavaVersion.parse("9.1.3")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("9.1.3").compareTo(JavaVersion.parse("9.1.4")))
-                .isLessThan(0);
+                .isNegative();
         assertThat(JavaVersion.parse("9.1.4").compareTo(JavaVersion.parse("9.2.4")))
-                .isLessThan(0);
+                .isNegative();
     }
 
     @Test
