@@ -6,7 +6,7 @@ This jar is a multi release jar (aka MRJAR), because it contains 2 implementatio
 
 When extracting the the automatic module name based the of the file, it is a little bit more complex. The result must be precise, so the only way to solve this is by calling Java 9 code, either from the runtime or by calling Java 9 explicitly when provided via `ResolvePathsRequest.setJdkHome`.
 
-## Request
+# Request
 
 The `LocationManager.resolvePaths()` only has one argument, `ResolvePathsRequest`. If there is more data required, the request will be extended so the method signature of `resolvePaths` will stay the same.
 
@@ -30,7 +30,7 @@ Additional methods are:
 
 - `setMainModuleDescriptor`, which can either be a `module-info.java` or `module-info.class`
 
-## Phase 1: Collect
+# Phase 1: Collect
 
 If there's a `mainModuleDescriptor`, extract a `JavaModuleDescriptor` of it. This might cause a `IOException` to be thrown.
 
@@ -50,13 +50,13 @@ The result are a couple of Maps:
 
 * module name to `JavaModuleDescriptor` 
 
-## Phase 2: Resolve
+# Phase 2: Resolve
 
 If there's a `mainModuleDescriptor`, collect all its direct and indirect requirements.
 This contains recursive code and ensures that required modules are only evaluated once.
 All these pathElements must be placed on the modulepath, all other pathElements will be marked for the classPath.
 
-## Result
+# Result
 All results will be stored in a `ResolvePathsResult`.
 
 - `getClasspathElements()`, ordered collection of all pathElements that don't belong to the modulepath
