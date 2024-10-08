@@ -23,7 +23,11 @@ jobs:
   build:
     name: Build it
     uses: codehaus-plexus/.github/.github/workflows/maven.yml@master
-
+    with:
+      matrix-include: >
+        [
+          {"jdk": "24-ea", "os": "ubuntu-latest", distribution: "temurin" }
+        ]
   deploy:
     name: Deploy
     needs: build
