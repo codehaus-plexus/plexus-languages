@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,35 @@ import java.util.stream.Collectors;
  */
 class SegmentParser {
 
+    private static final char MODULENAME_MARKER = '*';
+
     private Consumer<Element> nextAction;
 
-    protected List<String> findAll(String segment) {
+    /**
+     * Each segment containing curly braces of the form
+     *
+     * <code>string1{alt1 ( ,alt2 )* } string2</code>
+     *
+     * is considered to be replaced by a series of segments formed by "expanding" the braces:
+     *
+     * <ul>
+     * <li><code>string1 alt1 string2</code></li>
+     * <li><code>string1 alt2 string2</code></li>
+     * </ul>
+     * and so on...
+     * <p>
+     * The braces may be nested.
+     * </p>
+     * <p>
+     * This rule is applied for all such usages of braces.
+     * </p>
+     *
+     * @param segment the segment to expand
+     * @return all expanded segments
+     * @throws IllegalArgumentException if braces are unbalanced
+     * @see <a href="https://docs.oracle.com/en/java/javase/23/docs/specs/man/javac.html#the-module-source-path-option">https://docs.oracle.com/en/java/javase/23/docs/specs/man/javac.html#the-module-source-path-option</a>
+     */
+    protected List<String> expandBraces(String segment) {
         StringBuilder value = new StringBuilder();
 
         Root root = new Root();
@@ -56,9 +83,13 @@ class SegmentParser {
                 case '}': {
                     nextAction.accept(new Value(value.toString()));
 
-                    Block b = blocks.poll();
+                    try {
+                        Block b = blocks.pop();
 
-                    nextAction = b::tail;
+                        nextAction = b::tail;
+                    } catch (NoSuchElementException e) {
+                        throw new IllegalArgumentException("Unbalanced braces, missing {");
+                    }
 
                     value = new StringBuilder();
 
@@ -71,6 +102,10 @@ class SegmentParser {
             }
         }
 
+        if (blocks.size() > 0) {
+            throw new IllegalArgumentException("Unbalanced braces, missing }");
+        }
+
         if (value.length() > 0) {
             nextAction.accept(new Value(value.toString()));
         }
@@ -80,6 +115,8 @@ class SegmentParser {
 
     private interface Element {
         List<String> resolvePaths(List<String> bases);
+
+        boolean hasModuleNameMarker();
     }
 
     private final class Value implements Element {
@@ -93,6 +130,11 @@ class SegmentParser {
         @Override
         public List<String> resolvePaths(List<String> bases) {
             return bases.stream().map(b -> b + value).collect(Collectors.toList());
+        }
+
+        @Override
+        public boolean hasModuleNameMarker() {
+            return value.indexOf(MODULENAME_MARKER) >= 0;
         }
 
         @Override
@@ -139,6 +181,11 @@ class SegmentParser {
             } else {
                 return tail.resolvePaths(newBases);
             }
+        }
+
+        @Override
+        public boolean hasModuleNameMarker() {
+            return value.indexOf(MODULENAME_MARKER) >= 0;
         }
 
         @Override
