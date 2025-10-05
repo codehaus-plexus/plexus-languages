@@ -128,6 +128,40 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>jdk22</id>
+      <activation>
+        <jdk>[22,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>jdk22</id>
+                  <goals>
+                    <goal>compile</goal>
+                  </goals>
+                  <configuration>
+                    <release>22</release>
+                    <multiReleaseOutput>true</multiReleaseOutput>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java22</compileSourceRoot>
+                    </compileSourceRoots>
+                    <compilerArgs>
+                      <arg>--enable-preview</arg>
+                    </compilerArgs>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
 </project>

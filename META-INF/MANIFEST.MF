@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Created-By: Maven JAR Plugin 3.4.2
+Build-Jdk-Spec: 17
+Specification-Title: Plexus Languages :: Java
+Specification-Version: 1.5
+Specification-Vendor: Codehaus Plexus
+Implementation-Title: Plexus Languages :: Java
+Implementation-Version: 1.5.1-SNAPSHOT
+Implementation-Vendor: Codehaus Plexus
+Multi-Release: true
+
