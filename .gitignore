@@ -8,3 +8,4 @@
 /plexus-java/target
 *.iml
 .idea/
+/META-INF
