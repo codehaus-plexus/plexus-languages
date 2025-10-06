@@ -17,8 +17,8 @@ Plexus Java:
 Plexus Java uses a multi-release JAR to provide optimal module-info parsing for different Java versions:
 
 - **Java 8**: ASM-based parser for module-info.class files
-- **Java 9-21**: Native `java.lang.module.ModuleDescriptor` API
-- **Java 22+**: Java Class File API (JEP 457/466/484)
+- **Java 9-23**: Native `java.lang.module.ModuleDescriptor` API
+- **Java 24+**: Java Class File API (JEP 484)
 
 The appropriate implementation is automatically selected based on the runtime JVM version.
 

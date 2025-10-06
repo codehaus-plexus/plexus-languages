@@ -64,7 +64,7 @@
               <includes>
                 <include>src/main/java/**/*.java</include>
                 <include>src/main/java9/**/*.java</include>
-                <include>src/main/java22/**/*.java</include>
+                <include>src/main/java24/**/*.java</include>
                 <include>src/test/java/**/*.java</include>
               </includes>
             </java>
