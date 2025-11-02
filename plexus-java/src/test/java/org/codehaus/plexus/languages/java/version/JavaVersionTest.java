@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class JavaVersionTest {
     @Test
-    void testParse() {
+    void parse() {
         assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.4.2")))
                 .isNegative();
         assertThat(JavaVersion.parse("1.4").compareTo(JavaVersion.parse("1.5"))).isNegative();
@@ -50,7 +50,7 @@ class JavaVersionTest {
     }
 
     @Test
-    void testVersionNamingExamples() {
+    void versionNamingExamples() {
         // All GA (FCS) versions are ordered based on the standard dot-notation. For example: 1.3.0 < 1.3.0_01 < 1.3.1 <
         // 1.3.1_01.
         // Source: http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html
@@ -67,7 +67,7 @@ class JavaVersionTest {
     }
 
     @Test
-    void testJEP223Short() {
+    void jep223Short() {
         // http://openjdk.java.net/jeps/223
         assertThat(JavaVersion.parse("9-ea").compareTo(JavaVersion.parse("9"))).isNegative();
         assertThat(JavaVersion.parse("9").compareTo(JavaVersion.parse("9.0.1"))).isNegative();
@@ -84,14 +84,14 @@ class JavaVersionTest {
     }
 
     @Test
-    void testIsAtLeastString() {
+    void isAtLeastString() {
         JavaVersion base = JavaVersion.parse("7");
         assertTrue(base.isAtLeast("7"));
         assertFalse(base.isAtLeast("8"));
     }
 
     @Test
-    void testIsAtLeastVersion() {
+    void isAtLeastVersion() {
         // e.g. can I use the module-path, which is supported since java 9
         JavaVersion j9 = JavaVersion.parse("9");
         assertFalse(JavaVersion.parse("8").isAtLeast(j9));
@@ -99,14 +99,14 @@ class JavaVersionTest {
     }
 
     @Test
-    void testIsBeforeString() {
+    void isBeforeString() {
         JavaVersion base = JavaVersion.parse("7");
         assertFalse(base.isBefore("7"));
         assertTrue(base.isBefore("8"));
     }
 
     @Test
-    void testIsBeforeStringVersion() {
+    void isBeforeStringVersion() {
         // e.g. can I use -XX:MaxPermSize, which has been removed in Java 9
         JavaVersion j9 = JavaVersion.parse("9");
         assertTrue(JavaVersion.parse("8").isBefore(j9));
@@ -114,7 +114,7 @@ class JavaVersionTest {
     }
 
     @Test
-    void testEquals() {
+    void equals() {
         JavaVersion seven = JavaVersion.parse("7");
         JavaVersion other = JavaVersion.parse("7");
 
@@ -126,7 +126,7 @@ class JavaVersionTest {
     }
 
     @Test
-    void testHascode() {
+    void hascode() {
         JavaVersion seven = JavaVersion.parse("7");
         JavaVersion other = JavaVersion.parse("7");
 
@@ -141,7 +141,7 @@ class JavaVersionTest {
     }
 
     @Test
-    void testAsMajor() {
+    void asMajor() {
         assertEquals(JavaVersion.parse("2"), JavaVersion.parse("1.2").asMajor());
         assertEquals(JavaVersion.parse("5.0"), JavaVersion.parse("5.0").asMajor());
         // only shift one time
@@ -149,13 +149,13 @@ class JavaVersionTest {
     }
 
     @Test
-    void testAsMajorEquals() {
+    void asMajorEquals() {
         JavaVersion version = JavaVersion.parse("1.2");
         assertEquals(version, version.asMajor());
     }
 
     @Test
-    void testValueWithGroups() {
+    void valueWithGroups() {
         assertThat(JavaVersion.parse("1").getValue(1)).isEqualTo("1");
         assertThat(JavaVersion.parse("1").getValue(2)).isEqualTo("1.0");
         assertThat(JavaVersion.parse("1").getValue(3)).isEqualTo("1.0.0");

@@ -24,7 +24,7 @@ class JavaClassVersionTest {
 
     @ParameterizedTest
     @MethodSource("provideClassFiles")
-    void testFilesClassVersions(Path filePath) {
+    void filesClassVersions(Path filePath) {
         String fileName = filePath.getFileName().toString();
         int javaVersion = Integer.parseInt(fileName.substring(fileName.indexOf("-") + 1, fileName.length() - 6));
         JavaClassfileVersion classVersion = JavaClassfileVersion.of(filePath);
@@ -47,7 +47,7 @@ class JavaClassVersionTest {
     }
 
     @Test
-    void testJavaClassPreview() {
+    void javaClassPreview() {
         Path previewFile = Paths.get("src/test/test-data/classfile.version/helloworld-preview.class");
         JavaClassfileVersion previewClass = JavaClassfileVersion.of(previewFile);
         assertTrue(previewClass.isPreview());
@@ -56,7 +56,7 @@ class JavaClassVersionTest {
     }
 
     @Test
-    void testJavaClassVersionMajor45orAbove() {
+    void javaClassVersionMajor45orAbove() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> new JavaClassfileVersion(44, 0),

@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CmdModuleNameExtractorTest {
     @Test
-    void testMethodCount() throws Exception {
+    void methodCount() throws Exception {
         // ensure that both implementations are in sync
         assertThat(CmdModuleNameExtractor.class.getDeclaredMethods()).hasSize(2);
 
