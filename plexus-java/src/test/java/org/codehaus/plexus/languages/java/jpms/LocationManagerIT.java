@@ -66,7 +66,7 @@ class LocationManagerIT {
     }
 
     @Test
-    void testManifestWithoutReflectRequires() throws Exception {
+    void manifestWithoutReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/test-data/manifest.without/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("any").build();
@@ -84,7 +84,7 @@ class LocationManagerIT {
     }
 
     @Test
-    void testEmptyWithReflectRequires() throws Exception {
+    void emptyWithReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/test-data/empty/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("a.b.c").build();
@@ -102,17 +102,14 @@ class LocationManagerIT {
     }
 
     @Test
-    void testResolvePathWithException() {
-        assertThrows(RuntimeException.class, () -> {
-            Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
-            ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(p);
-
-            locationManager.resolvePath(request);
-        });
+    void resolvePathWithException() {
+        Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
+        ResolvePathRequest<Path> request = ResolvePathRequest.ofPath(p);
+        assertThrows(RuntimeException.class, () -> locationManager.resolvePath(request));
     }
 
     @Test
-    void testClassicJarNameStartsWithNumber() throws Exception {
+    void classicJarNameStartsWithNumber() throws Exception {
         Path p = Paths.get("src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar");
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setMainModuleDescriptor(mockModuleInfoJava);
