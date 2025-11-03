@@ -29,29 +29,29 @@ class ManifestModuleNameExtractorTest {
     private ManifestModuleNameExtractor extractor = new ManifestModuleNameExtractor();
 
     @Test
-    void testNoManifestInJar() throws Exception {
+    void noManifestInJar() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/test-data/jar.name/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    void testManifestInJar() throws Exception {
+    void manifestInJar() throws Exception {
         assertEquals(
                 "org.codehaus.plexus.languages.java",
                 extractor.extract(Paths.get("src/test/test-data/jar.manifest.with/plexus-java-1.0.0-SNAPSHOT.jar")));
     }
 
     @Test
-    void testNoManifestInDir() throws Exception {
+    void noManifestInDir() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/test-data/empty/out")));
     }
 
     @Test
-    void testEmptyManifestInDir() throws Exception {
+    void emptyManifestInDir() throws Exception {
         assertNull(extractor.extract(Paths.get("src/test/test-data/manifest.without/out")));
     }
 
     @Test
-    void testManifestInDir() throws Exception {
+    void manifestInDir() throws Exception {
         assertEquals("auto.by.manifest", extractor.extract(Paths.get("src/test/test-data/dir.manifest.with/out")));
     }
 }
