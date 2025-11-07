@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @Test
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> testManifestWithoutReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> manifestWithoutReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/manifest.without/out"</span>);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          JavaModuleDescriptor descriptor =
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).requires(<span class="jxr_string">"any"</span>).build();
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      @Test
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">void</strong> testEmptyWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">void</strong> emptyWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/empty/out"</span>);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          JavaModuleDescriptor descriptor =
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).requires(<span class="jxr_string">"a.b.c"</span>).build();
@@ -110,27 +110,24 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     @Test
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">void</strong> testResolvePathWithException() {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         assertThrows(RuntimeException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             Path p = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar"</span>);
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             ResolvePathRequest&lt;Path&gt; request = ResolvePathRequest.ofPath(p);
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             locationManager.resolvePath(request);
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         });
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     @Test
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">void</strong> testClassicJarNameStartsWithNumber() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar"</span>);
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>         ResolvePathsRequest&lt;Path&gt; request =
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setMainModuleDescriptor(mockModuleInfoJava);
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> 
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>         ResolvePathsResult&lt;Path&gt; result = locationManager.resolvePaths(request);
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>         assertThat(result.getPathExceptions()).hasSize(1);
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         assertThat(result.getClasspathElements()).hasSize(1);
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>     }
-<a class="jxr_linenumber" name="L125" href="#L125">125</a> }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">void</strong> resolvePathWithException() {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar"</span>);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         ResolvePathRequest&lt;Path&gt; request = ResolvePathRequest.ofPath(p);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         assertThrows(RuntimeException.<strong class="jxr_keyword">class</strong>, () -&gt; locationManager.resolvePath(request));
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     }
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     @Test
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">void</strong> classicJarNameStartsWithNumber() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.invalid.name/101-1.0.0-SNAPSHOT.jar"</span>);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         ResolvePathsRequest&lt;Path&gt; request =
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setMainModuleDescriptor(mockModuleInfoJava);
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> 
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         ResolvePathsResult&lt;Path&gt; result = locationManager.resolvePaths(request);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>         assertThat(result.getPathExceptions()).hasSize(1);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>         assertThat(result.getClasspathElements()).hasSize(1);
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> }
 </pre>
 <hr/>
 <div id="footer">© 2001–2025 <a href="https://codehaus-plexus.github.io/">Codehaus Plexus</a></div>

@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">class</strong> <a name="JavaVersionTest" href="../../../../../../org/codehaus/plexus/languages/java/version/JavaVersionTest.html#JavaVersionTest">JavaVersionTest</a> {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Test
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">void</strong> testParse() {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">void</strong> parse() {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          assertThat(JavaVersion.parse(<span class="jxr_string">"1.4"</span>).compareTo(JavaVersion.parse(<span class="jxr_string">"1.4.2"</span>)))
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .isNegative();
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>          assertThat(JavaVersion.parse(<span class="jxr_string">"1.4"</span>).compareTo(JavaVersion.parse(<span class="jxr_string">"1.5"</span>))).isNegative();
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      @Test
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">void</strong> testVersionNamingExamples() {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">void</strong> versionNamingExamples() {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <em class="jxr_comment">// All GA (FCS) versions are ordered based on the standard dot-notation. For example: 1.3.0 &lt; 1.3.0_01 &lt; 1.3.1 &lt;</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          <em class="jxr_comment">// 1.3.1_01.</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          <em class="jxr_comment">// Source: http://www.oracle.com/technetwork/java/javase/versioning-naming-139433.html</em>
@@ -75,7 +75,7 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      @Test
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">void</strong> testJEP223Short() {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">void</strong> jep223Short() {
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          <em class="jxr_comment">// http://openjdk.java.net/jeps/223</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          assertThat(JavaVersion.parse(<span class="jxr_string">"9-ea"</span>).compareTo(JavaVersion.parse(<span class="jxr_string">"9"</span>))).isNegative();
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          assertThat(JavaVersion.parse(<span class="jxr_string">"9"</span>).compareTo(JavaVersion.parse(<span class="jxr_string">"9.0.1"</span>))).isNegative();
@@ -92,14 +92,14 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      @Test
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">void</strong> testIsAtLeastString() {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">void</strong> isAtLeastString() {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          JavaVersion base = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          assertTrue(base.isAtLeast(<span class="jxr_string">"7"</span>));
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          assertFalse(base.isAtLeast(<span class="jxr_string">"8"</span>));
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      }
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      @Test
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">void</strong> testIsAtLeastVersion() {
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <strong class="jxr_keyword">void</strong> isAtLeastVersion() {
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          <em class="jxr_comment">// e.g. can I use the module-path, which is supported since java 9</em>
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          JavaVersion j9 = JavaVersion.parse(<span class="jxr_string">"9"</span>);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          assertFalse(JavaVersion.parse(<span class="jxr_string">"8"</span>).isAtLeast(j9));
@@ -107,14 +107,14 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      }
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     @Test
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">void</strong> testIsBeforeString() {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">void</strong> isBeforeString() {
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         JavaVersion base = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         assertFalse(base.isBefore(<span class="jxr_string">"7"</span>));
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         assertTrue(base.isBefore(<span class="jxr_string">"8"</span>));
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     @Test
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">void</strong> testIsBeforeStringVersion() {
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">void</strong> isBeforeStringVersion() {
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         <em class="jxr_comment">// e.g. can I use -XX:MaxPermSize, which has been removed in Java 9</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         JavaVersion j9 = JavaVersion.parse(<span class="jxr_string">"9"</span>);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         assertTrue(JavaVersion.parse(<span class="jxr_string">"8"</span>).isBefore(j9));
@@ -122,7 +122,7 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     }
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     @Test
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">void</strong> testEquals() {
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">void</strong> equals() {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         JavaVersion seven = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         JavaVersion other = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L120" href="#L120">120</a> 
@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     @Test
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">void</strong> testHascode() {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">void</strong> hascode() {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         JavaVersion seven = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         JavaVersion other = JavaVersion.parse(<span class="jxr_string">"7"</span>);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     @Test
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">void</strong> testAsMajor() {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">void</strong> asMajor() {
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         assertEquals(JavaVersion.parse(<span class="jxr_string">"2"</span>), JavaVersion.parse(<span class="jxr_string">"1.2"</span>).asMajor());
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         assertEquals(JavaVersion.parse(<span class="jxr_string">"5.0"</span>), JavaVersion.parse(<span class="jxr_string">"5.0"</span>).asMajor());
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         <em class="jxr_comment">// only shift one time</em>
@@ -157,13 +157,13 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> 
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>     @Test
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">void</strong> testAsMajorEquals() {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">void</strong> asMajorEquals() {
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         JavaVersion version = JavaVersion.parse(<span class="jxr_string">"1.2"</span>);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         assertEquals(version, version.asMajor());
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>     }
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     @Test
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">void</strong> testValueWithGroups() {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">void</strong> valueWithGroups() {
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         assertThat(JavaVersion.parse(<span class="jxr_string">"1"</span>).getValue(1)).isEqualTo(<span class="jxr_string">"1"</span>);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         assertThat(JavaVersion.parse(<span class="jxr_string">"1"</span>).getValue(2)).isEqualTo(<span class="jxr_string">"1.0"</span>);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         assertThat(JavaVersion.parse(<span class="jxr_string">"1"</span>).getValue(3)).isEqualTo(<span class="jxr_string">"1.0.0"</span>);

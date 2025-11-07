@@ -65,7 +65,7 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Test
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">void</strong> testNoPaths() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">void</strong> noPaths() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          ResolvePathsResult&lt;File&gt; result =
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                  locationManager.resolvePaths(ResolvePathsRequest.ofFiles(Collections.emptyList()));
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          assertThat(result.getMainModuleDescriptor()).isNull();
@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      @Test
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">void</strong> testWithUnknownRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">void</strong> withUnknownRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .requires(<span class="jxr_string">"java.base"</span>)
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .requires(<span class="jxr_string">"jdk.net"</span>)
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      @Test
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">void</strong> testManifestWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">void</strong> manifestWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/dir.manifest.with/out"</span>);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .requires(<span class="jxr_string">"auto.by.manifest"</span>)
@@ -115,7 +115,7 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     }
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     @Test
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">void</strong> testDirDescriptorWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     <strong class="jxr_keyword">void</strong> dirDescriptorWithReflectRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/dir.descriptor/out"</span>);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .requires(<span class="jxr_string">"dir.descriptor"</span>)
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     @Test
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">void</strong> testJarWithAsmRequires() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">void</strong> jarWithAsmRequires() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/jar.descriptor/asm-6.0_BETA.jar"</span>);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .requires(<span class="jxr_string">"org.objectweb.asm"</span>)
@@ -160,7 +160,7 @@
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     }
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>     @Test
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">void</strong> testIdenticalModuleNames() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">void</strong> identicalModuleNames() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>         Path pj1 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         JavaModuleDescriptor descriptor =
@@ -190,7 +190,7 @@
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     }
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> 
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     @Test
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testIdenticalAutomaticModuleNames() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>     <strong class="jxr_keyword">void</strong> identicalAutomaticModuleNames() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         Path pj1 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty/plexus-java-1.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>         JavaModuleDescriptor descriptor =
@@ -220,7 +220,7 @@
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>     }
 <a class="jxr_linenumber" name="L213" href="#L213">213</a> 
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>     @Test
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testMainJarModuleAndTestJarAutomatic() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>     <strong class="jxr_keyword">void</strong> mainJarModuleAndTestJarAutomatic() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>         Path pj1 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar"</span>);
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         JavaModuleDescriptor descriptor =
@@ -250,7 +250,7 @@
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>     }
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>     @Test
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>     <strong class="jxr_keyword">void</strong> testNonJar() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>     <strong class="jxr_keyword">void</strong> nonJar() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/nonjar/pom.xml"</span>);
 <a class="jxr_linenumber" name="L247" href="#L247">247</a> 
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>         ResolvePathsRequest&lt;Path&gt; request =
@@ -262,7 +262,7 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>     }
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> 
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>     @Test
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">void</strong> testAdditionalModules() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>     <strong class="jxr_keyword">void</strong> additionalModules() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).build();
@@ -284,7 +284,7 @@
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>     }
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> 
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>     @Test
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">void</strong> testResolvePath() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">void</strong> resolvePath() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>);
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>         ResolvePathRequest&lt;Path&gt; request = ResolvePathRequest.ofPath(abc);
 <a class="jxr_linenumber" name="L282" href="#L282">282</a> 
@@ -299,7 +299,7 @@
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>     }
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> 
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>     @Test
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>     <strong class="jxr_keyword">void</strong> testNoMatchingProviders() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>     <strong class="jxr_keyword">void</strong> noMatchingProviders() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>         ResolvePathsRequest&lt;Path&gt; request =
@@ -320,7 +320,7 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>     }
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>     @Test
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>     <strong class="jxr_keyword">void</strong> testMainModuleDescriptorWithProviders() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     <strong class="jxr_keyword">void</strong> mainModuleDescriptorWithProviders() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>         ResolvePathsRequest&lt;Path&gt; request =
@@ -341,7 +341,7 @@
 <a class="jxr_linenumber" name="L333" href="#L333">333</a>     }
 <a class="jxr_linenumber" name="L334" href="#L334">334</a> 
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>     @Test
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <strong class="jxr_keyword">void</strong> testMainModuleDescriptorWithProvidersDontIncludeProviders() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>     <strong class="jxr_keyword">void</strong> mainModuleDescriptorWithProvidersDontIncludeProviders() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>         ResolvePathsRequest&lt;Path&gt; request = ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc);
@@ -361,7 +361,7 @@
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>     }
 <a class="jxr_linenumber" name="L354" href="#L354">354</a> 
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>     @Test
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>     <strong class="jxr_keyword">void</strong> testTransitiveProviders() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>     <strong class="jxr_keyword">void</strong> transitiveProviders() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         Path ghi = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
@@ -387,7 +387,7 @@
 <a class="jxr_linenumber" name="L379" href="#L379">379</a>     }
 <a class="jxr_linenumber" name="L380" href="#L380">380</a> 
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>     @Test
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">void</strong> testDontIncludeProviders() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">void</strong> dontIncludeProviders() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L383" href="#L383">383</a>         Path abc = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L385" href="#L385">385</a>         Path ghi = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
@@ -412,7 +412,7 @@
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>     }
 <a class="jxr_linenumber" name="L405" href="#L405">405</a> 
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>     @Test
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>     <strong class="jxr_keyword">void</strong> testAllowAdditionalModulesWithoutMainDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>     <strong class="jxr_keyword">void</strong> allowAdditionalModulesWithoutMainDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L408" href="#L408">408</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>         Path ghi = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>         ResolvePathsRequest&lt;Path&gt; request =
@@ -431,7 +431,7 @@
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>     }
 <a class="jxr_linenumber" name="L424" href="#L424">424</a> 
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>     @Test
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <strong class="jxr_keyword">void</strong> testReuseModuleDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <strong class="jxr_keyword">void</strong> reuseModuleDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>);
 <a class="jxr_linenumber" name="L428" href="#L428">428</a> 
 <a class="jxr_linenumber" name="L429" href="#L429">429</a>         ResolvePathRequest&lt;Path&gt; request1 = ResolvePathRequest.ofPath(def);
@@ -449,7 +449,7 @@
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>     }
 <a class="jxr_linenumber" name="L442" href="#L442">442</a> 
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>     @Test
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <strong class="jxr_keyword">void</strong> testParseModuleDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <strong class="jxr_keyword">void</strong> parseModuleDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>         Path descriptorPath = Paths.get(<span class="jxr_string">"src/test/test-data/src.dir/module-info.java"</span>);
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>         when(qdoxParser.fromSourcePath(descriptorPath))
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"a.b.c"</span>).build());
@@ -468,7 +468,7 @@
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>     }
 <a class="jxr_linenumber" name="L461" href="#L461">461</a> 
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>     @Test
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <strong class="jxr_keyword">void</strong> testTransitiveStatic() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>     <strong class="jxr_keyword">void</strong> transitiveStatic() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>         Path moduleA = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L465" href="#L465">465</a>         Path moduleB = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>         Path moduleC = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
@@ -494,7 +494,7 @@
 <a class="jxr_linenumber" name="L486" href="#L486">486</a>     }
 <a class="jxr_linenumber" name="L487" href="#L487">487</a> 
 <a class="jxr_linenumber" name="L488" href="#L488">488</a>     @Test
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>     <strong class="jxr_keyword">void</strong> testDirectStatic() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>     <strong class="jxr_keyword">void</strong> directStatic() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L490" href="#L490">490</a>         Path moduleA = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>         Path moduleB = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L492" href="#L492">492</a>         Path moduleC = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
@@ -525,7 +525,7 @@
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>     }
 <a class="jxr_linenumber" name="L518" href="#L518">518</a> 
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>     @Test
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>     <strong class="jxr_keyword">void</strong> testDuplicateModule() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>     <strong class="jxr_keyword">void</strong> duplicateModule() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>         Path moduleA = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         Path moduleB = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>         Path moduleC = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>
@@ -555,7 +555,7 @@
 <a class="jxr_linenumber" name="L547" href="#L547">547</a>     }
 <a class="jxr_linenumber" name="L548" href="#L548">548</a> 
 <a class="jxr_linenumber" name="L549" href="#L549">549</a>     @Test
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>     <strong class="jxr_keyword">void</strong> testStaticTransitive() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>     <strong class="jxr_keyword">void</strong> staticTransitive() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L551" href="#L551">551</a>         Path moduleA = Paths.get(<span class="jxr_string">"src/test/test-data/mock/module-info.java"</span>); <em class="jxr_comment">// some file called module-info.java</em>
 <a class="jxr_linenumber" name="L552" href="#L552">552</a>         Path moduleB = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L553" href="#L553">553</a>         Path moduleC = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar1.jar"</span>); <em class="jxr_comment">// any existing file</em>

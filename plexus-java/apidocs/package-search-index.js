@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.codehaus.plexus.languages.java.jpms"},{"l":"org.codehaus.plexus.languages.java.version"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"org.codehaus.plexus.languages.java.jpms"},{"l":"org.codehaus.plexus.languages.java.version"}];updateSearchResults();
