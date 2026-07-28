@@ -49,7 +49,7 @@ class LocationManagerIT {
     private BinaryModuleInfoParser asmParser;
 
     @Mock
-    private SourceModuleInfoParser qdoxParser;
+    private SourceModuleInfoParser sourceParser;
 
     private LocationManager locationManager;
 
@@ -57,7 +57,7 @@ class LocationManagerIT {
 
     @BeforeEach
     void onSetup() {
-        locationManager = new LocationManager(qdoxParser) {
+        locationManager = new LocationManager(sourceParser) {
             @Override
             ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
                 return asmParser;
@@ -70,7 +70,7 @@ class LocationManagerIT {
         Path abc = Paths.get("src/test/test-data/manifest.without/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("any").build();
-        when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -88,7 +88,7 @@ class LocationManagerIT {
         Path abc = Paths.get("src/test/test-data/empty/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("a.b.c").build();
-        when(qdoxParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 

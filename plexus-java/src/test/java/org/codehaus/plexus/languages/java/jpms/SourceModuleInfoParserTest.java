@@ -85,4 +85,20 @@ class SourceModuleInfoParserTest {
         assertArrayEquals(
                 new String[] {"com.example.foo.Impl"}, provides.providers().toArray(new String[0]));
     }
+
+    @Test
+    void doesNotParseReferencedSources() throws Exception {
+        JavaModuleDescriptor moduleDescriptor =
+                parser.fromSourcePath(Paths.get("src/test/test-data/annotated-type-argument/module-info.java"));
+
+        assertEquals("annotated.type.argument", moduleDescriptor.name());
+        assertArrayEquals(
+                new String[] {"example.Service"}, moduleDescriptor.uses().toArray(new String[0]));
+
+        JavaProvides provides = moduleDescriptor.provides().iterator().next();
+        assertEquals("example.Service", provides.service());
+        assertArrayEquals(
+                new String[] {"example.ServiceImpl", "example.AlternativeServiceImpl"},
+                provides.providers().toArray(new String[0]));
+    }
 }
