@@ -19,87 +19,88 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaModule;
-import com.thoughtworks.qdox.model.JavaModuleDescriptor;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.modules.ModuleDeclaration;
+import com.github.javaparser.ast.modules.ModuleDirective;
+import com.github.javaparser.ast.modules.ModuleExportsDirective;
+import com.github.javaparser.ast.modules.ModuleProvidesDirective;
+import com.github.javaparser.ast.modules.ModuleRequiresDirective;
+import com.github.javaparser.ast.modules.ModuleUsesDirective;
 
 /**
- * Extract information from module with QDox
+ * Extracts information from a source module descriptor.
  *
  * @author Robert Scholte
  * @since 1.0.0
  */
 class SourceModuleInfoParser {
 
-    public org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor fromSourcePath(Path modulePath)
-            throws IOException {
-        File moduleDescriptor = modulePath.toFile();
+    public JavaModuleDescriptor fromSourcePath(Path modulePath) throws IOException {
+        JavaModuleDescriptor.Builder builder;
+        if (Files.exists(modulePath)) {
+            ModuleDeclaration descriptor = StaticJavaParser.parse(modulePath)
+                    .getModule()
+                    .orElseThrow(() -> new IOException("Module declaration not found in " + modulePath));
 
-        org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.Builder builder;
-        if (moduleDescriptor.exists()) {
-            JavaModuleDescriptor descriptor = new JavaProjectBuilder()
-                    .addSourceFolder(moduleDescriptor.getParentFile())
-                    .getDescriptor();
+            builder = JavaModuleDescriptor.newModule(descriptor.getName().asString());
 
-            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newModule(descriptor.getName());
-
-            for (JavaModuleDescriptor.JavaRequires requires : descriptor.getRequires()) {
-                if (requires.isStatic() || requires.isTransitive()) {
-                    Set<org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier>
-                            modifiers = new LinkedHashSet<>(2);
-                    if (requires.isStatic()) {
-                        modifiers.add(
-                                org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
-                                        .STATIC);
+            for (ModuleDirective directive : descriptor.getDirectives()) {
+                if (directive instanceof ModuleRequiresDirective) {
+                    addRequires(builder, (ModuleRequiresDirective) directive);
+                } else if (directive instanceof ModuleExportsDirective) {
+                    addExports(builder, (ModuleExportsDirective) directive);
+                } else if (directive instanceof ModuleUsesDirective) {
+                    ModuleUsesDirective uses = (ModuleUsesDirective) directive;
+                    builder.uses(uses.getName().asString());
+                } else if (directive instanceof ModuleProvidesDirective) {
+                    ModuleProvidesDirective provides = (ModuleProvidesDirective) directive;
+                    List<String> providers = new ArrayList<>(provides.getWith().size());
+                    for (Name provider : provides.getWith()) {
+                        providers.add(provider.asString());
                     }
-                    if (requires.isTransitive()) {
-                        modifiers.add(
-                                org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier
-                                        .TRANSITIVE);
-                    }
-                    builder.requires(modifiers, requires.getModule().getName());
-                } else {
-                    builder.requires(requires.getModule().getName());
+                    builder.provides(provides.getName().asString(), providers);
                 }
-            }
-
-            for (JavaModuleDescriptor.JavaExports exports : descriptor.getExports()) {
-                if (exports.getTargets().isEmpty()) {
-                    builder.exports(exports.getSource().getName());
-                } else {
-                    Set<String> targets = new LinkedHashSet<>();
-                    for (JavaModule module : exports.getTargets()) {
-                        targets.add(module.getName());
-                    }
-                    builder.exports(exports.getSource().getName(), targets);
-                }
-            }
-
-            for (JavaModuleDescriptor.JavaUses uses : descriptor.getUses()) {
-                builder.uses(uses.getService().getName());
-            }
-
-            for (JavaModuleDescriptor.JavaProvides provides : descriptor.getProvides()) {
-                List<String> providers = new ArrayList<>(provides.getProviders().size());
-                for (JavaClass provider : provides.getProviders()) {
-                    providers.add(provider.getName());
-                }
-
-                builder.provides(provides.getService().getName(), providers);
             }
         } else {
-            builder = org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.newAutomaticModule(null);
+            builder = JavaModuleDescriptor.newAutomaticModule(null);
         }
 
         return builder.build();
+    }
+
+    private static void addRequires(JavaModuleDescriptor.Builder builder, ModuleRequiresDirective requires) {
+        if (requires.isStatic() || requires.isTransitive()) {
+            Set<JavaModuleDescriptor.JavaRequires.JavaModifier> modifiers = new LinkedHashSet<>(2);
+            if (requires.isStatic()) {
+                modifiers.add(JavaModuleDescriptor.JavaRequires.JavaModifier.STATIC);
+            }
+            if (requires.isTransitive()) {
+                modifiers.add(JavaModuleDescriptor.JavaRequires.JavaModifier.TRANSITIVE);
+            }
+            builder.requires(modifiers, requires.getName().asString());
+        } else {
+            builder.requires(requires.getName().asString());
+        }
+    }
+
+    private static void addExports(JavaModuleDescriptor.Builder builder, ModuleExportsDirective exports) {
+        if (exports.getModuleNames().isEmpty()) {
+            builder.exports(exports.getName().asString());
+        } else {
+            Set<String> targets = new LinkedHashSet<>();
+            for (Name module : exports.getModuleNames()) {
+                targets.add(module.asString());
+            }
+            builder.exports(exports.getName().asString(), targets);
+        }
     }
 }
