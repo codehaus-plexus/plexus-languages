@@ -43,6 +43,8 @@
   <properties>
     <scm.url>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</scm.url>
     <project.build.outputTimestamp>2025-12-21T20:47:14Z</project.build.outputTimestamp>
+    <!-- declared here rather than inherited, so the build does not depend on what the parent calls it -->
+    <version.spotless-maven-plugin>3.9.0</version.spotless-maven-plugin>
   </properties>
 
   <build>
@@ -58,7 +60,7 @@
         <plugin>
           <groupId>com.diffplug.spotless</groupId>
           <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
+          <version>${version.spotless-maven-plugin}</version>
           <configuration>
             <java>
               <includes>
