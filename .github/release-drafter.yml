@@ -1,0 +1,10 @@
+# Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
+# Categories, labels and the version-resolver come from the shared org config.
+_extends: .github
+
+# Tags here are prefixed, so tag-prefix is what lets the drafter parse the
+# version out of the last tag. Without it the drafter reads what it can from the
+# tag string, and plexus-i18n once drafted 18.0.1 by finding the 18 in its name.
+tag-prefix: plexus-languages-
+tag-template: plexus-languages-$RESOLVED_VERSION
+name-template: $RESOLVED_VERSION
