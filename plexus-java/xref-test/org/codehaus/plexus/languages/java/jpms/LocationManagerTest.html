@@ -46,7 +46,7 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">class</strong> <a name="LocationManagerTest" href="../../../../../../org/codehaus/plexus/languages/java/jpms/LocationManagerTest.html#LocationManagerTest">LocationManagerTest</a> {
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">private</strong> BinaryModuleInfoParser asmParser;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> SourceModuleInfoParser qdoxParser;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> SourceModuleInfoParser sourceParser;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">private</strong> LocationManager locationManager;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
@@ -55,8 +55,8 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      @BeforeEach
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">void</strong> onSetup() {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          asmParser = mock(BinaryModuleInfoParser.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          qdoxParser = mock(SourceModuleInfoParser.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          locationManager = <strong class="jxr_keyword">new</strong> LocationManager(qdoxParser) {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          sourceParser = mock(SourceModuleInfoParser.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          locationManager = <strong class="jxr_keyword">new</strong> LocationManager(sourceParser) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>              @Override
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>              ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>                  <strong class="jxr_keyword">return</strong> asmParser;
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .requires(<span class="jxr_string">"java.base"</span>)
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .requires(<span class="jxr_string">"jdk.net"</span>)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  .build();
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          ResolvePathsRequest&lt;File&gt; request = ResolvePathsRequest.ofFiles(Collections.emptyList())
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>                  .setMainModuleDescriptor(mockModuleInfoJava.toFile());
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
@@ -100,7 +100,7 @@
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .requires(<span class="jxr_string">"auto.by.manifest"</span>)
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>                  .build();
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>          when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>          when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>          ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  
@@ -120,7 +120,7 @@
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .requires(<span class="jxr_string">"dir.descriptor"</span>)
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .build();
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .requires(<span class="jxr_string">"org.objectweb.asm"</span>)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 .build();
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
@@ -165,7 +165,7 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         JavaModuleDescriptor descriptor =
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).requires(<span class="jxr_string">"plexus.java"</span>).build();
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
@@ -195,7 +195,7 @@
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar"</span>);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>         JavaModuleDescriptor descriptor =
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>                 JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).requires(<span class="jxr_string">"plexus.java"</span>).build();
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
@@ -225,7 +225,7 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         Path pj2 = Paths.get(<span class="jxr_string">"src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar"</span>);
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>         JavaModuleDescriptor descriptor =
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>                 JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).requires(<span class="jxr_string">"plexus.java"</span>).build();
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
@@ -266,7 +266,7 @@
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         Path p = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule(<span class="jxr_string">"base"</span>).build();
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         when(qdoxParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         when(sourceParser.fromSourcePath(any(Path.<strong class="jxr_keyword">class</strong>))).thenReturn(descriptor);
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>         ResolvePathsRequest&lt;Path&gt; request = ResolvePathsRequest.ofPaths(Collections.singletonList(p))
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>                 .setMainModuleDescriptor(mockModuleInfoJava)
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>                 .setAdditionalModules(Collections.singletonList(<span class="jxr_string">"plexus.java"</span>));
@@ -305,7 +305,7 @@
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>         when(qdoxParser.fromSourcePath(abc))
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         when(sourceParser.fromSourcePath(abc))
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"abc"</span>).uses(<span class="jxr_string">"device"</span>).build());
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>         when(asmParser.getModuleDescriptor(def))
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"def"</span>)
@@ -326,7 +326,7 @@
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> 
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>         when(qdoxParser.fromSourcePath(abc))
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         when(sourceParser.fromSourcePath(abc))
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"abc"</span>).uses(<span class="jxr_string">"tool"</span>).build());
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>         when(asmParser.getModuleDescriptor(def))
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"def"</span>)
@@ -346,7 +346,7 @@
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>         Path def = Paths.get(<span class="jxr_string">"src/test/test-data/mock/jar0.jar"</span>); <em class="jxr_comment">// any existing file</em>
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>         ResolvePathsRequest&lt;Path&gt; request = ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc);
 <a class="jxr_linenumber" name="L340" href="#L340">340</a> 
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>         when(qdoxParser.fromSourcePath(abc))
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>         when(sourceParser.fromSourcePath(abc))
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"abc"</span>).uses(<span class="jxr_string">"tool"</span>).build());
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>         when(asmParser.getModuleDescriptor(def))
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"def"</span>)
@@ -369,7 +369,7 @@
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>                 .setMainModuleDescriptor(abc)
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>                 .setIncludeAllProviders(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L363" href="#L363">363</a> 
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         when(qdoxParser.fromSourcePath(abc))
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         when(sourceParser.fromSourcePath(abc))
 <a class="jxr_linenumber" name="L365" href="#L365">365</a>                 .thenReturn(
 <a class="jxr_linenumber" name="L366" href="#L366">366</a>                         JavaModuleDescriptor.newModule(<span class="jxr_string">"abc"</span>).requires(<span class="jxr_string">"ghi"</span>).build());
 <a class="jxr_linenumber" name="L367" href="#L367">367</a>         when(asmParser.getModuleDescriptor(def))
@@ -394,7 +394,7 @@
 <a class="jxr_linenumber" name="L386" href="#L386">386</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L387" href="#L387">387</a>                 ResolvePathsRequest.ofPaths(def, ghi).setMainModuleDescriptor(abc);
 <a class="jxr_linenumber" name="L388" href="#L388">388</a> 
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>         when(qdoxParser.fromSourcePath(abc))
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>         when(sourceParser.fromSourcePath(abc))
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>                 .thenReturn(
 <a class="jxr_linenumber" name="L391" href="#L391">391</a>                         JavaModuleDescriptor.newModule(<span class="jxr_string">"abc"</span>).requires(<span class="jxr_string">"ghi"</span>).build());
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>         when(asmParser.getModuleDescriptor(def))
@@ -451,7 +451,7 @@
 <a class="jxr_linenumber" name="L443" href="#L443">443</a>     @Test
 <a class="jxr_linenumber" name="L444" href="#L444">444</a>     <strong class="jxr_keyword">void</strong> parseModuleDescriptor() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L445" href="#L445">445</a>         Path descriptorPath = Paths.get(<span class="jxr_string">"src/test/test-data/src.dir/module-info.java"</span>);
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         when(qdoxParser.fromSourcePath(descriptorPath))
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>         when(sourceParser.fromSourcePath(descriptorPath))
 <a class="jxr_linenumber" name="L447" href="#L447">447</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"a.b.c"</span>).build());
 <a class="jxr_linenumber" name="L448" href="#L448">448</a> 
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>         ResolvePathResult result = locationManager.parseModuleDescriptor(descriptorPath);
@@ -475,7 +475,7 @@
 <a class="jxr_linenumber" name="L467" href="#L467">467</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L468" href="#L468">468</a>                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> 
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L471" href="#L471">471</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L472" href="#L472">472</a>                         .requires(<span class="jxr_string">"moduleB"</span>)
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>                         .build());
@@ -503,7 +503,7 @@
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>         <em class="jxr_comment">// .setIncludeStatic( true );</em>
 <a class="jxr_linenumber" name="L497" href="#L497">497</a> 
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>                         .requires(<span class="jxr_string">"moduleB"</span>)
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>                         .requires(Collections.singleton(JavaModifier.STATIC), <span class="jxr_string">"moduleD"</span>)
@@ -533,7 +533,7 @@
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
 <a class="jxr_linenumber" name="L527" href="#L527">527</a> 
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L529" href="#L529">529</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>                         .requires(<span class="jxr_string">"anonymous"</span>)
 <a class="jxr_linenumber" name="L531" href="#L531">531</a>                         .build());
@@ -563,7 +563,7 @@
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>         ResolvePathsRequest&lt;Path&gt; request =
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
 <a class="jxr_linenumber" name="L557" href="#L557">557</a> 
-<a class="jxr_linenumber" name="L558" href="#L558">558</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L559" href="#L559">559</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L560" href="#L560">560</a>                         .requires(<span class="jxr_string">"moduleB"</span>)
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>                         .build());
@@ -596,7 +596,7 @@
 <a class="jxr_linenumber" name="L588" href="#L588">588</a>         ResolvePathsRequest&lt;Path&gt; request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC)
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>                 .setMainModuleDescriptor(moduleA)
 <a class="jxr_linenumber" name="L590" href="#L590">590</a>                 .setIncludeStatic(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>                         .requires(<span class="jxr_string">"moduleB"</span>)
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>                         .build());
@@ -623,7 +623,7 @@
 <a class="jxr_linenumber" name="L615" href="#L615">615</a>         ResolvePathsRequest&lt;Path&gt; request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC, moduleD)
 <a class="jxr_linenumber" name="L616" href="#L616">616</a>                 .setMainModuleDescriptor(moduleA)
 <a class="jxr_linenumber" name="L617" href="#L617">617</a>                 .setIncludeStatic(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>         when(qdoxParser.fromSourcePath(moduleA))
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>         when(sourceParser.fromSourcePath(moduleA))
 <a class="jxr_linenumber" name="L619" href="#L619">619</a>                 .thenReturn(JavaModuleDescriptor.newModule(<span class="jxr_string">"moduleA"</span>)
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>                         .requires(<span class="jxr_string">"moduleB"</span>)
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>                         .build());
@@ -645,6 +645,6 @@
 <a class="jxr_linenumber" name="L637" href="#L637">637</a> }
 </pre>
 <hr/>
-<div id="footer">© 2001–2025 <a href="https://codehaus-plexus.github.io/">Codehaus Plexus</a></div>
+<div id="footer">© 2001–2026 <a href="https://codehaus-plexus.github.io/">Codehaus Plexus</a></div>
 </body>
 </html>
