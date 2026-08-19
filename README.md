@@ -26,7 +26,6 @@ Maintained. Several core Maven plugins depend on it, so public API is kept compa
 <dependency>
   <groupId>org.codehaus.plexus</groupId>
   <artifactId>plexus-java</artifactId>
-  <version>1.5.2</version>
 </dependency>
 ```
 
