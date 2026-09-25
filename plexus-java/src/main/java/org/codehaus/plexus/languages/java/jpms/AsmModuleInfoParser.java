@@ -19,6 +19,7 @@ package org.codehaus.plexus.languages.java.jpms;
  * under the License.
  */
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,11 +42,30 @@ import org.objectweb.asm.Opcodes;
  * @since 1.0.0
  */
 class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser {
+
+    // The highest class file major version the ASM release on the classpath knows how to read.
+    // Opcodes.Vxx values encode the minor version in the upper 16 bits, but for these constants
+    // that is always 0, so the constant itself is the plain major version number.
+    private static final int NEWEST_MAJOR_VERSION_SUPPORTED_BY_ASM = Opcodes.V27;
+
     @Override
     JavaModuleDescriptor parse(InputStream in) throws IOException {
         final JavaModuleDescriptorWrapper wrapper = new JavaModuleDescriptorWrapper();
 
-        ClassReader reader = new ClassReader(in);
+        byte[] classBytes = toByteArray(in);
+
+        // A class file compiled by a newer JDK than this ASM release supports (e.g. class file
+        // major version 72 for JDK 28, while ASM 9.10.1 only understands up to 71/V27) makes
+        // ClassReader throw IllegalArgumentException before it even looks at the content. The
+        // module-info.class Module attribute format hasn't changed since Java 9, so it's safe to
+        // clamp the major version down to the newest one ASM supports before handing it the bytes.
+        int majorVersion = ((classBytes[6] & 0xFF) << 8) | (classBytes[7] & 0xFF);
+        if (majorVersion > NEWEST_MAJOR_VERSION_SUPPORTED_BY_ASM) {
+            classBytes[6] = (byte) (NEWEST_MAJOR_VERSION_SUPPORTED_BY_ASM >>> 8);
+            classBytes[7] = (byte) NEWEST_MAJOR_VERSION_SUPPORTED_BY_ASM;
+        }
+
+        ClassReader reader = new ClassReader(classBytes);
         reader.accept(
                 new ClassVisitor(Opcodes.ASM9) {
                     @Override
@@ -99,6 +119,16 @@ class AsmModuleInfoParser extends AbstractBinaryModuleInfoParser {
                 },
                 0);
         return wrapper.builder.build();
+    }
+
+    private static byte[] toByteArray(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        return out.toByteArray();
     }
 
     private static class JavaModuleDescriptorWrapper {
