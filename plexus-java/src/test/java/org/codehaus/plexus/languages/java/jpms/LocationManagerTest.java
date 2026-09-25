@@ -29,6 +29,8 @@ import java.util.HashSet;
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -107,6 +109,7 @@ class LocationManagerTest {
     }
 
     @Test
+    @DisabledOnJre(value = JRE.JAVA_8, disabledReason = "Versioned descriptors are only read on Java 9+")
     void multiReleaseDirDescriptor() throws Exception {
         Path abc = Paths.get("src/test/test-data/dir.mr.descriptor/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
