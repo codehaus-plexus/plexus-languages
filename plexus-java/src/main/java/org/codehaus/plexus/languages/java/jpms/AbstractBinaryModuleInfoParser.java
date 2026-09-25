@@ -39,7 +39,14 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
     public JavaModuleDescriptor getModuleDescriptor(Path modulePath, JavaVersion jdkVersion) throws IOException {
         JavaModuleDescriptor descriptor;
         if (Files.isDirectory(modulePath)) {
-            try (InputStream in = Files.newInputStream(modulePath.resolve("module-info.class"))) {
+            Path moduleInfo = modulePath.resolve("module-info.class");
+            if (!Files.exists(moduleInfo)) {
+                Path versionedModuleInfo = findVersionedModuleInfo(modulePath, jdkVersion);
+                if (versionedModuleInfo != null) {
+                    moduleInfo = versionedModuleInfo;
+                }
+            }
+            try (InputStream in = Files.newInputStream(moduleInfo)) {
                 descriptor = parse(in);
             }
         } else {
@@ -80,6 +87,26 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
             }
         }
         return descriptor;
+    }
+
+    /**
+     * Finds the module descriptor of a multi-release output directory, which has no {@code module-info.class} at its
+     * root but under {@code META-INF/versions/<N>}, the way a multi-release jar does.
+     *
+     * @param directory the output directory
+     * @param jdkVersion the highest version to consider
+     * @return the path of the highest applicable versioned descriptor, or {@code null} if there is none
+     */
+    static Path findVersionedModuleInfo(Path directory, JavaVersion jdkVersion) {
+        int javaVersion = Integer.parseInt(jdkVersion.asMajor().getValue(1));
+
+        for (int version = javaVersion; version >= 9; version--) {
+            Path moduleInfo = directory.resolve("META-INF/versions/" + version + "/module-info.class");
+            if (Files.exists(moduleInfo)) {
+                return moduleInfo;
+            }
+        }
+        return null;
     }
 
     abstract JavaModuleDescriptor parse(InputStream in) throws IOException;

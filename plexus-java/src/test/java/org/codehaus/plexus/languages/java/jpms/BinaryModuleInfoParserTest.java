@@ -94,6 +94,16 @@ class BinaryModuleInfoParserTest {
     }
 
     @Test
+    void multiReleaseOutputDirectoryDescriptor() throws Exception {
+        JavaModuleDescriptor descriptor = parser.getModuleDescriptor(
+                Paths.get("src/test/test-data/dir.mr.descriptor/out"), JavaVersion.parse("17"));
+
+        assertNotNull(descriptor);
+        assertEquals("org.codehaus.plexus.languages.java.demo", descriptor.name());
+        assertFalse(descriptor.isAutomatic());
+    }
+
+    @Test
     void outputDirectoryDescriptor() throws Exception {
         JavaModuleDescriptor descriptor =
                 parser.getModuleDescriptor(Paths.get("src/test/test-data/dir.descriptor/out"));

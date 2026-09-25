@@ -107,6 +107,27 @@ class LocationManagerTest {
     }
 
     @Test
+    void multiReleaseDirDescriptor() throws Exception {
+        Path abc = Paths.get("src/test/test-data/dir.mr.descriptor/out");
+        JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
+                .requires("dir.mr.descriptor")
+                .build();
+        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        ResolvePathsRequest<Path> request =
+                ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
+
+        when(asmParser.getModuleDescriptor(abc))
+                .thenReturn(JavaModuleDescriptor.newModule("dir.mr.descriptor").build());
+
+        ResolvePathsResult<Path> result = locationManager.resolvePaths(request);
+
+        assertThat(result.getModulepathElements()).hasSize(1);
+        assertThat(result.getModulepathElements().get(abc)).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+        assertThat(result.getClasspathElements()).isEmpty();
+        assertThat(result.getPathExceptions()).isEmpty();
+    }
+
+    @Test
     void dirDescriptorWithReflectRequires() throws Exception {
         Path abc = Paths.get("src/test/test-data/dir.descriptor/out");
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
