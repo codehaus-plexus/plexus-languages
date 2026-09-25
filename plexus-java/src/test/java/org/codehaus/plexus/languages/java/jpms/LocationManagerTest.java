@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier;
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnJre;
@@ -34,7 +35,9 @@ import org.junit.jupiter.api.condition.JRE;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class LocationManagerTest {
@@ -47,7 +50,7 @@ class LocationManagerTest {
     final Path mockModuleInfoJava = Paths.get("src/test/test-data/mock/module-info.java");
 
     @BeforeEach
-    void onSetup() {
+    void onSetup() throws Exception {
         asmParser = mock(BinaryModuleInfoParser.class);
         sourceParser = mock(SourceModuleInfoParser.class);
         locationManager = new LocationManager(sourceParser) {
@@ -56,6 +59,13 @@ class LocationManagerTest {
                 return asmParser;
             }
         };
+
+        // LocationManager always calls the 2-arg overload now; delegate it to the 1-arg overload so every
+        // existing when(asmParser.getModuleDescriptor(x)) stub below keeps working regardless of which
+        // JavaVersion production code passes. Tests that care about the JavaVersion argument itself stub the
+        // 2-arg overload explicitly, which takes precedence over this catch-all.
+        when(asmParser.getModuleDescriptor(any(Path.class), any(JavaVersion.class)))
+                .thenAnswer(invocation -> asmParser.getModuleDescriptor(invocation.getArgument(0, Path.class)));
     }
 
     @Test
@@ -312,6 +322,38 @@ class LocationManagerTest {
         assertThat(result.getModuleDescriptor())
                 .isEqualTo(JavaModuleDescriptor.newModule("org.objectweb.asm").build());
         assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
+    }
+
+    @Test
+    void unsetTargetReleaseDefaultsToRunningJdk() throws Exception {
+        Path p = Paths.get("src/test/test-data/mock/jar0.jar");
+        ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(Collections.singletonList(p));
+
+        assertThat(request.getTargetRelease()).isEqualTo(JavaVersion.JAVA_SPECIFICATION_VERSION);
+
+        doReturn(JavaModuleDescriptor.newModule("org.objectweb.asm").build())
+                .when(asmParser)
+                .getModuleDescriptor(p, JavaVersion.JAVA_SPECIFICATION_VERSION);
+
+        locationManager.resolvePaths(request);
+
+        verify(asmParser).getModuleDescriptor(p, JavaVersion.JAVA_SPECIFICATION_VERSION);
+    }
+
+    @Test
+    void targetReleaseIsPassedToBinaryParser() throws Exception {
+        Path p = Paths.get("src/test/test-data/mock/jar0.jar");
+        JavaVersion targetRelease = JavaVersion.parse("11");
+        ResolvePathsRequest<Path> request =
+                ResolvePathsRequest.ofPaths(Collections.singletonList(p)).setTargetRelease(targetRelease);
+
+        doReturn(JavaModuleDescriptor.newModule("org.objectweb.asm").build())
+                .when(asmParser)
+                .getModuleDescriptor(p, targetRelease);
+
+        locationManager.resolvePaths(request);
+
+        verify(asmParser).getModuleDescriptor(p, targetRelease);
     }
 
     @Test

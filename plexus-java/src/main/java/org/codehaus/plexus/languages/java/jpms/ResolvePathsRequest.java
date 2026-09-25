@@ -25,6 +25,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 
 /**
  * Contains all information required to analyze the project
@@ -46,6 +49,8 @@ public abstract class ResolvePathsRequest<T> {
     private JavaModuleDescriptor resolvedMainModuleDescriptor;
 
     private boolean includeStatic;
+
+    private JavaVersion targetRelease = JavaVersion.JAVA_SPECIFICATION_VERSION;
 
     private ResolvePathsRequest() {}
 
@@ -225,5 +230,30 @@ public abstract class ResolvePathsRequest<T> {
     public ResolvePathsRequest<T> setIncludeStatic(boolean includeStatic) {
         this.includeStatic = includeStatic;
         return this;
+    }
+
+    /**
+     * The Java release the module descriptors must be resolved for - the {@code javac --release} value, or
+     * {@code -target} when {@code --release} is unset. Accepts {@code "1.8"}-style values as well as bare
+     * major versions. This picks the applicable versioned {@code module-info.class} of a multi-release jar or
+     * output directory, i.e. the highest {@code META-INF/versions/<N>} whose {@code N} does not exceed this
+     * release. Defaults to the version of the running JDK, so callers that compile for a different release
+     * should set this explicitly.
+     *
+     * @param targetRelease the target release, never {@code null}
+     * @return this request
+     * @since 1.6.1
+     */
+    public ResolvePathsRequest<T> setTargetRelease(JavaVersion targetRelease) {
+        this.targetRelease = Objects.requireNonNull(targetRelease, "targetRelease");
+        return this;
+    }
+
+    /**
+     * @return the Java release module descriptors are resolved for, defaults to the running JDK's version
+     * @since 1.6.1
+     */
+    public JavaVersion getTargetRelease() {
+        return targetRelease;
     }
 }
