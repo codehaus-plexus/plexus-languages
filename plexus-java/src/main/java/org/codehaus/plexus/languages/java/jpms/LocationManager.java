@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaProvides;
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 
 /**
  * Maps artifacts to modules and analyzes the type of required modules
@@ -323,7 +324,10 @@ public class LocationManager {
                     "'" + path + "' not allowed on the path, only outputDirectories and jars are accepted");
         }
 
-        if (Files.isRegularFile(path) || Files.exists(path.resolve("module-info.class"))) {
+        if (Files.isRegularFile(path)
+                || Files.exists(path.resolve("module-info.class"))
+                || AbstractBinaryModuleInfoParser.findVersionedModuleInfo(path, JavaVersion.JAVA_SPECIFICATION_VERSION)
+                        != null) {
             moduleDescriptor = binaryParser.getModuleDescriptor(path);
         }
 
