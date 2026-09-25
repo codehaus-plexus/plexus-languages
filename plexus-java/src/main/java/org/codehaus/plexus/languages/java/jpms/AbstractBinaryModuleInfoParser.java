@@ -64,8 +64,7 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
                                 && "true"
                                         .equalsIgnoreCase(
                                                 manifest.getMainAttributes().getValue("Multi-Release"))) {
-                            int javaVersion =
-                                    Integer.parseInt(jdkVersion.asMajor().getValue(1));
+                            int javaVersion = jdkVersion.getMajorVersion();
 
                             for (int version = javaVersion; version >= 9; version--) {
                                 String resource = "META-INF/versions/" + version + "/module-info.class";
@@ -98,7 +97,7 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
      * @return the path of the highest applicable versioned descriptor, or {@code null} if there is none
      */
     static Path findVersionedModuleInfo(Path directory, JavaVersion jdkVersion) {
-        int javaVersion = Integer.parseInt(jdkVersion.asMajor().getValue(1));
+        int javaVersion = jdkVersion.getMajorVersion();
 
         for (int version = javaVersion; version >= 9; version--) {
             Path moduleInfo = directory.resolve("META-INF/versions/" + version + "/module-info.class");

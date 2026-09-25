@@ -122,7 +122,8 @@ public class LocationManager {
         return resolvePath(
                 request.toPath(request.getPathElement()),
                 filenameExtractor,
-                getBinaryModuleInfoParser(request.getJdkHome()));
+                getBinaryModuleInfoParser(request.getJdkHome()),
+                request.getTargetRelease());
     }
 
     /**
@@ -173,7 +174,8 @@ public class LocationManager {
             };
 
             try {
-                ResolvePathResult resolvedPath = resolvePath(request.toPath(t), nameExtractor, binaryParser);
+                ResolvePathResult resolvedPath =
+                        resolvePath(request.toPath(t), nameExtractor, binaryParser, request.getTargetRelease());
 
                 moduleDescriptor = resolvedPath.getModuleDescriptor();
 
@@ -302,7 +304,8 @@ public class LocationManager {
             if (descriptorPath.endsWith("module-info.java")) {
                 mainModuleDescriptor = sourceParser.fromSourcePath(descriptorPath);
             } else if (descriptorPath.endsWith("module-info.class")) {
-                mainModuleDescriptor = binaryParser.getModuleDescriptor(descriptorPath.getParent());
+                mainModuleDescriptor =
+                        binaryParser.getModuleDescriptor(descriptorPath.getParent(), request.getTargetRelease());
             } else {
                 throw new IOException("Invalid path to module descriptor: " + descriptorPath);
             }
@@ -313,7 +316,11 @@ public class LocationManager {
     }
 
     private ResolvePathResult resolvePath(
-            Path path, ModuleNameExtractor fileModulenameExtractor, ModuleInfoParser binaryParser) throws IOException {
+            Path path,
+            ModuleNameExtractor fileModulenameExtractor,
+            ModuleInfoParser binaryParser,
+            JavaVersion targetRelease)
+            throws IOException {
         ResolvePathResult result = new ResolvePathResult();
 
         JavaModuleDescriptor moduleDescriptor = null;
@@ -326,9 +333,8 @@ public class LocationManager {
 
         if (Files.isRegularFile(path)
                 || Files.exists(path.resolve("module-info.class"))
-                || AbstractBinaryModuleInfoParser.findVersionedModuleInfo(path, JavaVersion.JAVA_SPECIFICATION_VERSION)
-                        != null) {
-            moduleDescriptor = binaryParser.getModuleDescriptor(path);
+                || AbstractBinaryModuleInfoParser.findVersionedModuleInfo(path, targetRelease) != null) {
+            moduleDescriptor = binaryParser.getModuleDescriptor(path, targetRelease);
         }
 
         if (moduleDescriptor != null) {

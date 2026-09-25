@@ -219,6 +219,23 @@ public class JavaVersion implements Comparable<JavaVersion> {
         return value.toString();
     }
 
+    /**
+     * The major version as an integer, parsed from the leading digits of {@link #asMajor()}'s value, so a
+     * pre-release suffix such as {@code "-ea"} does not prevent parsing, e.g. both {@code "21"} and
+     * {@code "21-ea"} return {@code 21}, and {@code "1.8"} returns {@code 8}.
+     *
+     * @return the major version number
+     * @throws NumberFormatException if the version does not start with a digit
+     * @since 1.6.1
+     */
+    public int getMajorVersion() {
+        Matcher matcher = startingDigits.matcher(asMajor().getValue(1));
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        throw new NumberFormatException("Cannot parse a major version from '" + rawVersion + "'");
+    }
+
     @Override
     public String toString() {
         return rawVersion;

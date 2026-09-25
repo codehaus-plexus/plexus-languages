@@ -166,4 +166,12 @@ class JavaVersionTest {
         assertThat(JavaVersion.parse("3.2.1").getValue(2)).isEqualTo("3.2");
         assertThat(JavaVersion.parse("3.2.1").getValue(3)).isEqualTo("3.2.1");
     }
+
+    @Test
+    void getMajorVersion() {
+        assertEquals(8, JavaVersion.parse("1.8").getMajorVersion());
+        assertEquals(11, JavaVersion.parse("11.0.2").getMajorVersion());
+        assertEquals(21, JavaVersion.parse("21-ea").getMajorVersion());
+        assertEquals(25, JavaVersion.parse("25").getMajorVersion());
+    }
 }

@@ -22,6 +22,9 @@ package org.codehaus.plexus.languages.java.jpms;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+
+import org.codehaus.plexus.languages.java.version.JavaVersion;
 
 /**
  *
@@ -32,6 +35,8 @@ public abstract class ResolvePathRequest<T> {
     private Path jdkHome;
 
     private T path;
+
+    private JavaVersion targetRelease = JavaVersion.JAVA_SPECIFICATION_VERSION;
 
     private ResolvePathRequest() {}
 
@@ -87,5 +92,30 @@ public abstract class ResolvePathRequest<T> {
 
     public Path getJdkHome() {
         return jdkHome;
+    }
+
+    /**
+     * The Java release the module descriptor must be resolved for - the {@code javac --release} value, or
+     * {@code -target} when {@code --release} is unset. Accepts {@code "1.8"}-style values as well as bare
+     * major versions. This picks the applicable versioned {@code module-info.class} of a multi-release jar or
+     * output directory, i.e. the highest {@code META-INF/versions/<N>} whose {@code N} does not exceed this
+     * release. Defaults to the version of the running JDK, so callers that compile for a different release
+     * should set this explicitly.
+     *
+     * @param targetRelease the target release, never {@code null}
+     * @return this request
+     * @since 1.6.1
+     */
+    public ResolvePathRequest<T> setTargetRelease(JavaVersion targetRelease) {
+        this.targetRelease = Objects.requireNonNull(targetRelease, "targetRelease");
+        return this;
+    }
+
+    /**
+     * @return the Java release the module descriptor is resolved for, defaults to the running JDK's version
+     * @since 1.6.1
+     */
+    public JavaVersion getTargetRelease() {
+        return targetRelease;
     }
 }
