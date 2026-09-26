@@ -120,5 +120,16 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <!-- palantir-java-format cannot run on JDK 27+: https://github.com/palantir/palantir-java-format/issues/1785 -->
+      <id>jdk27-skip-spotless</id>
+      <activation>
+        <jdk>[27,)</jdk>
+      </activation>
+      <properties>
+        <spotless.check.skip>true</spotless.check.skip>
+        <spotless.apply.skip>true</spotless.apply.skip>
+      </properties>
+    </profile>
   </profiles>
 </project>
