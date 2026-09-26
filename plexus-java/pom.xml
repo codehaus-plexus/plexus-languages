@@ -128,6 +128,41 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <!-- Prototype "option C" for #165: parse module-info.class with java.lang.classfile
+           (JEP 484, final since Java 24) instead of ASM. Only takes effect when this module is
+           built with a Java 24+ JDK; on an older JDK, src/main/java24 is simply not compiled and
+           the resulting jar has no META-INF/versions/24 layer. -->
+      <id>jdk24</id>
+      <activation>
+        <jdk>[24,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>jdk24</id>
+                  <goals>
+                    <goal>compile</goal>
+                  </goals>
+                  <configuration>
+                    <release>24</release>
+                    <multiReleaseOutput>true</multiReleaseOutput>
+                    <compileSourceRoots>
+                      <compileSourceRoot>${project.basedir}/src/main/java24</compileSourceRoot>
+                    </compileSourceRoots>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
 </project>
