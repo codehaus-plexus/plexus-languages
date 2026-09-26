@@ -29,29 +29,32 @@ import java.util.Set;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AsmModuleInfoParserTest {
-    private final AsmModuleInfoParser parser = new AsmModuleInfoParser();
+class ModuleInfoClassParserTest {
+    private final ModuleInfoClassParser parser = new ModuleInfoClassParser();
 
     /**
-     * A class file major version newer than what the bundled ASM release supports (e.g. major
-     * version 72 emitted by JDK 28, see codehaus-plexus/plexus-languages#165) used to make
-     * ClassReader throw IllegalArgumentException. Patch a known-good module-info.class to claim
-     * that unsupported major version and verify it still parses, with the same descriptor as the
-     * unpatched file (see {@code BinaryModuleInfoParserTest#requires()}).
+     * This parser never looks at the class file's major/minor version, so a module-info.class compiled
+     * by a JDK newer than any released today (e.g. major version 72 for JDK 28, see
+     * codehaus-plexus/plexus-languages#165, or an arbitrarily higher one) must still parse, with the same
+     * descriptor as the unpatched file (see {@code BinaryModuleInfoParserTest#requires()}).
      */
-    @Test
-    void parsesModuleInfoWithMajorVersionNewerThanAsmSupports() throws Exception {
+    @ParameterizedTest
+    @ValueSource(ints = {72, 99})
+    void parsesModuleInfoWithMajorVersionNewerThanAnyKnownJdk(int majorVersion) throws Exception {
         byte[] classBytes =
                 Files.readAllBytes(Paths.get("src/test/test-data/dir.descriptor.requires/out/module-info.class"));
 
-        // bytes 6-7 are the big-endian major version; 72 is one past ASM 9.10.1's newest (71/V27)
-        classBytes[6] = 0x00;
-        classBytes[7] = 0x48;
+        // bytes 6-7 are the big-endian major version
+        classBytes[6] = (byte) (majorVersion >>> 8);
+        classBytes[7] = (byte) majorVersion;
 
         JavaModuleDescriptor descriptor;
         try (ByteArrayInputStream is = new ByteArrayInputStream(classBytes)) {
@@ -74,5 +77,27 @@ class AsmModuleInfoParserTest {
                 .requires();
 
         assertEquals(expectedRequires, descriptor.requires());
+    }
+
+    @Test
+    void rejectsBadMagic() throws Exception {
+        byte[] classBytes =
+                Files.readAllBytes(Paths.get("src/test/test-data/dir.descriptor.requires/out/module-info.class"));
+        classBytes[0] = 0x00;
+
+        try (ByteArrayInputStream is = new ByteArrayInputStream(classBytes)) {
+            assertThrows(java.io.IOException.class, () -> parser.parse(is));
+        }
+    }
+
+    @Test
+    void rejectsClassFileWithoutModuleAttribute() throws Exception {
+        // an ordinary compiled class, i.e. one without a Module attribute, must be rejected rather than
+        // silently producing a bogus descriptor
+        byte[] classBytes = Files.readAllBytes(Paths.get("src/test/test-data/classfile.version/helloworld-17.class"));
+
+        try (ByteArrayInputStream is = new ByteArrayInputStream(classBytes)) {
+            assertThrows(java.io.IOException.class, () -> parser.parse(is));
+        }
     }
 }
