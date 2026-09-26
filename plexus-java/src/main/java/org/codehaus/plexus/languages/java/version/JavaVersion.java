@@ -226,7 +226,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      *
      * @return the major version number
      * @throws NumberFormatException if the version does not start with a digit
-     * @since 1.6.1
+     * @since 1.7.0
      */
     public int getMajorVersion() {
         Matcher matcher = startingDigits.matcher(asMajor().getValue(1));

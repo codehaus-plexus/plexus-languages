@@ -104,7 +104,7 @@ public abstract class ResolvePathRequest<T> {
      *
      * @param targetRelease the target release, never {@code null}
      * @return this request
-     * @since 1.6.1
+     * @since 1.7.0
      */
     public ResolvePathRequest<T> setTargetRelease(JavaVersion targetRelease) {
         this.targetRelease = Objects.requireNonNull(targetRelease, "targetRelease");
@@ -113,7 +113,7 @@ public abstract class ResolvePathRequest<T> {
 
     /**
      * @return the Java release the module descriptor is resolved for, defaults to the running JDK's version
-     * @since 1.6.1
+     * @since 1.7.0
      */
     public JavaVersion getTargetRelease() {
         return targetRelease;
