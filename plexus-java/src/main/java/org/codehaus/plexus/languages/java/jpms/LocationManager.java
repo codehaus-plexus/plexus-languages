@@ -279,19 +279,21 @@ public class LocationManager {
 
     /**
      * If the jdkHome is specified, its version it considered higher than the runtime java version.
-     * In that case ASM must be used to read the module descriptor
+     * In that case ASM must be used to read the module descriptor, unless this runtime's own
+     * {@link BinaryModuleInfoParser} is the Java 24 {@code java.lang.classfile}-based one: like the
+     * ASM parser (since codehaus-plexus/plexus-languages#239) it clamps a class file major version
+     * newer than it supports down to the newest one it knows, so a toolchain pointing at a
+     * different JDK than this process is running on is not a reason to prefer ASM over it.
      *
      * @param jdkHome
      * @return
      */
     ModuleInfoParser getBinaryModuleInfoParser(final Path jdkHome) {
-        final ModuleInfoParser binaryParser;
-        if (jdkHome == null) {
-            binaryParser = new BinaryModuleInfoParser();
-        } else {
-            binaryParser = new AsmModuleInfoParser();
+        BinaryModuleInfoParser runtimeParser = new BinaryModuleInfoParser();
+        if (jdkHome == null || runtimeParser.isClassFileApiBased()) {
+            return runtimeParser;
         }
-        return binaryParser;
+        return new AsmModuleInfoParser();
     }
 
     private <T> JavaModuleDescriptor getMainModuleDescriptor(
