@@ -279,7 +279,9 @@ public class LocationManager {
 
     /**
      * If the jdkHome is specified, its version it considered higher than the runtime java version.
-     * In that case ASM must be used to read the module descriptor
+     * In that case the version-agnostic {@link ModuleInfoClassParser} must be used to read the module
+     * descriptor, since the runtime's own {@code java.lang.module.ModuleDescriptor} cannot be trusted
+     * to read a module-info.class produced by a newer JDK than the one it runs on.
      *
      * @param jdkHome
      * @return
@@ -289,7 +291,7 @@ public class LocationManager {
         if (jdkHome == null) {
             binaryParser = new BinaryModuleInfoParser();
         } else {
-            binaryParser = new AsmModuleInfoParser();
+            binaryParser = new ModuleInfoClassParser();
         }
         return binaryParser;
     }

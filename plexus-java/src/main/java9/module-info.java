@@ -18,7 +18,6 @@
  */
 module org.codehaus.plexus.languages.java {
     requires com.github.javaparser.core;
-    requires org.objectweb.asm;
 
     exports org.codehaus.plexus.languages.java.jpms;
     exports org.codehaus.plexus.languages.java.version;
