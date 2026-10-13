@@ -26,9 +26,9 @@ jobs:
     with:
       matrix-include: >
         [
-          { "os": "ubuntu-latest", "jdk": "26", "distribution": "zulu" },
-          { "os": "ubuntu-latest", "jdk": "27", "distribution": "zulu" },
-          { "os": "ubuntu-latest", "jdk": "28-ea", "distribution": "temurin" }
+          { "os": "ubuntu-latest", "jdk": "26", "distribution": "zulu", "maven": "3.10.0" },
+          { "os": "ubuntu-latest", "jdk": "27", "distribution": "zulu", "maven": "3.10.0" },
+          { "os": "ubuntu-latest", "jdk": "28-ea", "distribution": "temurin", "maven": "3.10.0" }
         ]
 
 #  deploy:
