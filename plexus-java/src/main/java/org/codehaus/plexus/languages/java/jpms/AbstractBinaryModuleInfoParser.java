@@ -109,4 +109,24 @@ abstract class AbstractBinaryModuleInfoParser implements ModuleInfoParser {
     }
 
     abstract JavaModuleDescriptor parse(InputStream in) throws IOException;
+
+    /**
+     * Whether this parser reads the {@code Module} attribute with the runtime's own
+     * {@code java.lang.classfile} API (JEP 484, final since Java 24) rather than ASM or
+     * {@code java.lang.module.ModuleDescriptor}.
+     * <p>
+     * {@link BinaryModuleInfoParser} is a multi-release class: depending on the JDK actually
+     * running the build, {@code new BinaryModuleInfoParser()} resolves to the Java 8 (ASM-backed),
+     * Java 9 ({@code java.lang.module}-backed) or Java 24 ({@code java.lang.classfile}-backed)
+     * implementation. {@link LocationManager#getBinaryModuleInfoParser(java.nio.file.Path)} cannot
+     * reference {@code java.lang.classfile} types directly &mdash; that package doesn't exist
+     * before Java 24, and {@code LocationManager} is compiled once at the Java 8 baseline &mdash;
+     * so it asks the resolved instance about its own capability instead.
+     *
+     * @return {@code true} for the {@code src/main/java24} implementation, {@code false} otherwise
+     * @since 1.7.0
+     */
+    boolean isClassFileApiBased() {
+        return false;
+    }
 }
