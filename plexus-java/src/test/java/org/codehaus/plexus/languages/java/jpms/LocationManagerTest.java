@@ -24,7 +24,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.codehaus.plexus.languages.java.jpms.JavaModuleDescriptor.JavaRequires.JavaModifier;
 import org.codehaus.plexus.languages.java.version.JavaVersion;
@@ -32,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
+import org.mockito.MockMakers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,11 +42,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 class LocationManagerTest {
-    private BinaryModuleInfoParser asmParser;
+    private ModuleInfoParser asmParser;
 
-    private SourceModuleInfoParser sourceParser;
+    /** What the fake source parser returns for a path, and for any path not listed. */
+    private final Map<Path, JavaModuleDescriptor> sourceDescriptors = new HashMap<>();
+
+    private JavaModuleDescriptor sourceDescriptor;
 
     private LocationManager locationManager;
 
@@ -51,8 +58,16 @@ class LocationManagerTest {
 
     @BeforeEach
     void onSetup() throws Exception {
-        asmParser = mock(BinaryModuleInfoParser.class);
-        sourceParser = mock(SourceModuleInfoParser.class);
+        // Neither collaborator is a mock of a class: creating one needs Objenesis, which calls
+        // ReflectionFactory.newConstructorForSerialization(Class, Constructor), disabled since JDK 28.
+        // The binary parser is mocked through its interface with a JDK proxy, the source parser is a fake.
+        asmParser = mock(ModuleInfoParser.class, withSettings().mockMaker(MockMakers.PROXY));
+        SourceModuleInfoParser sourceParser = new SourceModuleInfoParser() {
+            @Override
+            public JavaModuleDescriptor fromSourcePath(Path modulePath) {
+                return sourceDescriptors.getOrDefault(modulePath, sourceDescriptor);
+            }
+        };
         locationManager = new LocationManager(sourceParser) {
             @Override
             ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
@@ -85,7 +100,7 @@ class LocationManagerTest {
                 .requires("java.base")
                 .requires("jdk.net")
                 .build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<File> request = ResolvePathsRequest.ofFiles(Collections.emptyList())
                 .setMainModuleDescriptor(mockModuleInfoJava.toFile());
 
@@ -104,7 +119,7 @@ class LocationManagerTest {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("auto.by.manifest")
                 .build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -125,7 +140,7 @@ class LocationManagerTest {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("dir.mr.descriptor")
                 .build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -146,7 +161,7 @@ class LocationManagerTest {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("dir.descriptor")
                 .build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -169,7 +184,7 @@ class LocationManagerTest {
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base")
                 .requires("org.objectweb.asm")
                 .build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -191,7 +206,7 @@ class LocationManagerTest {
         Path pj2 = Paths.get("src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -221,7 +236,7 @@ class LocationManagerTest {
         Path pj2 = Paths.get("src/test/test-data/jar.empty.2/plexus-java-2.0.0-SNAPSHOT.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -251,7 +266,7 @@ class LocationManagerTest {
         Path pj2 = Paths.get("src/test/test-data/jar.tests/plexus-java-1.0.0-SNAPSHOT-tests.jar");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("plexus.java").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Arrays.asList(pj1, pj2)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -292,7 +307,7 @@ class LocationManagerTest {
         Path p = Paths.get("src/test/test-data/mock/jar0.jar");
 
         JavaModuleDescriptor descriptor = JavaModuleDescriptor.newModule("base").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(Collections.singletonList(p))
                 .setMainModuleDescriptor(mockModuleInfoJava)
                 .setAdditionalModules(Collections.singletonList("plexus.java"));
@@ -363,8 +378,8 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(true);
 
-        when(sourceParser.fromSourcePath(abc))
-                .thenReturn(JavaModuleDescriptor.newModule("abc").uses("device").build());
+        sourceDescriptors.put(
+                abc, JavaModuleDescriptor.newModule("abc").uses("device").build());
         when(asmParser.getModuleDescriptor(def))
                 .thenReturn(JavaModuleDescriptor.newModule("def")
                         .provides("tool", Arrays.asList("java", "javac"))
@@ -384,8 +399,8 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc).setIncludeAllProviders(true);
 
-        when(sourceParser.fromSourcePath(abc))
-                .thenReturn(JavaModuleDescriptor.newModule("abc").uses("tool").build());
+        sourceDescriptors.put(
+                abc, JavaModuleDescriptor.newModule("abc").uses("tool").build());
         when(asmParser.getModuleDescriptor(def))
                 .thenReturn(JavaModuleDescriptor.newModule("def")
                         .provides("tool", Arrays.asList("java", "javac"))
@@ -404,8 +419,8 @@ class LocationManagerTest {
         Path def = Paths.get("src/test/test-data/mock/jar0.jar"); // any existing file
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(def).setMainModuleDescriptor(abc);
 
-        when(sourceParser.fromSourcePath(abc))
-                .thenReturn(JavaModuleDescriptor.newModule("abc").uses("tool").build());
+        sourceDescriptors.put(
+                abc, JavaModuleDescriptor.newModule("abc").uses("tool").build());
         when(asmParser.getModuleDescriptor(def))
                 .thenReturn(JavaModuleDescriptor.newModule("def")
                         .provides("tool", Arrays.asList("java", "javac"))
@@ -427,9 +442,8 @@ class LocationManagerTest {
                 .setMainModuleDescriptor(abc)
                 .setIncludeAllProviders(true);
 
-        when(sourceParser.fromSourcePath(abc))
-                .thenReturn(
-                        JavaModuleDescriptor.newModule("abc").requires("ghi").build());
+        sourceDescriptors.put(
+                abc, JavaModuleDescriptor.newModule("abc").requires("ghi").build());
         when(asmParser.getModuleDescriptor(def))
                 .thenReturn(JavaModuleDescriptor.newModule("def")
                         .provides("tool", Arrays.asList("java", "javac"))
@@ -452,9 +466,8 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(def, ghi).setMainModuleDescriptor(abc);
 
-        when(sourceParser.fromSourcePath(abc))
-                .thenReturn(
-                        JavaModuleDescriptor.newModule("abc").requires("ghi").build());
+        sourceDescriptors.put(
+                abc, JavaModuleDescriptor.newModule("abc").requires("ghi").build());
         when(asmParser.getModuleDescriptor(def))
                 .thenReturn(JavaModuleDescriptor.newModule("def")
                         .provides("tool", Arrays.asList("java", "javac"))
@@ -509,8 +522,8 @@ class LocationManagerTest {
     @Test
     void parseModuleDescriptor() throws Exception {
         Path descriptorPath = Paths.get("src/test/test-data/src.dir/module-info.java");
-        when(sourceParser.fromSourcePath(descriptorPath))
-                .thenReturn(JavaModuleDescriptor.newModule("a.b.c").build());
+        sourceDescriptors.put(
+                descriptorPath, JavaModuleDescriptor.newModule("a.b.c").build());
 
         ResolvePathResult result = locationManager.parseModuleDescriptor(descriptorPath);
         assertThat(result.getModuleNameSource()).isEqualTo(ModuleNameSource.MODULEDESCRIPTOR);
@@ -533,10 +546,9 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
 
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
-                        .requires("moduleB")
-                        .build());
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA").requires("moduleB").build());
         when(asmParser.getModuleDescriptor(moduleB))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleB")
                         .requires(Collections.singleton(JavaModifier.STATIC), "moduleC")
@@ -561,8 +573,9 @@ class LocationManagerTest {
                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
         // .setIncludeStatic( true );
 
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA")
                         .requires("moduleB")
                         .requires(Collections.singleton(JavaModifier.STATIC), "moduleD")
                         .build());
@@ -591,10 +604,9 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC).setMainModuleDescriptor(moduleA);
 
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
-                        .requires("anonymous")
-                        .build());
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA").requires("anonymous").build());
         when(asmParser.getModuleDescriptor(moduleB))
                 .thenReturn(JavaModuleDescriptor.newModule("anonymous").build());
         when(asmParser.getModuleDescriptor(moduleC))
@@ -621,10 +633,9 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(moduleB, moduleC, moduleD).setMainModuleDescriptor(moduleA);
 
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
-                        .requires("moduleB")
-                        .build());
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA").requires("moduleB").build());
         when(asmParser.getModuleDescriptor(moduleB))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleB")
                         .requires(new HashSet<>(Arrays.asList(JavaModifier.STATIC, JavaModifier.TRANSITIVE)), "moduleC")
@@ -654,10 +665,9 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC)
                 .setMainModuleDescriptor(moduleA)
                 .setIncludeStatic(true);
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
-                        .requires("moduleB")
-                        .build());
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA").requires("moduleB").build());
         when(asmParser.getModuleDescriptor(moduleB))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleB")
                         .requires(Collections.singleton(JavaModifier.STATIC), "moduleC")
@@ -681,10 +691,9 @@ class LocationManagerTest {
         ResolvePathsRequest<Path> request = ResolvePathsRequest.ofPaths(moduleA, moduleB, moduleC, moduleD)
                 .setMainModuleDescriptor(moduleA)
                 .setIncludeStatic(true);
-        when(sourceParser.fromSourcePath(moduleA))
-                .thenReturn(JavaModuleDescriptor.newModule("moduleA")
-                        .requires("moduleB")
-                        .build());
+        sourceDescriptors.put(
+                moduleA,
+                JavaModuleDescriptor.newModule("moduleA").requires("moduleB").build());
         when(asmParser.getModuleDescriptor(moduleB))
                 .thenReturn(JavaModuleDescriptor.newModule("moduleB")
                         .requires("moduleC")

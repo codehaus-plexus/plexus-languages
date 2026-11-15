@@ -29,12 +29,11 @@ import org.junit.jupiter.api.condition.DisabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockMakers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * <strong>NOTE</strong> Eclipse users must disable the <code>Build automatically</code> option,
@@ -45,11 +44,11 @@ import static org.mockito.Mockito.when;
 @DisabledOnJre(value = JRE.JAVA_8, disabledReason = "Requires Java 9+ Module System")
 @ExtendWith(MockitoExtension.class)
 class LocationManagerIT {
-    @Mock
-    private BinaryModuleInfoParser asmParser;
+    // A JDK proxy of the interface, not a mock of a class: see LocationManagerTest.onSetup.
+    @Mock(mockMaker = MockMakers.PROXY)
+    private ModuleInfoParser asmParser;
 
-    @Mock
-    private SourceModuleInfoParser sourceParser;
+    private JavaModuleDescriptor sourceDescriptor;
 
     private LocationManager locationManager;
 
@@ -57,6 +56,12 @@ class LocationManagerIT {
 
     @BeforeEach
     void onSetup() {
+        SourceModuleInfoParser sourceParser = new SourceModuleInfoParser() {
+            @Override
+            public JavaModuleDescriptor fromSourcePath(Path modulePath) {
+                return sourceDescriptor;
+            }
+        };
         locationManager = new LocationManager(sourceParser) {
             @Override
             ModuleInfoParser getBinaryModuleInfoParser(Path jdkHome) {
@@ -70,7 +75,7 @@ class LocationManagerIT {
         Path abc = Paths.get("src/test/test-data/manifest.without/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("any").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
@@ -88,7 +93,7 @@ class LocationManagerIT {
         Path abc = Paths.get("src/test/test-data/empty/out");
         JavaModuleDescriptor descriptor =
                 JavaModuleDescriptor.newModule("base").requires("a.b.c").build();
-        when(sourceParser.fromSourcePath(any(Path.class))).thenReturn(descriptor);
+        sourceDescriptor = descriptor;
         ResolvePathsRequest<Path> request =
                 ResolvePathsRequest.ofPaths(Collections.singletonList(abc)).setMainModuleDescriptor(mockModuleInfoJava);
 
