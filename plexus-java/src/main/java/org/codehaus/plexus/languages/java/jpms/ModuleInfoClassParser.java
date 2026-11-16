@@ -73,7 +73,7 @@ class ModuleInfoClassParser extends AbstractBinaryModuleInfoParser {
 
     @Override
     JavaModuleDescriptor parse(InputStream in) throws IOException {
-        DataInputStream dis = (in instanceof DataInputStream) ? (DataInputStream) in : new DataInputStream(in);
+        DataInputStream dis = in instanceof DataInputStream ? (DataInputStream) in : new DataInputStream(in);
 
         int magic = dis.readInt();
         if (magic != MAGIC) {

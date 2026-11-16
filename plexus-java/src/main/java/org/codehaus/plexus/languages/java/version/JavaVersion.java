@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * @see <a href="http://openjdk.java.net/jeps/223">JEP 223: New Version-String Scheme</a>
  * @see <a href="http://openjdk.java.net/jeps/322">JEP 322: Time-Based Release Versioning</a>
  */
-public class JavaVersion implements Comparable<JavaVersion> {
+public final class JavaVersion implements Comparable<JavaVersion> {
     /**
      * Represents the System property {@code java.specification.version}
      */
@@ -113,7 +113,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
             }
         }
 
-        return (thisSegments.length - otherSegments.length);
+        return thisSegments.length - otherSegments.length;
     }
 
     private int suffixRate(String suffix) {
