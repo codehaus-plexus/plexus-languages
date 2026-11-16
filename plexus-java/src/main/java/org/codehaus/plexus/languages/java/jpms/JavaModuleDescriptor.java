@@ -105,10 +105,7 @@ public class JavaModuleDescriptor {
         if (!Objects.equals(requires, other.requires)) {
             return false;
         }
-        if (!Objects.equals(exports, other.exports)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(exports, other.exports);
     }
 
     @Override
@@ -219,7 +216,7 @@ public class JavaModuleDescriptor {
      * @author Robert Scholte
      * @since 1.0.0
      */
-    public static class JavaRequires {
+    public static final class JavaRequires {
         private final Set<JavaModifier> modifiers;
 
         private final String name;
@@ -274,10 +271,7 @@ public class JavaModuleDescriptor {
             if (!Objects.equals(modifiers, other.modifiers)) {
                 return false;
             }
-            if (!Objects.equals(name, other.name)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(name, other.name);
         }
 
         @Override
@@ -336,10 +330,7 @@ public class JavaModuleDescriptor {
             if (!Objects.equals(source, other.source)) {
                 return false;
             }
-            if (!Objects.equals(targets, other.targets)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(targets, other.targets);
         }
 
         @Override
@@ -354,7 +345,7 @@ public class JavaModuleDescriptor {
      * @author Robert Scholte
      * @since 1.0.0
      */
-    public static class JavaProvides {
+    public static final class JavaProvides {
         private final String service;
 
         private final List<String> providers;
@@ -393,10 +384,7 @@ public class JavaModuleDescriptor {
             if (!Objects.equals(service, other.service)) {
                 return false;
             }
-            if (!Objects.equals(providers, other.providers)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(providers, other.providers);
         }
 
         @Override

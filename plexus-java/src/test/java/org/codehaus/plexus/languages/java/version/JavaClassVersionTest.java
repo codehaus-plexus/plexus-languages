@@ -30,7 +30,7 @@ class JavaClassVersionTest {
         JavaClassfileVersion classVersion = JavaClassfileVersion.of(filePath);
         assertEquals(javaVersion + 44, classVersion.majorVersion());
         assertEquals(0, classVersion.minorVersion());
-        assertEquals(JavaVersion.parse("" + javaVersion), classVersion.javaVersion());
+        assertEquals(JavaVersion.parse(String.valueOf(javaVersion)), classVersion.javaVersion());
     }
 
     static Stream<Path> provideClassFiles() {

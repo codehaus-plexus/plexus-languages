@@ -136,17 +136,21 @@ public final class JavaClassfileVersion {
         final int prime = 31;
         int result = 1;
         result = prime * result + major;
-        result = prime * result + minor;
-        return result;
+        return prime * result + minor;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof JavaClassfileVersion)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof JavaClassfileVersion)) {
+            return false;
+        }
         JavaClassfileVersion other = (JavaClassfileVersion) obj;
-        if (major != other.major) return false;
-        if (minor != other.minor) return false;
-        return true;
+        if (major != other.major) {
+            return false;
+        }
+        return minor == other.minor;
     }
 }
