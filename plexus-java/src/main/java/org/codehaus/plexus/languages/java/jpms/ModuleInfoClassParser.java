@@ -292,7 +292,7 @@ class ModuleInfoClassParser extends AbstractBinaryModuleInfoParser {
         }
 
         String packageName(int index) {
-            return utf8[classLikeNameIndex[index]].replace('/', '.');
+            return className(index);
         }
 
         String className(int index) {
