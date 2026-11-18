@@ -23,7 +23,7 @@
     <connection>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</connection>
     <developerConnection>scm:git:https://github.com/codehaus-plexus/plexus-languages.git</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/codehaus-plexus/plexus-languages/tree/plexus-languages</url>
+    <url>https://github.com/codehaus-plexus/plexus-languages</url>
   </scm>
   <issueManagement>
     <system>github</system>
