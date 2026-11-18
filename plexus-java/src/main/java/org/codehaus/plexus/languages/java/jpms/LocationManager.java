@@ -287,7 +287,13 @@ public class LocationManager {
      * @return
      */
     ModuleInfoParser getBinaryModuleInfoParser(final Path jdkHome) {
-        return jdkHome == null ? new BinaryModuleInfoParser() : new ModuleInfoClassParser();
+        final ModuleInfoParser binaryParser;
+        if (jdkHome == null) {
+            binaryParser = new BinaryModuleInfoParser();
+        } else {
+            binaryParser = new ModuleInfoClassParser();
+        }
+        return binaryParser;
     }
 
     private <T> JavaModuleDescriptor getMainModuleDescriptor(
