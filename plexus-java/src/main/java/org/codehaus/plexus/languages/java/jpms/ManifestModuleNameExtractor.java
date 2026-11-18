@@ -37,14 +37,7 @@ class ManifestModuleNameExtractor implements ModuleNameExtractor {
     public String extract(Path file) throws IOException {
         Manifest manifest = extractManifest(file);
 
-        String automaticModuleName;
-        if (manifest != null) {
-            automaticModuleName = manifest.getMainAttributes().getValue("Automatic-Module-Name");
-        } else {
-            automaticModuleName = null;
-        }
-
-        return automaticModuleName;
+        return manifest != null ? manifest.getMainAttributes().getValue("Automatic-Module-Name") : null;
     }
 
     private Manifest extractManifest(Path file) throws IOException {
