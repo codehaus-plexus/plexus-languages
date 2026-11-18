@@ -10,7 +10,7 @@ The `ResolvePathRequest` also contains:
 
 * additionalModules: the modules that will be addedusing `-add-modules`
 
-* jdkHome: in case you need to use a different JDK to extract the name from the modules. Can be interesting if the runtime is still Java 7.
+* jdkHome: in case you need to use a different JDK to extract the name from the modules. Can be interesting if the runtime is still Java 8.
 
 The `ResolvePathsResult` contains:
 
